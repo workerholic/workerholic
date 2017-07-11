@@ -19,8 +19,8 @@ module Workerholic
         redis.rpush(key, value)
       end
 
-      def flush
-        redis.flushdb
+      def blpop(key, timeout = 0)
+        redis.blpop(key, timeout)
       end
     end
   end
