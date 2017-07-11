@@ -13,7 +13,8 @@ module Workerholic
     def work(serialized_job)
       components = deserialize_job(serialized_job)
       job_class, job_args = components.first, components.last
-      job_class.new.perform(*job_args)
+      Thread.new { job_class.new.perform(*job_args) }.join
     end
+
   end
 end
