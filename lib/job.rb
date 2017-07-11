@@ -1,3 +1,4 @@
+require 'yaml'
 require_relative 'queue'
 
 module Workerholic

@@ -1,4 +1,4 @@
-require_relative 'workerholic'
+require_relative '../lib/job'
 
 class JobTest
   include Workerholic::Job
