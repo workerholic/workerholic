@@ -1,22 +1,16 @@
+require_relative 'queue'
+
 module Workerholic
 
-  class Job
-
-    def initialize(klass, args)
-      @klass = klass
-      @args = args
-      @storage = Storage::RedisWrapper.new
+  module Job
+    def perform_async(*args)
+      Queue.enqueue(serialized(self.class, args))
     end
 
-    def serialized
-      job_obj = [@klass, @args]
+    def serialized(klass, args)
+      job_obj = [klass, args]
       ::YAML.dump(job_obj)
     end
-
-    def push(queue_name = 'default')
-      @storage.push(queue_name, serialized)
-    end
-
   end
 
 end

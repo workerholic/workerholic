@@ -2,7 +2,6 @@ require 'yaml'
 require 'pry-byebug'
 
 require_relative 'job'
-require_relative 'storage'
 require_relative 'worker'
 
 module Workerholic
