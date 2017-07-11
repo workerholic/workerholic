@@ -7,6 +7,4 @@ require_relative 'manager'
 
 require_relative '../app_test/job_test'
 
-Workerholic::Manager.blpoll
-module Workerholic
-end
+Workerholic::Manager.poll
