@@ -1,6 +1,8 @@
 require_relative 'storage'
 
 module Workerholic
+  # Handles background job enqueueing functionality
+  # TODO?: handle dequeueing functionality
   class Queue
     @storage = Storage::RedisWrapper.new
 

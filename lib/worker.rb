@@ -1,5 +1,6 @@
 module Workerholic
 
+  # handles job execution in threads
   class Worker
     @@counter = 0
     def initialize

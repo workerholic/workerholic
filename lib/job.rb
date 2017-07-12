@@ -2,7 +2,6 @@ require 'yaml'
 require_relative 'queue'
 
 module Workerholic
-
   module Job
     def perform_async(*args)
       Queue.enqueue(serialized(self.class, args))
@@ -13,5 +12,4 @@ module Workerholic
       ::YAML.dump(job_obj)
     end
   end
-
 end
