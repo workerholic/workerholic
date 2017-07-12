@@ -1,7 +1,7 @@
 module Workerholic
 
   class Worker
-
+    @@counter = 0
     def initialize
       @storage = Storage::RedisWrapper.new
     end
@@ -13,7 +13,7 @@ module Workerholic
     def work(serialized_job)
       components = deserialize_job(serialized_job)
       job_class, job_args = components.first, components.last
-      Thread.new { job_class.new.perform(*job_args) }.join
+      Thread.new { job_class.new.perform(*job_args) }
     end
 
   end
