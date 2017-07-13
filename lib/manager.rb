@@ -1,17 +1,16 @@
-require_relative 'storage'
 require_relative 'worker'
 
 module Workerholic
   # Handles polling from Redis and hands job to worker
   class Manager
-    @storage = Storage::RedisWrapper.new
-    @worker = Worker.new
+    attr_reader :workers
 
-    def self.poll(queue_name = 'default')
-      loop do
-        serialized_job = @storage.pop(queue_name, 0).last
-        @worker.work(serialized_job)
-      end
+    def initialize(workers_count = 10)
+      @workers = Array.new(workers_count, Worker.new)
+    end
+
+    def start
+      workers.each(&:work)
     end
   end
 end

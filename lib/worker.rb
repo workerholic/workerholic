@@ -1,28 +1,40 @@
-require_relative 'thread_pool'
-
 module Workerholic
 
   # handles job execution in threads
   class Worker
-    @@counter = 0
     def initialize
       @storage = Storage::RedisWrapper.new
-      @thread_pool = ThreadPool.new
+      @dead = false
     end
 
     def deserialize_job(job)
       ::YAML.load(job)
     end
 
-    def work(serialized_job)
-      components = deserialize_job(serialized_job)
-      job_class, job_args = components.first, components.last
-      # Thread.new { job_class.new.perform(*job_args) }
-      worker_thread = @thread_pool.pool.pop
-      worker_thread.thread_variable_set(:job_class, job_class)
-      worker_thread.thread_variable_set(:job_args, job_args)
-      worker_thread.run
+    def create_thread
+      Thread.new do
+        while !@dead
+          poll
+        end
+      end
     end
 
+    def work
+      # we may want to store it... for later?
+      create_thread
+    end
+
+    private
+
+    def poll(queue_name = 'default')
+      serialized_job = @storage.pop(queue_name, 0).last
+      process(serialized_job)
+    end
+
+    def process(serialized_job)
+      components = deserialize_job(serialized_job)
+      job_class, job_args = components.first, components.last
+      job_class.new.perform(*job_args)
+    end
   end
 end
