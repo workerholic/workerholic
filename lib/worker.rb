@@ -12,7 +12,7 @@ module Workerholic
     end
 
     def create_thread
-      Thread.new do
+      @thread = Thread.new do
         while !@dead
           poll
         end
@@ -20,8 +20,11 @@ module Workerholic
     end
 
     def work
-      # we may want to store it... for later?
       create_thread
+    end
+
+    def join
+      @thread.join
     end
 
     private
