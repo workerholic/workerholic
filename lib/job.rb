@@ -4,7 +4,7 @@ require_relative 'queue'
 module Workerholic
   module Job
     def perform_async(*args)
-      Queue.enqueue(serialized(self.class, args))
+      Queue.new.enqueue(serialized(self.class, args))
     end
 
     def serialized(klass, args)

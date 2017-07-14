@@ -1,13 +1,21 @@
 require_relative 'storage'
 
 module Workerholic
-  # Handles background job enqueueing functionality
-  # TODO?: handle dequeueing functionality
+  # Handles background job enqueueing/dequeuing functionality
   class Queue
-    @storage = Storage::RedisWrapper.new
+    attr_reader :storage, :name
 
-    def self.enqueue(queue_name = 'default', serialized_job)
-      @storage.push(queue_name, serialized_job)
+    def initialize(name = 'default')
+      @storage = Storage::RedisWrapper.new
+      @name = name
+    end
+
+    def enqueue(serialized_job)
+      storage.push(name, serialized_job)
+    end
+
+    def dequeue
+      storage.pop(name).last
     end
   end
 end
