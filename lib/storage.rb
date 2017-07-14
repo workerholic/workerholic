@@ -1,9 +1,8 @@
 require 'redis'
 
 module Workerholic
-
   class Storage
-
+    # Wraps redis-rb gem methods for enqueueing/dequeuing purposes
     class RedisWrapper
       attr_reader :redis
 
@@ -11,18 +10,14 @@ module Workerholic
         @redis = redis
       end
 
-      def pop(key)
-        redis.lpop(key)
-      end
-
       def push(key, value)
         redis.rpush(key, value)
       end
 
-      def blpop(key, timeout = 0)
+      # blocking pop from Redis queue
+      def pop(key, timeout = 0)
         redis.blpop(key, timeout)
       end
     end
   end
-
 end

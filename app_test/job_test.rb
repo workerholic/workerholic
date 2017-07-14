@@ -1,12 +1,18 @@
 require_relative '../lib/job'
 
-class JobTest
+class JobTestFast
   include Workerholic::Job
 
-  def perform(str)
-    puts "test_string to be passed to redis Yo. Plus that string #{str}"
+  def perform(str, num)
+    puts "#{num} - #{str}"
   end
 end
 
-# Workerholic::Runner.run({ klass: JobTest, args: ["something"] })
-JobTest.new.perform_async('hello world')
+class JobTestSlow
+  include Workerholic::Job
+
+  def perform(str, num)
+    sleep(1)
+    puts "#{num} - #{str}"
+  end
+end
