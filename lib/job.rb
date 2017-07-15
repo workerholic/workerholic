@@ -3,6 +3,8 @@ require_relative 'job_serializer'
 
 module Workerholic
   module Job
+    # TODO raise error if the number of args passed to perform_async is not the same as perform
+
     def perform_async(*args)
       job = [self.class, args]
       serialized_job = JobSerializer.serialize(job)
@@ -10,7 +12,7 @@ module Workerholic
     end
 
     def queue_name
-      'default'      
+      'default'
     end
   end
 end

@@ -2,22 +2,7 @@ require 'redis'
 
 require_relative '../spec_helper'
 require_relative '../../lib/job'
-
-class SimpleJobTest
-  include Workerholic::Job
-
-  def perform(s)
-    s
-  end
-end
-
-class ComplexJobTest
-  include Workerholic::Job
-
-  def perform(arg1, arg2, arg3)
-    [arg1, arg2, arg3]
-  end
-end
+require_relative '../helpers/job_tests.rb'
 
 describe 'it successfully creates a job and enqueues it in Redis' do
   let(:redis) { Redis.new }
@@ -25,7 +10,7 @@ describe 'it successfully creates a job and enqueues it in Redis' do
   after { redis.del('test_queue') }
 
   it 'enqueues a simple job in redis' do
-    SimpleJobTest.new.perform_async('test_queue', 'test job')
+    SimpleJobTest.new.perform_async('test job')
     serialized_job = redis.lpop('test_queue')
     job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
@@ -33,7 +18,7 @@ describe 'it successfully creates a job and enqueues it in Redis' do
   end
 
   it 'enqueues a complex job in redis' do
-    ComplexJobTest.new.perform_async('test_queue', 'test job', { a: 1, b: 2 }, [1, 2, 3])
+    ComplexJobTest.new.perform_async('test job', { a: 1, b: 2 }, [1, 2, 3])
     serialized_job = redis.lpop('test_queue')
     job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
