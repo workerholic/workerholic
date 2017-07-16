@@ -11,9 +11,10 @@ module Workerholic
     def process
       components = JobSerializer.deserialize(@serialized_job)
       job_class, job_args = components.first, components.last
+
       begin
         job_class.new.perform(*job_args)
-      rescue StandardError => e
+      rescue Exception => e
         raise JobProcessingError, e.message
       end
     end
