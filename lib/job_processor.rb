@@ -9,8 +9,8 @@ module Workerholic
     end
 
     def process
-      components = JobSerializer.deserialize(@serialized_job)
-      job_class, job_args = components.first, components.last
+      job_info = JobSerializer.deserialize(@serialized_job)
+      job_class, job_args = job_info[:class], job_info[:arguments]
 
       begin
         job_class.new.perform(*job_args)
