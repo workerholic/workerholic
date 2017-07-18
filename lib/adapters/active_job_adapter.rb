@@ -2,7 +2,12 @@ module ActiveJob
   module QueueAdapters
     class WorkerholicAdapter
       def enqueue(job)
-        JobWrapper.new.perform_async job.serialize
+        job_data = job.serialize
+
+        JobWrapper.new.perform_async(
+          class: job_data[:job_class],
+          arguments: job_data[:arguments]
+        )
       end
 
       class JobWrapper
