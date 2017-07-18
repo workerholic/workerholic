@@ -16,7 +16,6 @@ module Workerholic
       @thread = Thread.new do
         while !dead
           serialized_job = poll
-          # process(serialized_job)
           JobProcessor.new(serialized_job).process
         end
       end
