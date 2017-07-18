@@ -17,7 +17,7 @@ end
 
 describe Workerholic::JobProcessor do
   it 'processes a simple job' do
-    serialized_job = Workerholic::JobSerializer.serialize([SimpleJobTest, ['test job']])
+    serialized_job = Workerholic::JobSerializer.serialize({ class: SimpleJobTest, arguments: ['test job'] })
     job_processor = Workerholic::JobProcessor.new(serialized_job)
     simple_job_result = SimpleJobTest.new.perform('test job')
 
@@ -25,7 +25,7 @@ describe Workerholic::JobProcessor do
   end
 
   it 'processes a complex job' do
-    serialized_job = Workerholic::JobSerializer.serialize([ComplexJobTest, ['test job', { a: 1, b: 2 }, [1, 2, 3]]])
+    serialized_job = Workerholic::JobSerializer.serialize({ class: ComplexJobTest, arguments: ['test job', { a: 1, b: 2 }, [1, 2, 3]] })
     job_processor = Workerholic::JobProcessor.new(serialized_job)
     complex_job_result = ComplexJobTest.new.perform('test job', { a: 1, b: 2 }, [1, 2, 3])
 
@@ -33,7 +33,7 @@ describe Workerholic::JobProcessor do
   end
 
   it 'raises a custom error when processing a job with error' do
-    serialized_job = Workerholic::JobSerializer.serialize([SimpleJobTestWithError, []])
+    serialized_job = Workerholic::JobSerializer.serialize({ class: SimpleJobTestWithError, arguments: [] })
     job_processor = Workerholic::JobProcessor.new(serialized_job)
 
     expect { job_processor.process }.to raise_error(Workerholic::JobProcessingError)

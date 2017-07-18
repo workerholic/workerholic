@@ -15,7 +15,7 @@ describe 'enqueuing jobs to Redis' do
       serialized_job = redis.lpop('test_queue')
       job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
-      expect(job_from_redis).to eq([SimpleJobTest, ['test job']])
+      expect(job_from_redis).to eq({ class: SimpleJobTest, arguments: ['test job'] })
     end
 
     it 'enqueues a complex job in redis' do
@@ -23,7 +23,7 @@ describe 'enqueuing jobs to Redis' do
       serialized_job = redis.lpop('test_queue')
       job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
-      expect(job_from_redis).to eq([ComplexJobTest, ['test job', { a: 1, b: 2 }, [1, 2, 3]]])
+      expect(job_from_redis).to eq({ class: ComplexJobTest, arguments: ['test job', { a: 1, b: 2 }, [1, 2, 3]] })
     end
   end
 
