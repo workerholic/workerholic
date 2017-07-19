@@ -29,33 +29,27 @@ describe Workerholic::Worker do
 
   context '#work' do
     it 'polls a job from a thread' do
-      worker = Workerholic::Worker.new
+      queue = Workerholic::Queue.new('test_queue')
+      worker = Workerholic::Worker.new(queue)
 
       serialized_job = Workerholic::JobSerializer.serialize(job)
       redis.rpush('test_queue', serialized_job)
 
-      worker.stub(:poll) do
-        Workerholic::Queue.new('test_queue').dequeue
-      end
-
       worker.work
-      sleep(0.1)
+      sleep(0.01)
 
       expect(redis.exists('test_queue')).to eq(false)
     end
 
     it 'processes a job from a thread' do
-      worker = Workerholic::Worker.new
+      queue = Workerholic::Queue.new('test_queue')
+      worker = Workerholic::Worker.new(queue)
 
       serialized_job = Workerholic::JobSerializer.serialize(job)
       redis.rpush('test_queue', serialized_job)
 
-      worker.stub(:poll) do
-        Workerholic::Queue.new('test_queue').dequeue
-      end
-
       worker.work
-      sleep(0.1)
+      sleep(0.01)
 
       expect(WorkerJobTest.check).to eq(1)
     end

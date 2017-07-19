@@ -25,7 +25,7 @@ describe 'dequeuing and processesing of jobs' do
     # serialized_job = Workerholic::JobSerializer.serialize([SimpleJobTest, ['test job']])
     # redis.rpush('test_queue', serialized_job)
 
-    # Workerholic::Manager.new(1).start
+    # Workerholic::Manager.new.start
     # expect(redis.exists('test_queue')).to eq(false)
     # SimpleJobTest.reset
   end
