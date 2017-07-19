@@ -21,13 +21,11 @@ module Workerholic
         finished_job
       rescue Exception => e
         job_stats[:errors].push(e)
+        job_stats[:retry_count] += 1
         raise JobProcessingError, e.message
       end
 
       # Push job into some collection
-      # def record
-      #
-      # end
     end
   end
 end
