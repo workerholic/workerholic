@@ -1,14 +1,15 @@
 require 'yaml'
 
 require_relative 'job_processor'
+require_relative 'queue'
 
 module Workerholic
   # handles job execution in threads
   class Worker
-    attr_reader :queue, :dead, :thread
+    attr_reader :dead, :thread
 
-    def initialize
-      @queue = Queue.new
+    def initialize(queue=Queue.new)
+      @queue = queue
       @dead = false
     end
 
@@ -22,7 +23,7 @@ module Workerholic
     end
 
     def join
-      @thread.join
+      thread.join
     end
 
     private
