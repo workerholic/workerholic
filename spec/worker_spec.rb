@@ -1,10 +1,11 @@
 require 'redis'
+require 'pry'
 
 require_relative 'spec_helper'
 require_relative '../lib/worker'
 require_relative '../lib/queue'
 
-class SimpleJobTest
+class WorkerJobTest
   @@job_status = 0
 
   def self.reset
@@ -15,17 +16,17 @@ class SimpleJobTest
     @@job_status
   end
 
-  def perform
+  def perform(str)
     @@job_status += 1
   end
 end
 
 describe Workerholic::Worker do
   let(:redis) { Redis.new }
-  let(:job) { { class: SimpleJobTest, arguments: [] } }
+  let(:job) { { class: WorkerJobTest, arguments: ['test'] } }
 
   before { redis.del('test_queue') }
-  before { SimpleJobTest.reset }
+  before { WorkerJobTest.reset }
 
   context '#work' do
     it 'polls a job from a thread' do
@@ -40,7 +41,6 @@ describe Workerholic::Worker do
 
       worker.work
       sleep(0.1)
-      worker.thread.kill
 
       expect(redis.exists('test_queue')).to eq(false)
     end
@@ -51,16 +51,14 @@ describe Workerholic::Worker do
       serialized_job = Workerholic::JobSerializer.serialize(job)
       redis.rpush('test_queue', serialized_job)
 
-
       worker.stub(:poll) do
         Workerholic::Queue.new('test_queue').dequeue
       end
 
       worker.work
       sleep(0.1)
-      worker.thread.kill
 
-      expect(SimpleJobTest.check).to eq(true)
+      expect(WorkerJobTest.check).to eq(1)
     end
   end
 end
