@@ -16,21 +16,11 @@ module Workerholic
 
       serialized_job = JobSerializer.serialize(job)
 
-      if delayed_job?
-        SortedSet.new.add(serialized_job)
-      else
-        Queue.new(queue_name).enqueue(serialized_job)
-      end
+      Queue.new(queue_name).enqueue(serialized_job)
     end
 
     def queue_name
-      'default'
-    end
-
-    private
-
-    def delayed_job?(args)
-      args.any? { |arg| arg == 'delayed_job' }
+      'workerholic:main'
     end
   end
 end

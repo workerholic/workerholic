@@ -21,6 +21,18 @@ module Workerholic
       def pop(key, timeout = 0)
         redis.blpop(key, timeout)
       end
+
+      def add_to_set(key, score, value)
+        redis.zadd(key, score, value)
+      end
+
+      def peek(key)
+        redis.zrange(key, 0, 0, with_scores: true).first
+      end
+
+      def remove_from_set(key, score)
+        redis.zremrangebyscore(key, score, score).first
+      end
     end
   end
 end
