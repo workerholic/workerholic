@@ -10,13 +10,22 @@ module Workerholic
 
     def process
       job_info = JobSerializer.deserialize(@serialized_job)
-      job_class, job_args = job_info[:class], job_info[:arguments]
+      job_class = job_info[:class]
+      job_args = job_info[:arguments]
+      job_stats = job_info[:statistics]
 
       begin
-        job_class.new.perform(*job_args)
+        job_stats[:started_at] = Time.now
+        finished_job = job_class.new.perform(*job_args)
+        job_stats[:completed_at] = Time.now
+        finished_job
       rescue Exception => e
+        job_stats[:errors].push(e)
+        job_stats[:retry_count] += 1
         raise JobProcessingError, e.message
       end
+
+      # Push job into some collection
     end
   end
 end

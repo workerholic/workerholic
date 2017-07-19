@@ -14,6 +14,7 @@ module Workerholic
         statistics: Statistics.new.to_hash
       }
 
+      job[:statistics][:enqueued_at] = Time.now.to_f
       serialized_job = JobSerializer.serialize(job)
 
       Queue.new(queue_name).enqueue(serialized_job)

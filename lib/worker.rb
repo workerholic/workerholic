@@ -8,8 +8,8 @@ module Workerholic
   class Worker
     attr_reader :dead, :thread
 
-    def initialize
-      @queue = Queue.new
+    def initialize(queue=Queue.new)
+      @queue = queue
       @dead = false
     end
 
