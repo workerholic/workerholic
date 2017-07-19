@@ -14,6 +14,7 @@ module Workerholic
         statistics: Statistics.new.to_hash
       }
 
+      job[:statistics][:enqueued_at] = Time.now.to_f
       serialized_job = JobSerializer.serialize(job)
 
       if delayed_job?
@@ -29,7 +30,7 @@ module Workerholic
 
     private
 
-    def delayed_job?(args)
+    def delayed_job?(*args)
       args.any? { |arg| arg == 'delayed_job' }
     end
   end
