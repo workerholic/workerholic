@@ -15,7 +15,20 @@ describe 'enqueuing jobs to Redis' do
       serialized_job = redis.lpop('test_queue')
       job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
-      expect(job_from_redis).to eq({ class: SimpleJobTest, arguments: ['test job'] })
+      expect(job_from_redis).to eq({ class: SimpleJobTest,
+                                     arguments: ['test job'],
+                                     statistics: {
+                                       execute_on: job_from_redis[:statistics][:execute_on],
+                                       enqueued_on: job_from_redis[:statistics][:enqueued_on],
+                                       finished: nil,
+                                       retries: 0,
+                                       errors: [],
+                                       success: false,
+                                       time_start: nil,
+                                       time_completed: nil,
+                                       completed: nil
+                                     }
+                                  })
     end
 
     it 'enqueues a complex job in redis' do
@@ -23,7 +36,20 @@ describe 'enqueuing jobs to Redis' do
       serialized_job = redis.lpop('test_queue')
       job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
-      expect(job_from_redis).to eq({ class: ComplexJobTest, arguments: ['test job', { a: 1, b: 2 }, [1, 2, 3]] })
+      expect(job_from_redis).to eq({ class: ComplexJobTest,
+                                     arguments: ['test job', { a: 1, b: 2 }, [1, 2, 3]],
+                                     statistics: {
+                                       execute_on: job_from_redis[:statistics][:execute_on],
+                                       enqueued_on: job_from_redis[:statistics][:enqueued_on],
+                                       finished: nil,
+                                       retries: 0,
+                                       errors: [],
+                                       success: false,
+                                       time_start: nil,
+                                       time_completed: nil,
+                                       completed: nil
+                                     }
+                                  })
     end
   end
 
