@@ -5,23 +5,6 @@ require_relative '../../lib/job'
 require_relative '../../lib/manager'
 
 
-class SimpleJobTest
-  include Workerholic::Job
-
-  @@job_status = false
-
-  def self.reset
-    @@job_status = false
-  end
-
-  def perform
-    @@job_status = true
-  end
-
-  def queue_name
-    'test_queue'
-  end
-end
 
 class ComplexJobTest
   include Workerholic::Job

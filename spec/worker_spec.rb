@@ -1,29 +1,66 @@
+require 'redis'
+
 require_relative 'spec_helper'
 require_relative '../lib/worker'
+require_relative '../lib/queue'
 
+class SimpleJobTest
+  @@job_status = 0
+
+  def self.reset
+    @@job_status = 0
+  end
+
+  def self.check
+    @@job_status
+  end
+
+  def perform
+    @@job_status += 1
+  end
+end
 
 describe Workerholic::Worker do
-  let(:worker) { Workerholic::Worker.new }
-  let(:job) { 'test job' }
+  let(:redis) { Redis.new }
+  let(:job) { { class: SimpleJobTest, arguments: [] } }
+
+  before { redis.del('test_queue') }
+  before { SimpleJobTest.reset }
 
   context '#work' do
-    it 'can work' do
-      allow(worker).to receive(:work)
-      worker.work
-    end
-
     it 'polls a job from a thread' do
-      # Thread.stub(:new)
-      # expect(Thread).to receive(:new).and_yield
-      # worker.stub(:poll) { job }
-      # worker.stub(:process) { nil }
-      # expect(worker).to receive(:poll).and_return('test')
+      worker = Workerholic::Worker.new
 
-      # worker.work
+      serialized_job = Workerholic::JobSerializer.serialize(job)
+      redis.rpush('test_queue', serialized_job)
+
+      worker.stub(:poll) do
+        Workerholic::Queue.new('test_queue').dequeue
+      end
+
+      worker.work
+      sleep(0.1)
+      worker.thread.kill
+
+      expect(redis.exists('test_queue')).to eq(false)
     end
 
     it 'processes a job from a thread' do
+      worker = Workerholic::Worker.new
 
+      serialized_job = Workerholic::JobSerializer.serialize(job)
+      redis.rpush('test_queue', serialized_job)
+
+
+      worker.stub(:poll) do
+        Workerholic::Queue.new('test_queue').dequeue
+      end
+
+      worker.work
+      sleep(0.1)
+      worker.thread.kill
+
+      expect(SimpleJobTest.check).to eq(true)
     end
   end
 end
