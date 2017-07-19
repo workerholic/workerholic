@@ -14,7 +14,7 @@ class ComplexJobTest
   end
 
   def queue_name
-    'test_queue'
+    'workerholic:test:queue'
   end
 end
 
@@ -23,10 +23,10 @@ describe 'dequeuing and processesing of jobs' do
 
   it 'successfully dequeues and process a simple job' do
     # serialized_job = Workerholic::JobSerializer.serialize([SimpleJobTest, ['test job']])
-    # redis.rpush('test_queue', serialized_job)
+    # redis.rpush('workerholic:test:queue', serialized_job)
 
     # Workerholic::Manager.new.start
-    # expect(redis.exists('test_queue')).to eq(false)
+    # expect(redis.exists('workerholic:test:queue')).to eq(false)
     # SimpleJobTest.reset
   end
 
