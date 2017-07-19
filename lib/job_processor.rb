@@ -16,12 +16,11 @@ module Workerholic
 
       begin
         job_stats[:started_at] = Time.now
-        # require 'pry'; binding.pry
         finished_job = job_class.new.perform(*job_args)
         job_stats[:completed_at] = Time.now
         finished_job
       rescue Exception => e
-        # job_stats[:errors].push(e)
+        job_stats[:errors].push(e)
         raise JobProcessingError, e.message
       end
 
