@@ -18,15 +18,11 @@ describe 'enqueuing jobs to Redis' do
       expect(job_from_redis).to eq({ class: SimpleJobTest,
                                      arguments: ['test job'],
                                      statistics: {
-                                       execute_on: job_from_redis[:statistics][:execute_on],
-                                       enqueued_on: job_from_redis[:statistics][:enqueued_on],
-                                       finished: nil,
-                                       retries: 0,
+                                       enqueued_at: job_from_redis[:statistics][:enqueued_at],
+                                       retry_count: 0,
                                        errors: [],
-                                       success: false,
-                                       time_start: nil,
-                                       time_completed: nil,
-                                       completed: nil
+                                       started_at: nil,
+                                       completed_at: nil
                                      }
                                   })
     end
@@ -39,15 +35,11 @@ describe 'enqueuing jobs to Redis' do
       expect(job_from_redis).to eq({ class: ComplexJobTest,
                                      arguments: ['test job', { a: 1, b: 2 }, [1, 2, 3]],
                                      statistics: {
-                                       execute_on: job_from_redis[:statistics][:execute_on],
-                                       enqueued_on: job_from_redis[:statistics][:enqueued_on],
-                                       finished: nil,
-                                       retries: 0,
+                                       enqueued_at: job_from_redis[:statistics][:enqueued_at],
+                                       retry_count: 0,
                                        errors: [],
-                                       success: false,
-                                       time_start: nil,
-                                       time_completed: nil,
-                                       completed: nil
+                                       started_at: nil,
+                                       completed_at: nil
                                      }
                                   })
     end
