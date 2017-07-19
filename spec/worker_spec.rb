@@ -1,5 +1,4 @@
 require 'redis'
-require 'pry'
 
 require_relative 'spec_helper'
 require_relative '../lib/worker'
@@ -16,14 +15,14 @@ class WorkerJobTest
     @@job_status
   end
 
-  def perform(str)
+  def perform
     @@job_status += 1
   end
 end
 
 describe Workerholic::Worker do
   let(:redis) { Redis.new }
-  let(:job) { { class: WorkerJobTest, arguments: ['test'] } }
+  let(:job) { { class: WorkerJobTest, arguments: [] } }
 
   before { redis.del('test_queue') }
   before { WorkerJobTest.reset }
