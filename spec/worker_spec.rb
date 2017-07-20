@@ -21,6 +21,14 @@ class WorkerJobTest
   end
 end
 
+def expect_during(duration_in_secs, target)
+  timeout = Time.now.to_f + duration_in_secs
+
+  while yield != target && Time.now.to_f <= timeout
+    sleep(0.001)
+  end
+end
+
 describe Workerholic::Worker do
   let(:redis) { Redis.new }
   let(:job) do
@@ -31,34 +39,32 @@ describe Workerholic::Worker do
     }
   end
 
-  before { redis.del('test_queue') }
+  before { redis.del('workerholic:test:queue') }
   before { WorkerJobTest.reset }
 
   context '#work' do
     it 'polls a job from a thread' do
-      queue = Workerholic::Queue.new('test_queue')
+      queue = Workerholic::Queue.new('workerholic:test:queue')
       worker = Workerholic::Worker.new(queue)
 
       serialized_job = Workerholic::JobSerializer.serialize(job)
-      redis.rpush('test_queue', serialized_job)
+      redis.rpush('workerholic:test:queue', serialized_job)
 
       worker.work
-      sleep(0.01)
 
-      expect(redis.exists('test_queue')).to eq(false)
+      expect_during(1, false) { redis.exists('workerholic:test:queue') }
     end
 
     it 'processes a job from a thread' do
-      queue = Workerholic::Queue.new('test_queue')
+      queue = Workerholic::Queue.new('workerholic:test:queue')
       worker = Workerholic::Worker.new(queue)
 
       serialized_job = Workerholic::JobSerializer.serialize(job)
-      redis.rpush('test_queue', serialized_job)
+      redis.rpush('workerholic:test:queue', serialized_job)
 
       worker.work
-      sleep(0.01)
 
-      expect(WorkerJobTest.check).to eq(1)
+      expect_during(1, 1) { WorkerJobTest.check }
     end
   end
 end
