@@ -13,6 +13,10 @@ module Workerholic
         redis.ping
       end
 
+      def empty?(key)
+        redis.llen(key)
+      end
+
       def push(key, value)
         redis.rpush(key, value)
       end

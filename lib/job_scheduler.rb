@@ -15,27 +15,26 @@ module Workerholic
 
     def start
       @scheduler_thread = Thread.new do
+        while alive
+          poll_scheduled
+        end
       end
     end
 
     def job_due?
-      job = sorted_set.peek
-      Time.now.to_f >= job.last
-    end
-
-    def empty_set?
-      sorted_set.empty?
+      job_execution_time = sorted_set.peek.last
+      Time.now.to_f >= job_execution_time
     end
 
     def schedule(serialized_job, score)
       sorted_set.add(serialized_job, score)
     end
 
-    def poll_scheduled(score)
+    def poll_scheduled
       if job_due?
-        job = sorted_set.peek
-        sorted_set.remove(score)
-        queue.enqueue(job)
+        serialized_job, job_execution_time = sorted_set.peek
+        sorted_set.remove(job_execution_time)
+        queue.enqueue(serialized_job)
       else
         sleep(5)
       end

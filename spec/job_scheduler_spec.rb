@@ -6,12 +6,6 @@ require_relative 'spec_helper'
 require_relative '../lib/job_scheduler'
 require_relative './helpers/job_tests.rb'
 
-def expect_during(duration_in_sec, target)
-  while yield != target
-    sleep(0.001)
-  end
-end
-
 describe Workerholic::JobScheduler do
   context 'with non-empty set' do
     let(:scheduler) { Workerholic::JobScheduler.new('workerholic:test:scheduled_jobs') }
@@ -32,15 +26,27 @@ describe Workerholic::JobScheduler do
       expect(scheduler.job_due?).to eq(true)
     end
 
-    xit 'fetches a job from a sorted set' do
+    it 'fetches a job from a sorted set' do
       score = Time.now.to_f
-      scheduler.schedule(serialized_job, score - 1)
-      scheduler.poll_scheduled(score)
+      scheduler.schedule(serialized_job, score)
+      scheduler.poll_scheduled
 
-      expect(scheduler.empty_set?).to eq(true)
+      expect(scheduler.sorted_set.empty?).to eq(true)
     end
 
-    it 'enqueues due job to the main queue'
-    it 'checks the sorted set every N seconds'
+    it 'enqueues due job to the main queue' do
+      score = Time.now.to_f
+      scheduler.schedule(serialized_job, score)
+      scheduler.poll_scheduled
+
+      queue = scheduler.queue
+
+      expect(queue.empty?).to eq(false)
+      expect(queue.dequeue).to eq(serialized_job)
+    end
+
+    it 'checks the sorted set every N seconds' do
+      
+    end
   end
 end
