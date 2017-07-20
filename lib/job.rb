@@ -22,7 +22,9 @@ module Workerholic
     end
 
     def perform_async(*args)
-      raise ArgumentError if self.method(:perform).arity != args.size
+      if self.method(:perform).arity != args.size || delayed_job?
+        raise ArgumentError
+      end
 
       queue_name = specified_job_options[:queue_name]
 

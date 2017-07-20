@@ -62,7 +62,8 @@ describe Workerholic::JobProcessor do
     }
     serialized_job = Workerholic::JobSerializer.serialize(job)
 
-    Workerholic::JobRetry.stub(:new)
+    allow(Workerholic::JobRetry).to receive(:new)
+
     expect(Workerholic::JobRetry).to receive(:new)
 
     Workerholic::JobProcessor.new(serialized_job).process
