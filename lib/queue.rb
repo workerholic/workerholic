@@ -5,7 +5,7 @@ module Workerholic
   class Queue
     attr_reader :storage, :name
 
-    def initialize(name = 'workerholic:main')
+    def initialize(name = 'workerholic:queue:main')
       @storage = Storage::RedisWrapper.new
       @name = name
     end
