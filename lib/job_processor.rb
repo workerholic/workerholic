@@ -4,8 +4,6 @@ require_relative 'job_retry'
 require_relative 'log_manager'
 
 module Workerholic
-  class JobProcessingError < StandardError; end
-
   class JobProcessor
     def initialize(serialized_job)
       @serialized_job = serialized_job

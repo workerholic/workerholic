@@ -14,7 +14,6 @@ module Workerholic
       def job_options(params={})
         define_method(:specified_job_options) do
           {
-            delayed: params[:delayed],
             execute_at: params[:execute_at],
             queue_name: params[:queue_name] || 'workerholic:queue:main'
           }
@@ -23,27 +22,30 @@ module Workerholic
     end
 
     def perform_async(*args)
-      if self.method(:perform).arity != args.size || delayed_job?
-        raise ArgumentError
-      end
-
-      queue_name = specified_job_options[:queue_name]
-
-      job = {
-        class: self.class,
-        arguments: args,
-        statistics: Statistics.new.to_hash
-      }
-
-      job[:statistics][:enqueued_at] = Time.now.to_f
-      serialized_job = JobSerializer.serialize(job)
+      serialized_job, queue_name = prepare_job_for_enqueueing(args)
 
       Queue.new(queue_name).enqueue(serialized_job)
     end
 
-
     def perform_delayed(*args)
-      if self.method(:perform).arity != args.size || !delayed_job?
+      delay_in_sec = verify_delay(args[0])
+      serialized_job, queue_name = prepare_job_for_enqueueing(args)
+
+      JobScheduler.new(set_name: queue_name).schedule(serialized_job, delay_in_sec)
+    end
+
+    private
+
+    def verify_delay(delay_arg)
+      if delay_arg.is_a? Numeric
+        delay_arg
+      else
+        raise ArgumentError, 'Delay argument has to be of Numeric type'
+      end
+    end
+
+    def prepare_job_for_enqueueing(args)
+      if self.method(:perform).arity != args.size
         raise ArgumentError
       end
 
@@ -56,15 +58,7 @@ module Workerholic
       }
 
       job[:statistics][:enqueued_at] = Time.now.to_f
-      serialized_job = JobSerializer.serialize(job)
-
-      JobScheduler.new(queue_name).schedule(serialized_job)
-    end
-
-    private
-
-    def delayed_job?
-      specified_job_options[:delayed] == true
+      [JobSerializer.serialize(job), queue_name]
     end
   end
 end
