@@ -33,7 +33,7 @@ describe Workerholic::Worker do
   end
 
   before do
-    redis.del('workerholic:test:queue')
+    redis.del(TEST_SCHEDULED_SORTED_SET)
     WorkerJobTest.reset
   end
 

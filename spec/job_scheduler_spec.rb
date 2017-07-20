@@ -5,19 +5,6 @@ require_relative 'spec_helper'
 require_relative '../lib/job_scheduler'
 require_relative './helpers/job_tests.rb'
 
-def expect_during(duration_in_secs, target)
-  timeout = Time.now.to_f + duration_in_secs
-
-  while Time.now.to_f <= timeout
-    result = yield
-    return if result == target
-
-    sleep(0.001)
-  end
-
-  expect(result).to eq(target)
-end
-
 class SimpleDelayedJobTest
   include Workerholic::Job
   job_options queue_name: TEST_SCHEDULED_SORTED_SET
@@ -74,7 +61,7 @@ describe Workerholic::JobScheduler do
     it 'adds delayed job to the scheduled sorted set' do
       SimpleDelayedJobTest.new.perform_delayed(2, 'test arg')
 
-      expect_during(1, false) { scheduler.sorted_set.empty? }
+      expect(scheduler.sorted_set.empty?).to eq(false)
     end
 
     it 'raises an ArgumentError if perform_delayed first argument is not of Numeric type' do

@@ -5,7 +5,7 @@ require_relative './helpers/job_tests'
 
 class SimpleJobTestWithError
   include Workerholic::Job
-  job_options queue_name: 'workerholic:test:queue'
+  job_options queue_name: TEST_SCHEDULED_SORTED_SET
 
   def perform
     raise Exception
