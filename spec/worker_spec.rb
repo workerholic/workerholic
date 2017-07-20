@@ -22,7 +22,9 @@ class WorkerJobTest
 end
 
 def expect_during(duration_in_secs, target)
-  while yield != target
+  timeout = Time.now.to_f + duration_in_secs
+
+  while yield != target && Time.now.to_f <= timeout
     sleep(0.001)
   end
 end
