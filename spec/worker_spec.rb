@@ -21,6 +21,14 @@ class WorkerJobTest
   end
 end
 
+def expect_during(duration_in_secs, target)
+  timeout = Time.now.to_f + duration_in_secs
+
+  while yield != target && Time.now.to_f <= timeout
+    sleep(0.001)
+  end
+end
+
 describe Workerholic::Worker do
   let(:redis) { Redis.new }
   let(:job) do
@@ -43,9 +51,8 @@ describe Workerholic::Worker do
       redis.rpush('workerholic:test:queue', serialized_job)
 
       worker.work
-      sleep(0.01)
 
-      expect(redis.exists('workerholic:test:queue')).to eq(false)
+      expect_during(1, false) { redis.exists('workerholic:test:queue') }
     end
 
     it 'processes a job from a thread' do
@@ -56,9 +63,8 @@ describe Workerholic::Worker do
       redis.rpush('workerholic:test:queue', serialized_job)
 
       worker.work
-      sleep(0.01)
 
-      expect(WorkerJobTest.check).to eq(1)
+      expect_during(1, 1) { WorkerJobTest.check }
     end
   end
 end
