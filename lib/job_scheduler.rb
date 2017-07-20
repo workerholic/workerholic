@@ -3,31 +3,27 @@ require_relative 'queue'
 
 module Workerholic
   class JobScheduler
-    attr_reader :sorted_set, :set_name, :queue
+    attr_reader :sorted_set, :queue, :scheduler_thread
     attr_accessor :alive
 
     def initialize(opts={})
       @sorted_set = SortedSet.new(opts[:set_name] || 'workerholic:scheduled_jobs')
-      @set_name = set_name
       @queue = Queue.new(opts[:queue_name] || 'workerholic:main')
       @alive = true
     end
 
     def start
       @scheduler_thread = Thread.new do
-        while alive
-          enqueue_due_jobs
-        end
+        enqueue_due_jobs while alive
       end
     end
 
     def job_due?
-      job = sorted_set.peek
+      scheduled_job = sorted_set.peek
+      return false unless scheduled_job
 
-      if job
-        job_execution_time = job.last
-        Time.now.to_f >= job_execution_time
-      end
+      job_execution_time = scheduled_job.last
+      Time.now.to_f >= job_execution_time
     end
 
     def schedule(serialized_job, score)
@@ -48,6 +44,10 @@ module Workerholic
 
     def join
       scheduler_thread.join
+    end
+
+    def kill
+      self.alive = false
     end
   end
 end

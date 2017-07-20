@@ -12,9 +12,22 @@ module Workerholic
     end
 
     def start
-      workers.each(&:work)
-      scheduler.start.join
-      #workers.each(&:join)
+      begin
+        workers.each(&:work)
+        scheduler.start
+
+        workers.each(&:join)
+        scheduler.join
+      rescue SystemExit, Interrupt
+        shutdown
+        puts "\nWorkerholic is now shutting down..."
+        exit
+      end
+    end
+
+    def shutdown
+      workers.each(&:kill)
+      scheduler.kill
     end
   end
 end

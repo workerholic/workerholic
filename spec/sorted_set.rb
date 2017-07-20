@@ -10,9 +10,9 @@ require_relative './helpers/job_tests'
 describe Workerholic::SortedSet do
   let(:job) {{ class: SimpleJobTest, arguments: [] }}
   let(:redis) { Redis.new }
-  let(:sorted_set) { Workerholic::SortedSet.new('workerholic:test:scheduled_jobs') }
+  let(:sorted_set) { Workerholic::SortedSet.new(TEST_SCHEDULED_SORTED_SET) }
 
-  after { redis.del('workerholic:test:scheduled_jobs') }
+  after { redis.del(TEST_SCHEDULED_SORTED_SET) }
 
   it 'adds a serialized job to the sorted set' do
     serialized_job = Workerholic::JobSerializer.serialize(job)
@@ -27,6 +27,6 @@ describe Workerholic::SortedSet do
     sorted_set.add(score, serialized_job)
     sorted_set.remove(score)
 
-    expect(redis.zcount('workerholic:test:scheduled_jobs', 0, '+inf')).to eq(0)
+    expect(redis.zcount(TEST_SCHEDULED_SORTED_SET, 0, '+inf')).to eq(0)
   end
 end

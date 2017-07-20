@@ -6,16 +6,17 @@ require_relative 'sorted_set'
 module Workerholic
   module Job
     def self.included(base)
-      base.extend(ClassModules)
+      base.extend(ClassMethods)
+      base.job_options
     end
 
-    module ClassModules
+    module ClassMethods
       def job_options(params={})
         define_method(:specified_job_options) do
           {
             delayed: params[:delayed],
             execute_at: params[:execute_at],
-            queue_name: params[:queue_name]
+            queue_name: params[:queue_name] || 'workerholic:queue:main'
           }
         end
       end

@@ -11,7 +11,7 @@ class SimpleJobTestWithError
   end
 
   def queue_name
-    'workerholic:test:queue'
+    TEST_QUEUE
   end
 end
 

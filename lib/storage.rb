@@ -13,7 +13,7 @@ module Workerholic
         redis.ping
       end
 
-      def empty?(key)
+      def list_length(key)
         redis.llen(key)
       end
 
