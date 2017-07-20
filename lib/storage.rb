@@ -31,7 +31,11 @@ module Workerholic
       end
 
       def remove_from_set(key, score)
-        redis.zremrangebyscore(key, score, score).first
+        redis.zremrangebyscore(key, score, score)
+      end
+
+      def set_empty?(key)
+        redis.zcount(key, 0, '+inf')
       end
     end
   end
