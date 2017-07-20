@@ -1,4 +1,5 @@
 require_relative 'job_serializer'
+require_relative 'statistics'
 
 module Workerholic
   class JobProcessingError < StandardError; end
@@ -12,16 +13,17 @@ module Workerholic
       job_info = JobSerializer.deserialize(@serialized_job)
       job_class = job_info[:class]
       job_args = job_info[:arguments]
-      job_stats = job_info[:statistics]
+      job_stats = Workerholic::Statistics.new(job_info[:statistics])
 
       begin
-        job_stats[:started_at] = Time.now
+        job_stats.started_at = Time.now
         finished_job = job_class.new.perform(*job_args)
-        job_stats[:completed_at] = Time.now
+        job_stats.completed_at = Time.now
         finished_job
       rescue Exception => e
-        job_stats[:errors].push(e)
-        job_stats[:retry_count] += 1
+        require 'pry'; binding.pry
+        job_stats.errors.push(e)
+        job_stats.retry_count += 1
         raise JobProcessingError, e.message
       end
 
