@@ -1,6 +1,6 @@
 require_relative 'job_serializer'
-require_relative 'job_retry'
 require_relative 'statistics'
+require_relative 'job_retry'
 
 module Workerholic
   class JobProcessingError < StandardError; end
