@@ -19,12 +19,11 @@ module Workerholic
       job_stats = Workerholic::Statistics.new(job[:statistics])
 
       begin
-        job_stats[:started_at] = Time.now.to_f
+        job_stats.started_at = Time.now.to_f
         job_result = job_class.new.perform(*job_args)
-        completed_time = Time.now.to_f
-        job_stats[:completed_at] = completed_time
+        job_stats.completed_at = Time.now.to_f
 
-        LogManager.new('info').log("Your job from class #{job_class} was completed on #{completed_time}.")
+        LogManager.new('info').log("Your job from class #{job_class} was completed on #{job_stats.completed_at}.")
 
         job_result
       rescue Exception => e
