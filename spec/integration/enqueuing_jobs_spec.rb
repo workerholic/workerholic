@@ -6,12 +6,12 @@ require_relative '../helpers/job_tests.rb'
 
 describe 'enqueuing jobs to Redis' do
   let(:redis) { Redis.new }
-  before { redis.del('workerholic:test:queue') }
+  before { redis.del(TEST_QUEUE) }
 
   context 'successfully creates a job and enqueues it in Redis' do
     it 'enqueues a simple job in redis' do
       SimpleJobTest.new.perform_async('test job')
-      serialized_job = redis.lpop('workerholic:test:queue')
+      serialized_job = redis.lpop(TEST_QUEUE)
       job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
       expect(job_from_redis).to eq({
@@ -29,7 +29,7 @@ describe 'enqueuing jobs to Redis' do
 
     it 'enqueues a complex job in redis' do
       ComplexJobTest.new.perform_async('test job', { a: 1, b: 2 }, [1, 2, 3])
-      serialized_job = redis.lpop('workerholic:test:queue')
+      serialized_job = redis.lpop(TEST_QUEUE)
       job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
       expect(job_from_redis).to eq({
@@ -47,7 +47,7 @@ describe 'enqueuing jobs to Redis' do
 
     it 'enqueues a job with the right statistics' do
       SimpleJobTest.new.perform_async('test_job')
-      serialized_job = redis.lpop('workerholic:test:queue')
+      serialized_job = redis.lpop(TEST_QUEUE)
       job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
       expect(job_from_redis[:statistics][:enqueued_at]).to be < Time.now.to_f
