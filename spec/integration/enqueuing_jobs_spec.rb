@@ -6,41 +6,43 @@ require_relative '../helpers/job_tests.rb'
 
 describe 'enqueuing jobs to Redis' do
   let(:redis) { Redis.new }
-  before { redis.del('test_queue') }
+  before { redis.del('workerholic:test:queue') }
 
   context 'successfully creates a job and enqueues it in Redis' do
     it 'enqueues a simple job in redis' do
       SimpleJobTest.new.perform_async('test job')
-      serialized_job = redis.lpop('test_queue')
+      serialized_job = redis.lpop('workerholic:test:queue')
       job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
-      expect(job_from_redis).to eq({ class: SimpleJobTest,
-                                     arguments: ['test job'],
-                                     statistics: {
-                                       enqueued_at: job_from_redis[:statistics][:enqueued_at],
-                                       retry_count: 0,
-                                       errors: [],
-                                       started_at: nil,
-                                       completed_at: nil
-                                     }
-                                  })
+      expect(job_from_redis).to eq({
+        class: SimpleJobTest,
+        arguments: ['test job'],
+        statistics: {
+          enqueued_at: job_from_redis[:statistics][:enqueued_at],
+          retry_count: 0,
+          errors: [],
+          started_at: nil,
+          completed_at: nil
+        }
+      })
     end
 
     it 'enqueues a complex job in redis' do
       ComplexJobTest.new.perform_async('test job', { a: 1, b: 2 }, [1, 2, 3])
-      serialized_job = redis.lpop('test_queue')
+      serialized_job = redis.lpop('workerholic:test:queue')
       job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
-      expect(job_from_redis).to eq({ class: ComplexJobTest,
-                                     arguments: ['test job', { a: 1, b: 2 }, [1, 2, 3]],
-                                     statistics: {
-                                       enqueued_at: job_from_redis[:statistics][:enqueued_at],
-                                       retry_count: 0,
-                                       errors: [],
-                                       started_at: nil,
-                                       completed_at: nil
-                                     }
-                                  })
+      expect(job_from_redis).to eq({
+        class: ComplexJobTest,
+        arguments: ['test job', { a: 1, b: 2 }, [1, 2, 3]],
+        statistics: {
+          enqueued_at: job_from_redis[:statistics][:enqueued_at],
+          retry_count: 0,
+          errors: [],
+          started_at: nil,
+          completed_at: nil
+        }
+      })
     end
   end
 

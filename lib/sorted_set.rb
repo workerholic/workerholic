@@ -9,8 +9,8 @@ module Workerholic
       @name = name
     end
 
-    def add(serialized_job)
-      storage.add_to_set(name, serialized_job)
+    def add(serialized_job, score)
+      storage.add_to_set(name, score, serialized_job)
     end
 
     def remove

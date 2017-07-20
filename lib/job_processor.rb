@@ -1,5 +1,6 @@
 require_relative 'job_serializer'
 require_relative 'statistics'
+require_relative 'job_retry'
 
 module Workerholic
   class JobProcessingError < StandardError; end
@@ -21,8 +22,7 @@ module Workerholic
         job_stats.completed_at = Time.now
         finished_job
       rescue Exception => e
-        require 'pry'; binding.pry
-        job_stats.errors.push(e)
+        job_stats.errors.push[e.class, e.message])
         job_stats.retry_count += 1
         raise JobProcessingError, e.message
       end

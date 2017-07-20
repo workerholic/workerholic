@@ -31,29 +31,29 @@ describe Workerholic::Worker do
     }
   end
 
-  before { redis.del('test_queue') }
+  before { redis.del('workerholic:test:queue') }
   before { WorkerJobTest.reset }
 
   context '#work' do
     it 'polls a job from a thread' do
-      queue = Workerholic::Queue.new('test_queue')
+      queue = Workerholic::Queue.new('workerholic:test:queue')
       worker = Workerholic::Worker.new(queue)
 
       serialized_job = Workerholic::JobSerializer.serialize(job)
-      redis.rpush('test_queue', serialized_job)
+      redis.rpush('workerholic:test:queue', serialized_job)
 
       worker.work
       sleep(0.01)
 
-      expect(redis.exists('test_queue')).to eq(false)
+      expect(redis.exists('workerholic:test:queue')).to eq(false)
     end
 
     it 'processes a job from a thread' do
-      queue = Workerholic::Queue.new('test_queue')
+      queue = Workerholic::Queue.new('workerholic:test:queue')
       worker = Workerholic::Worker.new(queue)
 
       serialized_job = Workerholic::JobSerializer.serialize(job)
-      redis.rpush('test_queue', serialized_job)
+      redis.rpush('workerholic:test:queue', serialized_job)
 
       worker.work
       sleep(0.01)
