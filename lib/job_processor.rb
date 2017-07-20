@@ -1,4 +1,5 @@
 require_relative 'job_serializer'
+require_relative 'log_manager'
 
 module Workerholic
   class JobProcessingError < StandardError; end
@@ -17,7 +18,9 @@ module Workerholic
       begin
         job_stats[:started_at] = Time.now
         finished_job = job_class.new.perform(*job_args)
-        job_stats[:completed_at] = Time.now
+        completed_time = Time.now
+        job_stats[:completed_at] = completed_time
+        LogManager.new('info').log("Your job from class #{job_class} was completed on #{completed_time}.")
         finished_job
       rescue Exception => e
         job_stats[:errors].push(e)
