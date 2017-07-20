@@ -24,9 +24,14 @@ end
 def expect_during(duration_in_secs, target)
   timeout = Time.now.to_f + duration_in_secs
 
-  while yield != target && Time.now.to_f <= timeout
+  while Time.now.to_f <= timeout
+    result = yield
+    return if result == target
+
     sleep(0.001)
   end
+
+  expect(result).to eq(target)
 end
 
 describe Workerholic::Worker do
