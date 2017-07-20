@@ -16,14 +16,16 @@ describe Workerholic::SortedSet do
 
   it 'adds a serialized job to the sorted set' do
     serialized_job = Workerholic::JobSerializer.serialize(job)
-    expect(sorted_set.add(serialized_job)).to eq(true)
+    score = Time.now.to_f
+    expect(sorted_set.add(score, serialized_job)).to eq(true)
   end
 
   it 'removes due job from the sorted set' do
     serialized_job = Workerholic::JobSerializer.serialize(job)
+    score = Time.now.to_f
 
-    sorted_set.add(serialized_job)
-    sorted_set.remove
+    sorted_set.add(score, serialized_job)
+    sorted_set.remove(score)
 
     expect(redis.zcount('workerholic:test:scheduled_jobs', 0, '+inf')).to eq(0)
   end

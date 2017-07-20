@@ -13,12 +13,16 @@ module Workerholic
       storage.add_to_set(name, score, serialized_job)
     end
 
-    def remove
-      storage.remove_from_set(name)
+    def remove(score)
+      storage.remove_from_set(name, score)
     end
 
     def peek
-      storage.peek_set(name)
+      storage.peek(name)
+    end
+
+    def empty?
+      storage.set_empty?(name) == 0
     end
   end
 end

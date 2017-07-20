@@ -17,5 +17,9 @@ module Workerholic
     def dequeue
       storage.pop(name).last
     end
+
+    def empty?
+      storage.empty?(name) == 0
+    end
   end
 end

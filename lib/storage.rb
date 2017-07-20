@@ -13,6 +13,10 @@ module Workerholic
         redis.ping
       end
 
+      def empty?(key)
+        redis.llen(key)
+      end
+
       def push(key, value)
         redis.rpush(key, value)
       end
@@ -31,7 +35,11 @@ module Workerholic
       end
 
       def remove_from_set(key, score)
-        redis.zremrangebyscore(key, score, score).first
+        redis.zremrangebyscore(key, score, score)
+      end
+
+      def set_empty?(key)
+        redis.zcount(key, 0, '+inf')
       end
     end
   end
