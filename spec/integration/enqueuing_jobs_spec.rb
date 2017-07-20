@@ -44,6 +44,14 @@ describe 'enqueuing jobs to Redis' do
         }
       })
     end
+
+    it 'enqueues a job with the right statistics' do
+      SimpleJobTest.new.perform_async('test_job')
+      serialized_job = redis.lpop('workerholic:test:queue')
+      job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
+
+      expect(job_from_redis[:statistics][:enqueued_at]).to be < Time.now.to_f
+    end
   end
 
   context 'handles user errors' do
