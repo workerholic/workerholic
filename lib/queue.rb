@@ -5,7 +5,7 @@ module Workerholic
   class Queue
     attr_reader :storage, :name
 
-    def initialize(name = 'default')
+    def initialize(name = 'workerholic:main')
       @storage = Storage::RedisWrapper.new
       @name = name
     end
@@ -16,6 +16,10 @@ module Workerholic
 
     def dequeue
       storage.pop(name).last
+    end
+
+    def empty?
+      storage.list_length(name).zero?
     end
   end
 end

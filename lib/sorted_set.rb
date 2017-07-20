@@ -2,26 +2,27 @@ require_relative 'storage'
 
 module Workerholic
   class SortedSet
-    attr_reader :storage
+    attr_reader :storage, :name
 
-    def initialize
+    def initialize(name = 'workerholic:scheduled_jobs')
       @storage = Storage::RedisWrapper.new
+      @name = name
     end
 
-    def add(serialized_job)
-      storage.zadd(name, Time.now.to_f, serialized_job)
+    def add(serialized_job, score)
+      storage.add_to_set(name, score, serialized_job)
     end
 
-    def pop
-      job = storage.zrange(name, 0, 0, limit: [0, 1], with_scores: true).first
+    def remove(score)
+      storage.remove_from_set(name, score)
+    end
 
-      if Time.now.to_f >= job.last
-        if storage.zrem(latest_job.first)
-          latest_job.first
-        else
-          nil
-        end
-      end
+    def peek
+      storage.peek(name)
+    end
+
+    def empty?
+      storage.set_empty?(name) == 0
     end
   end
 end

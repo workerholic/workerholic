@@ -3,7 +3,7 @@ require_relative '../lib/storage'
 
 describe Workerholic::Storage do
   let(:storage) { Workerholic::Storage::RedisWrapper.new }
-  let(:queue_name) { 'test_queue' }
+  let(:queue_name) { TEST_QUEUE }
   let(:job) { 'test job' }
 
   it 'adds a job to the test queue' do

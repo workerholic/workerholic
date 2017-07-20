@@ -1,5 +1,6 @@
 require_relative 'job_serializer'
-require_relative 'log_manager'
+require_relative 'statistics'
+require_relative 'job_retry'
 
 module Workerholic
   class JobProcessingError < StandardError; end
@@ -10,10 +11,11 @@ module Workerholic
     end
 
     def process
-      job_info = JobSerializer.deserialize(@serialized_job)
-      job_class = job_info[:class]
-      job_args = job_info[:arguments]
-      job_stats = job_info[:statistics]
+      job = JobSerializer.deserialize(@serialized_job)
+
+      job_class = job[:class]
+      job_args = job[:arguments]
+      job_stats = Workerholic::Statistics.new(job[:statistics])
 
       begin
         job_stats[:started_at] = Time.now
@@ -23,9 +25,8 @@ module Workerholic
         LogManager.new('info').log("Your job from class #{job_class} was completed on #{completed_time}.")
         finished_job
       rescue Exception => e
-        job_stats[:errors].push(e)
-        job_stats[:retry_count] += 1
-        raise JobProcessingError, e.message
+        job_stats.errors.push([e.class, e.message])
+        JobRetry.new(job: job)
       end
 
       # Push job into some collection
