@@ -23,7 +23,7 @@ module Workerholic
       return false unless scheduled_job
 
       job_execution_time = scheduled_job.last
-      return Time.now.to_f >= job_execution_time
+      Time.now.to_f >= job_execution_time
     end
 
     def schedule(serialized_job, score)
