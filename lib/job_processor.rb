@@ -1,5 +1,6 @@
 require_relative 'job_serializer'
 require_relative 'job_retry'
+require_relative 'statistics'
 
 module Workerholic
   class JobProcessingError < StandardError; end
@@ -14,16 +15,16 @@ module Workerholic
 
       job_class = job[:class]
       job_args = job[:arguments]
-      job_stats = job[:statistics]
+      job_stats = Workerholic::Statistics.new(job[:statistics])
 
       begin
-        job_stats[:started_at] = Time.now
+        job_stats.started_at = Time.now.to_f
         job_result = job_class.new.perform(*job_args)
-        job_stats[:completed_at] = Time.now
+        job_stats.completed_at = Time.now.to_f
 
         job_result
       rescue Exception => e
-        job_stats[:errors].push([e.class, e.message])
+        job_stats.errors.push([e.class, e.message])
         JobRetry.new(job: job)
       end
 
