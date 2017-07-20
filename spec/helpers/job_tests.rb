@@ -8,7 +8,7 @@ class SimpleJobTest
   end
 
   def queue_name
-    "test_queue"
+    'workerholic:test:queue'
   end
 end
 
@@ -20,7 +20,7 @@ class ComplexJobTest
   end
 
   def queue_name
-    "test_queue"
+    'workerholic:test:queue'
   end
 end
 
