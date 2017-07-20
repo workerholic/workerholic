@@ -8,7 +8,7 @@ require_relative './helpers/job_tests.rb'
 
 describe Workerholic::JobScheduler do
   context 'with non-empty set' do
-    let(:scheduler) { Workerholic::JobScheduler.new('workerholic:test:scheduled_jobs') }
+    let(:scheduler) { Workerholic::JobScheduler.new(TEST_SCHEDULED_SORTED_SET) }
     let(:redis) { Redis.new }
     let(:serialized_job) {  Workerholic::JobSerializer.serialize({
                          class: ComplexJobTest,
@@ -17,7 +17,7 @@ describe Workerholic::JobScheduler do
                        })
     }
 
-    after { redis.del('workerholic:test:scheduled_jobs') }
+    after { redis.del(TEST_SCHEDULED_SORTED_SET) }
 
     it 'checks the time for scheduled job inside sorted set' do
       score = Time.now.to_f
@@ -46,7 +46,7 @@ describe Workerholic::JobScheduler do
     end
 
     it 'checks the sorted set every N seconds' do
-      
+
     end
   end
 end
