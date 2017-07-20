@@ -19,7 +19,7 @@ module Workerholic
     end
 
     def empty?
-      storage.empty?(name) == 0
+      storage.list_length(name).zero?
     end
   end
 end
