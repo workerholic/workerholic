@@ -19,12 +19,13 @@ describe Workerholic::JobScheduler do
   let(:redis) { Redis.new }
 
   context 'with non-empty set' do
-    let(:serialized_job) {  Workerholic::JobSerializer.serialize({
+    let(:serialized_job) do
+      Workerholic::JobSerializer.serialize({
         class: ComplexJobTest,
         arguments: ['test job', { a: 1, b: 2 }, [1, 2, 3]],
         statistics: Workerholic::Statistics.new.to_hash
       })
-    }
+    end
 
     after { redis.del(TEST_SCHEDULED_SORTED_SET) }
 
@@ -56,7 +57,7 @@ describe Workerholic::JobScheduler do
   end
 
   context 'with delayed job option specified' do
-    after { redis.del(TEST_SCHEDULED_SORTED_SET) }
+    before { redis.del(TEST_SCHEDULED_SORTED_SET) }
 
     it 'adds delayed job to the scheduled sorted set' do
       SimpleDelayedJobTest.new.perform_delayed(2, 'test arg')
