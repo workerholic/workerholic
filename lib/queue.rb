@@ -1,4 +1,5 @@
 require_relative 'storage'
+require_relative 'log_manager'
 
 module Workerholic
   # Handles background job enqueueing/dequeuing functionality
@@ -8,10 +9,12 @@ module Workerholic
     def initialize(name = 'workerholic:queue:main')
       @storage = Storage::RedisWrapper.new
       @name = name
+      @log_manager = LogManager.new
     end
 
     def enqueue(serialized_job)
       storage.push(name, serialized_job)
+      @log_manager.log('info', "Your job was placed in the #{name} queue on #{Time.now}.")
     end
 
     def dequeue
