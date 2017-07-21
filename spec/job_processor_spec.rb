@@ -14,11 +14,8 @@ end
 
 describe Workerholic::JobProcessor do
   it 'processes a simple job' do
-    serialized_job = Workerholic::JobSerializer.serialize({
-      class: SimpleJobTest,
-      arguments: ['test job'],
-      statistics: Workerholic::Statistics.new.to_hash
-    })
+    job = Workerholic::JobWrapper.new(class: SimpleJobTest, arguments: ['test job'])
+    serialized_job = Workerholic::JobSerializer.serialize(job)
 
     job_processor = Workerholic::JobProcessor.new(serialized_job)
     simple_job_result = SimpleJobTest.new.perform('test job')

@@ -13,23 +13,19 @@ module Workerholic
     def process
       job = JobSerializer.deserialize(@serialized_job)
 
-      job_class = job[:class]
-      job_args = job[:arguments]
-      job_stats = Workerholic::Statistics.new(job[:statistics])
-
       begin
-        job_stats.started_at = Time.now.to_f
-        job_result = job_class.new.perform(*job_args)
-        job_stats.completed_at = Time.now.to_f
+        job.statistics.started_at = Time.now.to_f
+        job_result = job.perform
+        job.statistics.completed_at = Time.now.to_f
 
-        @log_manager.log('info', "Your job from class #{job_class} was completed on #{job_stats.completed_at}.")
+        @log_manager.log('info', "Your job from class #{job.klass} was completed on #{job.statistics.completed_at}.")
 
         job_result
       rescue Exception => e
-        job_stats.errors.push([e.class, e.message])
+        job.statistics.errors.push([e.class, e.message])
         JobRetry.new(job: job)
 
-        @log_manager.log('error', "Your job from class #{job_class} was unsuccessful. Retrying in 10 seconds.")
+        @log_manager.log('error', "Your job from class #{job.class} was unsuccessful. Retrying in 10 seconds.")
       end
 
       # Push job into some collection
