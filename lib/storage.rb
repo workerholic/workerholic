@@ -3,44 +3,73 @@ require 'connection_pool'
 
 module Workerholic
   class Storage
-    class RedisNotRunningError < StandardError; end
-
     # Wraps redis-rb gem methods for enqueueing/dequeuing purposes
     class RedisWrapper
-      attr_reader :redis
+      attr_reader :redis, :retries
 
       def initialize
+        @retries = 0
         @redis = ConnectionPool::Wrapper.new(size: 12, timeout: 10) { Redis.connect }
         redis.ping
       end
 
       def list_length(key)
-        redis.llen(key)
+        execute { redis.llen(key) }
       end
 
       def push(key, value)
-        redis.rpush(key, value)
+        execute { redis.rpush(key, value) }
       end
 
       # blocking pop from Redis queue
       def pop(key, timeout = 1)
-        redis.blpop(key, timeout)
+        execute { redis.blpop(key, timeout) }
       end
 
       def add_to_set(key, score, value)
-        redis.zadd(key, score, value)
+        execute { redis.zadd(key, score, value) }
       end
 
       def peek(key)
-        redis.zrange(key, 0, 0, with_scores: true).first
+        execute { redis.zrange(key, 0, 0, with_scores: true).first }
       end
 
       def remove_from_set(key, score)
-        redis.zremrangebyscore(key, score, score)
+        execute { redis.zremrangebyscore(key, score, score) }
       end
 
       def set_empty?(key)
-        redis.zcount(key, 0, '+inf')
+        execute { redis.zcount(key, 0, '+inf') }
+      end
+
+      class RedisCannotRecover < Redis::CannotConnectError; end
+
+      private
+
+      def execute(&block)
+        begin
+          result = block.call
+          reset_retries
+        rescue Redis::CannotConnectError
+          # LogManager might want to output our retries to the user
+          @retries += 1
+          if retries_exhausted?
+            raise RedisCannotRecover, 'Redis reconnect retries exhausted. Main Workerholic thread will be terminated now.'
+          end
+
+          sleep(5)
+          retry
+        end
+
+        result
+      end
+
+      def retries_exhausted?
+        retries == 5
+      end
+
+      def reset_retries
+        @retries = 0
       end
     end
   end
