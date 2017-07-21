@@ -1,35 +1,31 @@
 require_relative 'spec_helper'
 require_relative '../lib/job_serializer'
 require_relative '../lib/statistics'
+require_relative '../lib/job_wrapper'
 
 class JobTest; end
 
 describe Workerholic::JobSerializer do
   it 'serializes a job' do
-    job = {
+    job = Workerholic::JobWrapper.new(
       class: JobTest,
-      arguments: ['some_args', [1, 2, 3], true, { a: 'y' }, 1, :symptom],
-      statistics: Workerholic::Statistics.new.to_hash
-    }
+      arguments: ['some_args', [1, 2, 3], true, { a: 'y' }, 1, :symptom]
+    )
 
     serialized_job = Workerholic::JobSerializer.serialize(job)
 
-    result = "---\n:class: !ruby/class 'JobTest'\n:arguments:\n- some_args\n- - 1\n  - 2\n  - 3\n- true\n- :a: y\n- 1\n- :symptom\n:statistics:\n  :enqueued_at: \n  :retry_count: 0\n  :errors: []\n  :started_at: \n  :completed_at: \n"
-
-    expect(serialized_job).to eq(result)
+    expect(serialized_job).to eq(YAML.dump(job.to_hash))
   end
 
   it 'deserializes a job' do
-    serialized_job = "---\n:class: !ruby/class 'JobTest'\n:arguments:\n- some_args\n- - 1\n  - 2\n  - 3\n- true\n- :a: y\n- 1\n- :symptom\n:statistics:\n  :enqueued_at: \n  :retry_count: 0\n  :errors: []\n  :started_at: \n  :completed_at: \n"
+    job = Workerholic::JobWrapper.new(
+      class: JobTest,
+      arguments: ['some_args', [1, 2, 3], true, { a: 'y' }, 1, :symptom]
+    )
 
+    serialized_job = YAML.dump(job.to_hash)
     deserialized_job = Workerholic::JobSerializer.deserialize(serialized_job)
 
-    result = {
-      class: JobTest,
-      arguments: ['some_args', [1, 2, 3], true, { a: 'y' }, 1, :symptom],
-      statistics: Workerholic::Statistics.new.to_hash
-    }
-
-    expect(deserialized_job).to eq(result)
+    expect(deserialized_job).to eq(job)
   end
 end

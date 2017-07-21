@@ -2,6 +2,7 @@ require_relative 'queue'
 require_relative 'job_serializer'
 require_relative 'statistics'
 require_relative 'sorted_set'
+require_relative 'job_wrapper'
 
 module Workerholic
   module Job
@@ -45,20 +46,12 @@ module Workerholic
     end
 
     def prepare_job_for_enqueueing(args)
-      if self.method(:perform).arity != args.size
-        raise ArgumentError
-      end
+      raise ArgumentError if self.method(:perform).arity != args.size
 
-      queue_name = specified_job_options[:queue_name]
+      job = JobWrapper.new(class: self.class, arguments: args)
+      job.statistics.enqueued_at = Time.now.to_f
 
-      job = {
-        class: self.class,
-        arguments: args,
-        statistics: Statistics.new.to_hash
-      }
-
-      job[:statistics][:enqueued_at] = Time.now.to_f
-      [JobSerializer.serialize(job), queue_name]
+      [JobSerializer.serialize(job), specified_job_options[:queue_name]]
     end
   end
 end
