@@ -14,17 +14,10 @@ describe 'enqueuing jobs to Redis' do
       serialized_job = redis.lpop(TEST_QUEUE)
       job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
-      expect(job_from_redis).to eq({
-        class: SimpleJobTest,
-        arguments: ['test job'],
-        statistics: {
-          enqueued_at: job_from_redis[:statistics][:enqueued_at],
-          retry_count: 0,
-          errors: [],
-          started_at: nil,
-          completed_at: nil
-        }
-      })
+      expected_job = Workerholic::JobWrapper.new(class: SimpleJobTest, arguments: ['test job'])
+      expected_job.statistics.enqueued_at = job_from_redis.statistics.enqueued_at
+
+      expect(job_from_redis.to_hash).to eq(expected_job.to_hash)
     end
 
     it 'enqueues a complex job in redis' do
@@ -32,17 +25,13 @@ describe 'enqueuing jobs to Redis' do
       serialized_job = redis.lpop(TEST_QUEUE)
       job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
-      expect(job_from_redis).to eq({
+      expected_job = Workerholic::JobWrapper.new(
         class: ComplexJobTest,
-        arguments: ['test job', { a: 1, b: 2 }, [1, 2, 3]],
-        statistics: {
-          enqueued_at: job_from_redis[:statistics][:enqueued_at],
-          retry_count: 0,
-          errors: [],
-          started_at: nil,
-          completed_at: nil
-        }
-      })
+        arguments: ['test job', { a: 1, b: 2 }, [1, 2, 3]]
+      )
+      expected_job.statistics.enqueued_at = job_from_redis.statistics.enqueued_at
+
+      expect(job_from_redis.to_hash).to eq(expected_job.to_hash)
     end
 
     it 'enqueues a job with the right statistics' do
@@ -50,7 +39,7 @@ describe 'enqueuing jobs to Redis' do
       serialized_job = redis.lpop(TEST_QUEUE)
       job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
-      expect(job_from_redis[:statistics][:enqueued_at]).to be < Time.now.to_f
+      expect(job_from_redis.statistics.enqueued_at).to be < Time.now.to_f
     end
   end
 

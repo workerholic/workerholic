@@ -16,19 +16,20 @@ class SimpleDelayedJobTest
 end
 
 describe Workerholic::JobScheduler do
-  let(:scheduler) { Workerholic::JobScheduler.new({ set_name: TEST_SCHEDULED_SORTED_SET }) }
+  let(:scheduler) { Workerholic::JobScheduler.new(set_name: TEST_SCHEDULED_SORTED_SET, queue_name: TEST_QUEUE) }
   let(:redis) { Redis.new }
+
+  before { redis.del(TEST_SCHEDULED_SORTED_SET) }
 
   context 'with non-empty set' do
     let(:serialized_job) do
-      Workerholic::JobSerializer.serialize({
+      job = Workerholic::JobWrapper.new(
         class: ComplexJobTest,
-        arguments: ['test job', { a: 1, b: 2 }, [1, 2, 3]],
-        statistics: Workerholic::Statistics.new.to_hash
-      })
-    end
+        arguments: ['test job', { a: 1, b: 2 }, [1, 2, 3]]
+      )
 
-    after { redis.del(TEST_SCHEDULED_SORTED_SET) }
+      Workerholic::JobSerializer.serialize(job)
+    end
 
     it 'checks the time for scheduled job inside sorted set' do
       score = Time.now.to_f
@@ -50,16 +51,12 @@ describe Workerholic::JobScheduler do
       scheduler.schedule(serialized_job, score)
       scheduler.enqueue_due_jobs
 
-      queue = scheduler.queue
-
-      expect(queue.empty?).to eq(false)
-      expect(queue.dequeue).to eq(serialized_job)
+      expect(scheduler.queue.empty?).to eq(false)
+      expect(scheduler.queue.dequeue).to eq(serialized_job)
     end
   end
 
   context 'with delayed job option specified' do
-    before { redis.del(TEST_SCHEDULED_SORTED_SET) }
-
     it 'adds delayed job to the scheduled sorted set' do
       SimpleDelayedJobTest.new.perform_delayed(2, 'test arg')
 
