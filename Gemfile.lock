@@ -13,6 +13,7 @@ GEM
     pry-byebug (3.4.2)
       byebug (~> 9.0)
       pry (~> 0.10)
+    redis (3.3.3)
     rspec (3.6.0)
       rspec-core (~> 3.6.0)
       rspec-expectations (~> 3.6.0)
@@ -34,6 +35,7 @@ PLATFORMS
 DEPENDENCIES
   connection_pool
   pry-byebug
+  redis
   rspec
 
 BUNDLED WITH

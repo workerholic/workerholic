@@ -12,7 +12,7 @@ describe Workerholic::Storage do
   end
 
   it 'pops a job from the test queue' do
-    expect(storage.redis).to receive(:blpop).with(queue_name, 0)
+    expect(storage.redis).to receive(:blpop).with(queue_name, 1)
     storage.pop(queue_name)
   end
 end
