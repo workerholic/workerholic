@@ -2,14 +2,13 @@ require 'logger'
 
 module Workerholic
   class LogManager
-    attr_reader :logger, :severity
+    attr_reader :logger
 
-    def initialize(severity)
+    def initialize
       @logger = Logger.new(STDOUT)
-      @severity = severity
     end
 
-    def log(message)
+    def log(severity, message)
       logger.formatter = proc do |severity, datetime, progname, msg|
         "#{severity}: #{msg}\n"
       end

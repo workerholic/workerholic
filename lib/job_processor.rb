@@ -7,6 +7,7 @@ module Workerholic
   class JobProcessor
     def initialize(serialized_job)
       @serialized_job = serialized_job
+      @log_manager = LogManager.new
     end
 
     def process
@@ -21,14 +22,14 @@ module Workerholic
         job_result = job_class.new.perform(*job_args)
         job_stats.completed_at = Time.now.to_f
 
-        LogManager.new('info').log("Your job from class #{job_class} was completed on #{job_stats.completed_at}.")
+        @log_manager.log('info', "Your job from class #{job_class} was completed on #{job_stats.completed_at}.")
 
         job_result
       rescue Exception => e
         job_stats.errors.push([e.class, e.message])
         JobRetry.new(job: job)
 
-        LogManager.new('error').log("Your job from class #{job_class} was unsuccessful. Retrying in 10 seconds.")
+        @log_manager.log('error', "Your job from class #{job_class} was unsuccessful. Retrying in 10 seconds.")
       end
 
       # Push job into some collection
