@@ -22,7 +22,7 @@ module Workerholic
       end
 
       # blocking pop from Redis queue
-      def pop(key, timeout = 0)
+      def pop(key, timeout = 1)
         redis.blpop(key, timeout)
       end
 

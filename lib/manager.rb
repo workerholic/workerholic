@@ -7,6 +7,8 @@ module Workerholic
     attr_reader :workers, :scheduler
 
     def initialize(workers_count = 25)
+      raise ArgumentError, 'Invalid number of workers' if workers_count < 1
+
       @workers = Array.new(workers_count, Worker.new)
       @scheduler = JobScheduler.new
     end
@@ -15,19 +17,19 @@ module Workerholic
       begin
         workers.each(&:work)
         scheduler.start
-
-        workers.each(&:join)
-        scheduler.join
+        sleep
       rescue SystemExit, Interrupt
+        puts "\nWorkerholic is now shutting down. We are letting the workers finish their current jobs..."
         shutdown
-        puts "\nWorkerholic is now shutting down..."
         exit
       end
     end
 
     def shutdown
       workers.each(&:kill)
+      workers.each(&:join)
       scheduler.kill
+      scheduler.join
     end
   end
 end
