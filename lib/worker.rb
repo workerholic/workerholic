@@ -20,6 +20,8 @@ module Workerholic
           serialized_job = poll
           JobProcessor.new(serialized_job).process if serialized_job
         end
+
+        puts "DONE!"
       end
     end
 

@@ -1,4 +1,5 @@
 require 'redis'
+require 'connection_pool'
 
 module Workerholic
   class Storage
@@ -9,7 +10,7 @@ module Workerholic
       attr_reader :redis
 
       def initialize
-        @redis = Redis.new
+        @redis = ConnectionPool::Wrapper.new(size: 12, timeout: 10) { Redis.connect }
         redis.ping
       end
 
@@ -22,7 +23,7 @@ module Workerholic
       end
 
       # blocking pop from Redis queue
-      def pop(key, timeout = 0)
+      def pop(key, timeout = 1)
         redis.blpop(key, timeout)
       end
 

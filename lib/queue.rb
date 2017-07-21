@@ -15,7 +15,8 @@ module Workerholic
     end
 
     def dequeue
-      storage.pop(name).last
+      job_info = storage.pop(name)
+      job_info.last if job_info
     end
 
     def empty?
