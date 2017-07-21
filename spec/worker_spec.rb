@@ -1,6 +1,7 @@
 require 'redis'
 
 require_relative 'spec_helper'
+
 require_relative '../lib/worker'
 require_relative '../lib/queue'
 require_relative '../lib/statistics'
@@ -31,8 +32,10 @@ describe Workerholic::Worker do
     }
   end
 
-  before { redis.del(TEST_QUEUE) }
-  before { WorkerJobTest.reset }
+  before do
+    redis.del(TEST_SCHEDULED_SORTED_SET)
+    WorkerJobTest.reset
+  end
 
   context '#work' do
     it 'polls a job from a thread' do

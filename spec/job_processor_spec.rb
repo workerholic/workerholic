@@ -5,13 +5,10 @@ require_relative './helpers/job_tests'
 
 class SimpleJobTestWithError
   include Workerholic::Job
+  job_options queue_name: TEST_SCHEDULED_SORTED_SET
 
   def perform
     raise Exception
-  end
-
-  def queue_name
-    TEST_QUEUE
   end
 end
 
@@ -62,7 +59,8 @@ describe Workerholic::JobProcessor do
     }
     serialized_job = Workerholic::JobSerializer.serialize(job)
 
-    Workerholic::JobRetry.stub(:new)
+    allow(Workerholic::JobRetry).to receive(:new)
+
     expect(Workerholic::JobRetry).to receive(:new)
 
     Workerholic::JobProcessor.new(serialized_job).process
