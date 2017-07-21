@@ -3,6 +3,7 @@ GEM
   specs:
     byebug (9.0.6)
     coderay (1.1.1)
+    connection_pool (2.2.1)
     diff-lcs (1.3)
     method_source (0.8.2)
     pry (0.10.4)
@@ -12,7 +13,6 @@ GEM
     pry-byebug (3.4.2)
       byebug (~> 9.0)
       pry (~> 0.10)
-    redis (3.3.3)
     rspec (3.6.0)
       rspec-core (~> 3.6.0)
       rspec-expectations (~> 3.6.0)
@@ -32,8 +32,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  connection_pool
   pry-byebug
-  redis
   rspec
 
 BUNDLED WITH
