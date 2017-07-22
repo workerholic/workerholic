@@ -1,3 +1,5 @@
+require_relative 'log_manager'
+
 module Workerholic
   class WorkerBalancer
     attr_reader :storage, :workers, :thread, :alive
@@ -8,6 +10,7 @@ module Workerholic
       @queues = fetch_queues
       @workers = workers
       @alive = true
+      @logger = LogManager.new
     end
 
     def start
@@ -21,25 +24,27 @@ module Workerholic
             counter += assign_workers_to_queue(queue, average_job_count_per_worker, counter)
           end
 
-          result = Hash.new
-          workers.reduce(result) do |r, worker|
-            if r[worker.queue.name].nil?
-              r[worker.queue.name] = 1
-            else
-              r[worker.queue.name] += 1
-            end
+          if workers.size - counter == 1
+            workers[workers.size - 1].queue = queues.sample unless queues.empty?
+          end
 
+          result = workers.reduce({}) do |r, worker|
+            r[worker.queue.name] = r[worker.queue.name] ? r[worker.queue.name] + 1 : 1
             r
           end
-          p result
+          @logger.log('info', result)
 
-          sleep 10
+          sleep 5
         end
       end
     end
 
     def kill
       thread.kill
+    end
+
+    def join
+      thread.join
     end
 
     private
@@ -53,9 +58,16 @@ module Workerholic
     end
 
     def assign_workers_to_queue(queue, average_job_count_per_worker, counter)
-      workers_count = (queue.size / average_job_count_per_worker).round
+      workers_count = queue.size / average_job_count_per_worker
+
+      if workers_count % 1 == 0.5
+        workers_count = workers_count.floor
+      else
+        workers_count = workers_count.round
+      end
+
       counter.upto(counter + workers_count - 1) do |i|
-        workers[i].queue = Queue.new(queue.name)
+        workers.to_a[i].queue = Queue.new(queue.name)
       end
 
       workers_count - 1

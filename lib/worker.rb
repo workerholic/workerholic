@@ -36,7 +36,7 @@ module Workerholic
     private
 
     def poll
-      queue.dequeue
+      queue.dequeue if queue
     end
   end
 end

@@ -5,7 +5,7 @@ module Workerholic
   class Storage
     # Wraps redis-rb gem methods for enqueueing/dequeuing purposes
     class RedisWrapper
-      REDIS_POOL = ConnectionPool::Wrapper.new(size: 30, timeout: 10) { Redis.connect }
+      REDIS_POOL = ConnectionPool::Wrapper.new(size: 55, timeout: 10) { Redis.connect }
 
       attr_reader :redis, :retries
 

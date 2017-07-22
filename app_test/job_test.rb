@@ -15,5 +15,6 @@ class JobTestSlow
 
   def perform(str, num)
     str
+    sleep(0.1)
   end
 end

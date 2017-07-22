@@ -36,6 +36,10 @@ module Workerholic
     def shutdown
       workers.each(&:kill)
       workers.each(&:join)
+
+      worker_balancer.kill
+      worker_balancer.join
+
       scheduler.kill
       scheduler.join
     end
