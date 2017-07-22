@@ -1,3 +1,5 @@
+require 'set'
+
 require_relative 'worker'
 require_relative 'job_scheduler'
 require_relative 'worker_balancer'
@@ -7,18 +9,20 @@ module Workerholic
   class Manager
     attr_reader :workers, :scheduler, :worker_balancer
 
-    def initialize(workers_count = 25)
+    def initialize(workers_count = 50)
       raise ArgumentError, 'Invalid number of workers' if workers_count < 1
 
-      @workers = Array.new(workers_count, Worker.new)
+      @workers = []
+      workers_count.times { @workers << Worker.new }
+
       @scheduler = JobScheduler.new
       @worker_balancer = WorkerBalancer.new(workers)
     end
 
     def start
       begin
-        worker_balancer.start
         workers.each(&:work)
+        worker_balancer.start
         scheduler.start
 
         sleep
