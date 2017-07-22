@@ -25,5 +25,9 @@ module Workerholic
     def empty?
       storage.list_length(name).zero?
     end
+
+    def size
+      storage.list_length(name)
+    end
   end
 end
