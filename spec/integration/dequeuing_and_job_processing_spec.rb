@@ -10,5 +10,9 @@ describe 'dequeuing and processesing of jobs' do
 
   it 'successfully dequeues and process a complex job'
 
-  context 'performing the job raises an error'
+  context 'user interrupts process' do
+    it 'finishes executing the current job before gracefully shutting down' do
+
+    end
+  end
 end

@@ -6,8 +6,8 @@ require_relative 'queue'
 module Workerholic
   # handles job execution in threads
   class Worker
-    attr_reader :thread, :queue
-    attr_accessor :alive
+    attr_reader :thread
+    attr_accessor :alive, :queue
 
     def initialize(queue=Queue.new)
       @queue = queue
@@ -36,7 +36,7 @@ module Workerholic
     private
 
     def poll
-      queue.dequeue
+      queue.dequeue if queue
     end
   end
 end

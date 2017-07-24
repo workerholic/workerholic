@@ -5,11 +5,13 @@ module Workerholic
   class Storage
     # Wraps redis-rb gem methods for enqueueing/dequeuing purposes
     class RedisWrapper
+      REDIS_POOL = ConnectionPool::Wrapper.new(size: 30, timeout: 10) { Redis.connect }
+
       attr_reader :redis, :retries
 
       def initialize
         @retries = 0
-        @redis = ConnectionPool::Wrapper.new(size: 12, timeout: 10) { Redis.connect }
+        @redis = REDIS_POOL
         redis.ping
       end
 
@@ -40,6 +42,10 @@ module Workerholic
 
       def set_empty?(key)
         execute { redis.zcount(key, 0, '+inf') }
+      end
+
+      def fetch_queue_names
+        redis.scan(0, match: 'workerholic:queue*').last
       end
 
       class RedisCannotRecover < Redis::CannotConnectError; end
