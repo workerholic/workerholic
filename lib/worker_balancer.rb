@@ -21,6 +21,7 @@ module Workerholic
 
           counter = 0
           queues.each do |queue|
+            p queue.size
             counter += assign_workers_to_queue(queue, average_job_count_per_worker, counter)
           end
 

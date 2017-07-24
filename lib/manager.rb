@@ -9,7 +9,7 @@ module Workerholic
   class Manager
     attr_reader :workers, :scheduler, :worker_balancer
 
-    def initialize(workers_count = 50)
+    def initialize(workers_count = 25)
       raise ArgumentError, 'Invalid number of workers' if workers_count < 1
 
       @workers = []
