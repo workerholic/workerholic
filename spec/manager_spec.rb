@@ -1,5 +1,4 @@
 require_relative 'spec_helper'
-require_relative '../lib/manager'
 
 describe Workerholic::Manager do
   it 'creates a number of workers based on workers count' do

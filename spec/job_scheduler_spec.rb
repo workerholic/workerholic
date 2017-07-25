@@ -1,10 +1,4 @@
-require 'redis'
-require 'pry'
-
 require_relative 'spec_helper'
-
-require_relative '../lib/job_scheduler'
-require_relative './helpers/job_tests.rb'
 
 class SimpleDelayedJobTest
   include Workerholic::Job

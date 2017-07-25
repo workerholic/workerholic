@@ -1,6 +1,3 @@
-require_relative 'storage'
-require_relative 'log_manager'
-
 module Workerholic
   # Handles background job enqueueing/dequeuing functionality
   class Queue

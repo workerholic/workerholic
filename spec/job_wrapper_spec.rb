@@ -1,6 +1,4 @@
 require_relative 'spec_helper'
-require_relative '../lib/job_wrapper'
-require_relative 'helpers/job_tests'
 
 describe Workerholic::JobWrapper do
   it 'returns a hash with job meta info and job stats info' do

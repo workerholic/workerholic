@@ -1,10 +1,4 @@
-require 'redis'
-
 require_relative 'spec_helper'
-
-require_relative '../lib/worker'
-require_relative '../lib/queue'
-require_relative '../lib/statistics'
 
 class WorkerJobTest
   @@job_status = 0

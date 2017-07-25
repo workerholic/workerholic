@@ -1,5 +1,3 @@
-require 'yaml'
-
 module Workerholic
   class JobSerializer
     def self.serialize(job)

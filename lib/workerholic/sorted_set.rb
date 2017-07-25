@@ -1,5 +1,3 @@
-require_relative 'storage'
-
 module Workerholic
   class SortedSet
     attr_reader :storage, :name

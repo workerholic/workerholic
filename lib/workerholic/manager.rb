@@ -1,7 +1,3 @@
-require_relative 'worker'
-require_relative 'job_scheduler'
-require_relative 'worker_balancer'
-
 module Workerholic
   # Handles polling from Redis and hands job to worker
   class Manager

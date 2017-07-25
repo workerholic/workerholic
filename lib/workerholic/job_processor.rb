@@ -1,8 +1,3 @@
-require_relative 'job_serializer'
-require_relative 'statistics'
-require_relative 'job_retry'
-require_relative 'log_manager'
-
 module Workerholic
   class JobProcessor
     def initialize(serialized_job)

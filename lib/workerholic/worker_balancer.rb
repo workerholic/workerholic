@@ -1,5 +1,3 @@
-require_relative 'log_manager'
-
 module Workerholic
   class WorkerBalancer
     attr_reader :storage, :workers, :thread, :alive, :auto

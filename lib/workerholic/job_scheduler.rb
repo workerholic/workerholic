@@ -1,6 +1,3 @@
-require_relative 'sorted_set'
-require_relative 'queue'
-
 module Workerholic
   class JobScheduler
     attr_reader :sorted_set, :queue, :scheduler_thread

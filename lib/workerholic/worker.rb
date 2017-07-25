@@ -1,8 +1,3 @@
-require 'yaml'
-
-require_relative 'job_processor'
-require_relative 'queue'
-
 module Workerholic
   # handles job execution in threads
   class Worker

@@ -1,9 +1,4 @@
-require 'redis'
-
 require_relative '../spec_helper'
-require_relative '../../lib/job'
-require_relative '../../lib/manager'
-require_relative '../helpers/job_tests'
 
 describe 'dequeuing and processesing of jobs' do
   let(:redis) { Redis.new }
