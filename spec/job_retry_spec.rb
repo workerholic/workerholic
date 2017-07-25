@@ -1,6 +1,4 @@
 require_relative 'spec_helper'
-require_relative '../lib/job_retry'
-require_relative '../lib/job_wrapper'
 
 class JobWithError
   def perform

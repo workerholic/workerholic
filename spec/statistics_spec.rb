@@ -1,4 +1,4 @@
-require_relative '../lib/statistics'
+require 'spec_helper'
 
 describe Workerholic::Statistics do
   it 'initializes attributes with without an argument' do

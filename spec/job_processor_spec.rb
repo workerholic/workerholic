@@ -1,7 +1,4 @@
-require_relative 'spec_helper.rb'
-
-require_relative '../lib/job_processor'
-require_relative './helpers/job_tests'
+require_relative 'spec_helper'
 
 class SimpleJobTestWithError
   include Workerholic::Job

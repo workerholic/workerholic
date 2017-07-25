@@ -1,5 +1,3 @@
-require 'logger'
-
 module Workerholic
   class LogManager
     attr_reader :logger

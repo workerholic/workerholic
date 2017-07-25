@@ -1,5 +1,4 @@
 require_relative 'spec_helper'
-require_relative '../lib/queue'
 
 describe Workerholic::Queue do
   let(:queue) { Workerholic::Queue.new('test') }

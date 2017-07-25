@@ -1,5 +1,3 @@
-require_relative 'statistics'
-
 module Workerholic
   class JobWrapper
     attr_accessor :retry_count, :execute_at

@@ -1,6 +1,3 @@
-require_relative 'sorted_set'
-require_relative 'job_serializer'
-
 module Workerholic
   class JobRetry
     attr_reader :job, :sorted_set

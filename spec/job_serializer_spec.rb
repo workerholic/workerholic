@@ -1,7 +1,4 @@
 require_relative 'spec_helper'
-require_relative '../lib/job_serializer'
-require_relative '../lib/statistics'
-require_relative '../lib/job_wrapper'
 
 class JobTest; end
 

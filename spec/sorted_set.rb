@@ -1,11 +1,4 @@
-require 'redis'
-
 require_relative 'spec_helper'
-
-require_relative '../lib/sorted_set'
-require_relative '../lib/job_serializer'
-
-require_relative './helpers/job_tests'
 
 describe Workerholic::SortedSet do
   let(:job) {{ class: SimpleJobTest, arguments: [] }}

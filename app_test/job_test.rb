@@ -1,4 +1,4 @@
-require_relative '../lib/job'
+require_relative '../lib/workerholic'
 
 class JobTestFast
   include Workerholic::Job

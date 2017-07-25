@@ -1,6 +1,3 @@
-require 'redis'
-require 'connection_pool'
-
 module Workerholic
   class Storage
     # Wraps redis-rb gem methods for enqueueing/dequeuing purposes

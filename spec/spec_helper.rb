@@ -1,4 +1,9 @@
+$LOAD_PATH << __dir__ + '/../lib/'
+
+require 'workerholic'
+
 require_relative 'helpers/helper_methods'
+require_relative 'helpers/job_tests'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|

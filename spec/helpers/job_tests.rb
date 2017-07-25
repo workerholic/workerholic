@@ -1,5 +1,3 @@
-require_relative '../../lib/job.rb'
-
 class SimpleJobTest
   include Workerholic::Job
   job_options queue_name: TEST_QUEUE

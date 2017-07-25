@@ -1,9 +1,3 @@
-require_relative 'queue'
-require_relative 'job_serializer'
-require_relative 'statistics'
-require_relative 'sorted_set'
-require_relative 'job_wrapper'
-
 module Workerholic
   module Job
     def self.included(base)

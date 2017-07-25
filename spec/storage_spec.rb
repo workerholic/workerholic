@@ -1,5 +1,4 @@
 require_relative 'spec_helper'
-require_relative '../lib/storage'
 
 describe Workerholic::Storage do
   let(:storage) { Workerholic::Storage::RedisWrapper.new }
