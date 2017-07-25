@@ -6,12 +6,13 @@ require_relative 'queue'
 module Workerholic
   # handles job execution in threads
   class Worker
-    attr_reader :thread, :queue
-    attr_accessor :alive
+    attr_reader :thread
+    attr_accessor :alive, :queue
 
-    def initialize(queue=Queue.new)
+    def initialize(queue=nil)
       @queue = queue
       @alive = true
+      @logger = LogManager.new
     end
 
     def work
@@ -21,22 +22,27 @@ module Workerholic
           JobProcessor.new(serialized_job).process if serialized_job
         end
 
-        puts "DONE!"
+        #puts "DONE!"
       end
-    end
-
-    def join
-      thread.join
+    rescue ThreadError => e
+      @logger.log('info', e.message)
+      raise Interrupt
     end
 
     def kill
       self.alive = false
+      thread.join if thread
     end
 
     private
 
     def poll
-      queue.dequeue
+      if queue
+        queue.dequeue
+      else
+        sleep 0.1
+        nil
+      end
     end
   end
 end

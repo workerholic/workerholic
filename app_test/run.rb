@@ -26,6 +26,15 @@ unsorted_array = (1..1000).to_a.shuffle
   HeavyCalculation.new.perform_async(n, unsorted_array)
 end
 
+5_000.times do |n|
+  JobTestFast.new.perform_async('NON BLOCKING', n)
+  JobTestFast.new.perform_async('NON BLOCKING', n)
+  # JobTestFast.new.perform_async('NON BLOCKING', n)
+  # JobTestFast.new.perform_async('NON BLOCKING', n)
+  # # JobTestSlow.new.perform_async('BLOCKING', n)
+  JobTestSlow.new.perform_async('BLOCKING', n)
+end
+
 # 100000.times do |n|
 #   ManyArgs.new.perform_async(n, [1, 2, 3], { key: 'value'}, :symb, 'string', 22, false)
 # end
