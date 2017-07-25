@@ -38,11 +38,9 @@ module Workerholic
     private
 
     def verify_delay(delay_arg)
-      if delay_arg.is_a? Numeric
-        delay_arg
-      else
-        raise ArgumentError, 'Delay argument has to be of Numeric type'
-      end
+      raise ArgumentError, 'Delay argument has to be of Numeric type' unless delay_arg.is_a? Numeric
+
+      delay_arg
     end
 
     def prepare_job_for_enqueueing(args)

@@ -7,41 +7,35 @@ require_relative 'worker_balancer'
 module Workerholic
   # Handles polling from Redis and hands job to worker
   class Manager
+    WORKERS_COUNT = 25
+
     attr_reader :workers, :scheduler, :worker_balancer
 
-    def initialize(workers_count = 25)
-      raise ArgumentError, 'Invalid number of workers' if workers_count < 1
+    def initialize(opts = {})
+      raise ArgumentError, 'Invalid number of workers' if WORKERS_COUNT < 1
 
       @workers = []
-      workers_count.times { @workers << Worker.new }
+      WORKERS_COUNT.times { @workers << Worker.new }
 
       @scheduler = JobScheduler.new
-      @worker_balancer = WorkerBalancer.new(workers)
+      @worker_balancer = WorkerBalancer.new(workers: workers, auto_balance: opts[:auto_balance])
     end
 
     def start
-      begin
-        workers.each(&:work)
-        worker_balancer.start
-        scheduler.start
-
-        sleep
-      rescue SystemExit, Interrupt
-        puts "\nWorkerholic is now shutting down. We are letting the workers finish their current jobs..."
-        shutdown
-        exit
-      end
+      worker_balancer.start
+      workers.each(&:work)
+      scheduler.start
+      sleep
+    rescue SystemExit, Interrupt
+      puts "\nWorkerholic is now shutting down. We are letting the workers finish their current jobs..."
+      shutdown
+      exit
     end
 
     def shutdown
       workers.each(&:kill)
-      workers.each(&:join)
-
       worker_balancer.kill
-      worker_balancer.join
-
       scheduler.kill
-      scheduler.join
     end
   end
 end

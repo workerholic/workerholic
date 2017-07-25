@@ -1,4 +1,4 @@
-TEST_QUEUE = 'workerholic:test:queue'
+TEST_QUEUE = 'workerholic:queue:_test_queue'
 TEST_SCHEDULED_SORTED_SET = 'workerholic:test:scheduled_jobs'
 
 def expect_during(duration_in_secs, target)
