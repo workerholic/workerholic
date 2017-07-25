@@ -16,15 +16,13 @@ module Workerholic
     end
 
     def work
-      Thread.abort_on_exception = true
       @thread = Thread.new do
-        raise ThreadError
         while alive
           serialized_job = poll
           JobProcessor.new(serialized_job).process if serialized_job
         end
 
-        puts "DONE!"
+        #puts "DONE!"
       end
     rescue ThreadError => e
       @logger.log('info', e.message)

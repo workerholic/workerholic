@@ -34,13 +34,9 @@ module Workerholic
         while alive
           self.queues = fetch_queues
 
-          counter = 0
-          while counter < queues.size
-            workers[counter].queue = queues[counter]
-            counter += 1
-          end
+          total_workers_count = assign_one_worker_per_queue
 
-          remaining_workers_count = workers.size - (counter + 1)
+          remaining_workers_count = workers.size - (total_workers_count + 1)
           average_job_count_per_worker = total_jobs / remaining_workers_count.to_f
 
           queues.each do |queue|
@@ -52,15 +48,13 @@ module Workerholic
               workers_count = workers_count.round
             end
 
-            assign_workers_to_queue(queue, workers_count, counter)
+            assign_workers_to_queue(queue, workers_count, total_workers_count)
 
-            counter += workers_count
+            total_workers_count += workers_count
           end
 
-          workers[workers.size - 1].queue = queues.sample if workers.size - counter == 1
-
-          @logger.log('info', queues.map { |q| { name: q.name, size: q.size } })
-          @logger.log('info', current_workers_count_per_queue)
+          distribute_unassigned_worker(total_workers_count)
+          output_balancer_stats
 
           sleep 2
         end
@@ -72,27 +66,41 @@ module Workerholic
         while alive
           self.queues = fetch_queues
 
-          counter = 0
-          while counter < queues.size
-            workers[counter].queue = queues[counter]
-            counter += 1
-          end
+          total_workers_count = assign_one_worker_per_queue
 
-          remaining_workers_count = workers.size - (counter + 1)
+          remaining_workers_count = workers.size - (total_workers_count + 1)
+
           queues.each do |queue|
             workers_count = remaining_workers_count / queues.size
-            assign_workers_to_queue(queue, workers_count, counter)
-            counter += workers_count
+            assign_workers_to_queue(queue, workers_count, total_workers_count)
+            total_workers_count += workers_count
           end
 
-          workers[workers.size - 1].queue = queues.sample if workers.size - counter == 1
-
-          @logger.log('info', queues.map { |q| { name: q.name, size: q.size } })
-          @logger.log('info', current_workers_count_per_queue)
+          distribute_unassigned_worker(total_workers_count)
+          output_balancer_stats
 
           sleep 2
         end
       end
+    end
+
+    def distribute_unassigned_worker(total_workers_count)
+      workers[workers.size - 1].queue = queues.sample if workers.size - total_workers_count == 1
+    end
+
+    def output_balancer_stats
+      @logger.log('info', queues.map { |q| { name: q.name, size: q.size } })
+      @logger.log('info', current_workers_count_per_queue)
+    end
+
+    def assign_one_worker_per_queue
+      index = 0
+      while index < queues.size && index < workers.size
+        workers[index].queue = queues[index]
+        index += 1
+      end
+
+      index = 0
     end
 
     def fetch_queues
@@ -103,8 +111,8 @@ module Workerholic
       @queues.map(&:size).reduce(:+) || 0
     end
 
-    def assign_workers_to_queue(queue, workers_count, counter)
-      counter.upto(counter + workers_count - 1) do |i|
+    def assign_workers_to_queue(queue, workers_count, total_workers_count)
+      total_workers_count.upto(total_workers_count + workers_count - 1) do |i|
         workers.to_a[i].queue = Queue.new(queue.name)
       end
     end
