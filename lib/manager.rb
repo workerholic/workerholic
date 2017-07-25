@@ -1,5 +1,3 @@
-require 'set'
-
 require_relative 'worker'
 require_relative 'job_scheduler'
 require_relative 'worker_balancer'
@@ -37,5 +35,14 @@ module Workerholic
       worker_balancer.kill
       scheduler.kill
     end
+
+=begin
+    def regenerate_workers
+      inactive_workers = WORKERS_COUNT - workers.size
+      if inactive_workers > 0
+        inactive_workers.times { @workers << Worker.new }
+      end
+    end
+=end
   end
 end
