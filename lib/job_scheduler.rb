@@ -42,12 +42,9 @@ module Workerholic
       end
     end
 
-    def join
-      scheduler_thread.join
-    end
-
     def kill
       self.alive = false
+      scheduler_thread.join if scheduler_thread
     end
   end
 end
