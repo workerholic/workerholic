@@ -2,56 +2,57 @@ module Workerholic
   class Storage
     # Wraps redis-rb gem methods for enqueueing/dequeuing purposes
     class RedisWrapper
-      REDIS_POOL = ConnectionPool::Wrapper.new(size: 30, timeout: 10) { Redis.connect }
-
       attr_reader :redis, :retries
 
       def initialize
         @retries = 0
-        @redis = REDIS_POOL
-        redis.ping
+        @redis = Workerholic.redis_pool
+
+        redis.with do |conn|
+          conn.ping
+        end
       end
 
       def list_length(key)
-        execute { redis.llen(key) }
+        execute { |conn| conn.llen(key) }
       end
 
       def push(key, value)
-        execute { redis.rpush(key, value) }
+        execute { |conn| conn.rpush(key, value) }
       end
 
       # blocking pop from Redis queue
       def pop(key, timeout = 1)
-        execute { redis.blpop(key, timeout) }
+        execute { |conn| conn.blpop(key, timeout) }
       end
 
       def add_to_set(key, score, value)
-        execute { redis.zadd(key, score, value) }
+        execute { |conn| conn.zadd(key, score, value) }
       end
 
       def peek(key)
-        execute { redis.zrange(key, 0, 0, with_scores: true).first }
+        execute { |conn| conn.zrange(key, 0, 0, with_scores: true).first }
       end
 
       def remove_from_set(key, score)
-        execute { redis.zremrangebyscore(key, score, score) }
+        execute { |conn| conn.zremrangebyscore(key, score, score) }
       end
 
       def set_empty?(key)
-        execute { redis.zcount(key, 0, '+inf') }
+        execute { |conn| conn.zcount(key, 0, '+inf') }
       end
 
       def fetch_queue_names
-        redis.scan(0, match: 'workerholic:queue*').last
+        execute { |conn| conn.scan(0, match: 'workerholic:queue*').last }
       end
 
       class RedisCannotRecover < Redis::CannotConnectError; end
 
       private
 
-      def execute(&block)
+      def execute
         begin
-          result = block.call
+          result = redis.with { |conn| yield conn }
           reset_retries
         rescue Redis::CannotConnectError
           # LogManager might want to output our retries to the user
