@@ -100,7 +100,7 @@ module Workerholic
         index += 1
       end
 
-      index = 0
+      index
     end
 
     def fetch_queues
