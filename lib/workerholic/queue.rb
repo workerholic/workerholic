@@ -1,7 +1,7 @@
 module Workerholic
   # Handles background job enqueueing/dequeuing functionality
   class Queue
-    attr_reader :storage, :name, :logger
+    attr_reader :storage, :name
 
     def initialize(name = 'workerholic:queue:main')
       @storage = Storage::RedisWrapper.new
