@@ -4,6 +4,7 @@ TESTED_QUEUES = [BALANCER_TEST_QUEUE, ANOTHER_BALANCER_TEST_QUEUE]
 
 describe Workerholic::WorkerBalancer do
   let(:storage) { Workerholic::Storage::RedisWrapper.new }
+  let(:redis) { Redis.new }
 
   before do
     100.times do |n|
@@ -13,7 +14,7 @@ describe Workerholic::WorkerBalancer do
   end
 
   after do
-    storage.redis.del(*[BALANCER_TEST_QUEUE, ANOTHER_BALANCER_TEST_QUEUE])
+    redis.del(*[BALANCER_TEST_QUEUE, ANOTHER_BALANCER_TEST_QUEUE])
   end
 
   it 'fetches queues' do
@@ -23,22 +24,4 @@ describe Workerholic::WorkerBalancer do
 
     expect(manager.queues.map(&:name)).to match_array TESTED_QUEUES
   end
-
-  it 'calculates total number of jobs for all queues' do
-    manager = Workerholic::WorkerBalancer.new(workers: [])
-    manager.send(:fetch_queues)
-    total_jobs = manager.send(:total_jobs)
-
-    expect(total_jobs).to eq(200)
-  end
-
-  it 'autobalances workers' do
-    workers = []
-    25.times { workers << Workerholic::Worker.new }
-    manager = Workerholic::WorkerBalancer.new(workers: workers)
-    #t = manager.send(:auto_balance_workers)
-
-
-  end
-  it 'evenly balances workers without any supplied arguments'
 end
