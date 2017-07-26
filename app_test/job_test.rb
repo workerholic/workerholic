@@ -71,3 +71,14 @@ class HeavyCalculation
     array
   end
 end
+
+class GetPrimes
+  include Workerholic::Job
+
+  def perform(n, max)
+    Prime.each(max) do |prime|
+      prime
+    end
+    puts n
+  end
+end
