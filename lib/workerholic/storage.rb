@@ -46,6 +46,14 @@ module Workerholic
         execute { |conn| conn.scan(0, match: 'workerholic:queue*').last }
       end
 
+      def add_job_stats(key, value)
+        execute { |conn| conn.rpush(key, value) }
+      end
+
+      def get_jobs_stats(key)
+        execute { |conn| conn.lrange(key, 0, -1) }
+      end
+
       class RedisCannotRecover < Redis::CannotConnectError; end
 
       private

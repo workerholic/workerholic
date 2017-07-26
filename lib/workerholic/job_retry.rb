@@ -12,7 +12,7 @@ module Workerholic
     protected
 
     def retry
-      return if job.retry_count >= 5
+      return false if job.retry_count >= 5
 
       increment_retry_count
       schedule_job_for_retry
