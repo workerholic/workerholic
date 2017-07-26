@@ -117,7 +117,10 @@ module Workerholic
 
     def current_workers_count_per_queue
       workers.reduce({}) do |result, worker|
-        result[worker.queue.name] = result[worker.queue.name] ? result[worker.queue.name] + 1 : 1
+        if worker.queue
+          result[worker.queue.name] = result[worker.queue.name] ? result[worker.queue.name] + 1 : 1
+        end
+
         result
       end
     end
