@@ -3,15 +3,15 @@ module Workerholic
   class Queue
     attr_reader :storage, :name, :logger
 
-    def initialize(name = 'workerholic:queue:main', enable_logger = false)
+    def initialize(name = 'workerholic:queue:main')
       @storage = Storage::RedisWrapper.new
       @name = name
-      @logger = enable_logger ? Logger.new : nil
+      @logger = LogManager.new
     end
 
     def enqueue(serialized_job)
       storage.push(name, serialized_job)
-      logger.log('info', "Your job was placed in the #{name} queue on #{Time.now}.") if logger
+      logger.log('info', "Your job was placed in the #{name} queue on #{Time.now}.")
     end
 
     def dequeue
