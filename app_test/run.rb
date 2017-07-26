@@ -38,3 +38,7 @@ end
 # 100000.times do |n|
 #   ManyArgs.new.perform_async(n, [1, 2, 3], { key: 'value'}, :symb, 'string', 22, false)
 # end
+
+# 100000.times do |n|
+#   GetPrimes.new.perform_async(n, 1000000)
+# end
