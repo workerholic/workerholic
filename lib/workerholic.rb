@@ -1,5 +1,3 @@
-$LOAD_PATH << __dir__
-
 require 'yaml'
 require 'redis'
 require 'connection_pool'
@@ -42,6 +40,6 @@ module Workerholic
   end
 
   def self.redis_pool
-    @redis_pool || ConnectionPool.new(size: workers_count, timeout: 5) { Redis.new }
+    @redis ||= ConnectionPool.new(size: workers_count + 5, timeout: 5) { Redis.new }
   end
 end
