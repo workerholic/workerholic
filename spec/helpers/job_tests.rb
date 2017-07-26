@@ -15,3 +15,22 @@ class ComplexJobTest
     [arg1, arg2, arg3]
   end
 end
+
+class FirstJobBalancerTest
+  include Workerholic::Job
+  job_options queue_name: BALANCER_TEST_QUEUE
+
+  def perform(str, num)
+    str
+  end
+end
+
+class SecondJobBalancerTest
+  include Workerholic::Job
+  job_options queue_name: ANOTHER_BALANCER_TEST_QUEUE
+
+  def perform(str, num)
+    str
+  end
+end
+
