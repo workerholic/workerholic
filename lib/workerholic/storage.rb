@@ -8,50 +8,53 @@ module Workerholic
 
       def initialize
         @retries = 0
-        @redis = REDIS_POOL
-        redis.ping
+        @redis = Workerholic.redis_pool
+
+        redis.with do |conn|
+          conn.ping
+        end
       end
 
       def list_length(key)
-        execute { redis.llen(key) }
+        execute { |conn| conn.llen(key) }
       end
 
-      def push(key, value, retry_delay = 5)
-        execute(retry_delay) { redis.rpush(key, value) }
+      def push(key, value)
+        execute { |conn| conn.rpush(key, value) }
       end
 
       # blocking pop from Redis queue
-      def pop(key, timeout = 1, retry_delay = 5)
-        execute(retry_delay) { redis.blpop(key, timeout) }
+      def pop(key, timeout = 1)
+        execute { |conn| conn.blpop(key, timeout) }
       end
 
-      def add_to_set(key, score, value, retry_delay = 5)
-        execute(retry_delay) { redis.zadd(key, score, value) }
+      def add_to_set(key, score, value)
+        execute { |conn| conn.zadd(key, score, value) }
       end
 
-      def peek(key, retry_delay = 5)
-        execute(retry_delay) { redis.zrange(key, 0, 0, with_scores: true).first }
+      def peek(key)
+        execute { |conn| conn.zrange(key, 0, 0, with_scores: true).first }
       end
 
-      def remove_from_set(key, score, retry_delay = 5)
-        execute(retry_delay) { redis.zremrangebyscore(key, score, score) }
+      def remove_from_set(key, score)
+        execute { |conn| conn.zremrangebyscore(key, score, score) }
       end
 
-      def set_empty?(key, retry_delay = 5)
-        execute(retry_delay) { redis.zcount(key, 0, '+inf') }
+      def set_empty?(key)
+        execute { |conn| conn.zcount(key, 0, '+inf') }
       end
 
-      def fetch_queue_names(retry_delay = 5)
-        execute(retry_delay) { redis.scan(0, match: 'workerholic:queue*').last }
+      def fetch_queue_names
+        execute { |conn| conn.scan(0, match: 'workerholic:queue*').last }
       end
 
       class RedisCannotRecover < Redis::CannotConnectError; end
 
       private
 
-      def execute(retry_delay = 5, &block)
+      def execute
         begin
-          result = block.call if block_given?
+          result = redis.with { |conn| yield conn }
           reset_retries
         rescue Redis::CannotConnectError
           @retries += 1

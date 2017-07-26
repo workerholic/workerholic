@@ -1,3 +1,10 @@
+PATH
+  remote: .
+  specs:
+    workerholic (0.0.2)
+      connection_pool (~> 2.2, >= 2.2.0)
+      redis (~> 3.3, >= 3.3.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -33,10 +40,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  connection_pool
+  connection_pool (~> 2.2, >= 2.2.0)
   pry-byebug
-  redis
-  rspec
+  redis (~> 3.3, >= 3.3.3)
+  rspec (~> 3.6, >= 3.6.0)
+  workerholic!
 
 BUNDLED WITH
-   1.15.1
+   1.15.3
