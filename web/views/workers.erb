@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <title>Workerholic Overview</title>
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
+    <link href='stylesheets/application.css' rel='stylesheet'>
+  </head>
+
+  <body>
+    <header>
+      Workerholic
+    </header>
+    <nav>
+      <ul>
+        <li><a href='/'>Overview</a></li>
+        <li><a href='/details'>Job Details</a></li>
+        <li><a href='/placehold'>Queues</a></li>
+        <li><a href='/workers'>Workers</a></li>
+        <li><a href='/what'>Failed</a></li>
+        <li><a href='/what'>Scheduled</a></li>
+      </ul>
+    </nav>
+
+    <div id="workers">
+      <table>
+        <tr>
+          <th>Worker</th>
+          <th>Queue</th>
+          <th>Class</th>
+          <th>Arguments</th>
+        </tr>
+        <tr>
+          <td>Worker 1</td>
+          <td>workerholic:queue:main</td>
+          <td>GetPrimes</td>
+          <td>[n, 1000000]</td>
+        </tr>
+      </table>
+    </div>
+
+    <footer>
+      <p>&copy; 2017 Workerholic. All rights reserved.</p>
+    </footer>
+
+  </body>
+</html>
