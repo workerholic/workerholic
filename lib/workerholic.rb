@@ -1,5 +1,3 @@
-$LOAD_PATH << __dir__
-
 require 'yaml'
 require 'redis'
 require 'connection_pool'
