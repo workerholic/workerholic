@@ -1,0 +1,79 @@
+@import 'whitespace-reset.css';
+
+body {
+  font-family: Arial, sans-serif;
+  background: #FFD252;
+}
+
+header {
+  font-family: 'Dosis', sans-serif;
+  font-size: 128px;
+  color: #fff;
+  text-align: center;
+  background: linear-gradient(to bottom, #3A0E40, #E739FF);
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+footer p {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+nav {
+  background: #fff;
+}
+
+nav li {
+  display: inline-block;
+  font-size: 20px;
+  padding: 10px 0 10px 0;
+  margin-left: 20px;
+  color: #000;
+}
+
+nav a {
+  display: inline-block;
+  width: 100px;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  border: 3px solid #E739FF;
+  color: #fff;
+  background: #A016B2;
+}
+
+#statistics {
+  font-family: 'Monaco', serif;
+  width: 1000px;
+  padding: 25px;
+  margin: 50px auto;
+  border: 2px dotted #000;
+  border-radius: 10px;
+  background: #fff;
+}
+
+#statistics h2 {
+  font-size: 32px;
+}
+
+#statistics p {
+  font-size: 24px;
+  margin-top: 20px;
+}
+
+#completed {
+  color: green;
+}
+
+#failed {
+  color: red;
+  font-weight: bold;
+}
