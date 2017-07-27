@@ -28,5 +28,6 @@ module Workerholic
     def ==(other)
       to_hash == other.to_hash
     end
+
   end
 end

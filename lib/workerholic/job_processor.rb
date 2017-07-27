@@ -1,12 +1,15 @@
 module Workerholic
   class JobProcessor
+    attr_reader :serialized_job, :storage
+
     def initialize(serialized_job)
       @serialized_job = serialized_job
+      @storage = Storage::RedisWrapper.new
       @logger = LogManager.new
     end
 
     def process
-      job = JobSerializer.deserialize(@serialized_job)
+      job = JobSerializer.deserialize(serialized_job)
 
       begin
         job.statistics.started_at = Time.now.to_f
@@ -16,15 +19,20 @@ module Workerholic
 
         #@logger.log('info', "Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}. It took #{job.statistics.elapsed_time} from start to finish.")
 
+        job.statistics.add_stats(job, 'workerholic:stats:completed_jobs')
+
         job_result
       rescue Exception => e
         job.statistics.errors.push([e.class, e.message])
         retry_job(job)
 
+        job.statistics.add_stats(job, 'workerholic:stats:failed_jobs')
+
         #@logger.log('error', "Failed: your job from class #{job.klass} was unsuccessful. Retrying in 10 seconds.")
       end
 
-      add_job_stats_to_storage(job)
+      job.statistics.add_stats(job, 'workerholic:stats:processed_jobs')
+
       job_result
     end
 
@@ -35,11 +43,6 @@ module Workerholic
       if limit_reached
         job.statistics.failed_on = Time.now.to_f
       end
-    end
-
-    def add_job_stats_to_storage(job)
-      serialized_job_stats = JobSerializer.serialize(job.statistics.to_hash)
-      Queue.new('workerholic:stats').enqueue(serialized_job_stats)
     end
   end
 end

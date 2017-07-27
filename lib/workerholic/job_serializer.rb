@@ -8,5 +8,9 @@ module Workerholic
       job_info = YAML.load(yaml_job)
       JobWrapper.new(job_info)
     end
+
+    def self.deserialize_stats(yaml_stat)
+      YAML.load(yaml_stat)
+    end
   end
 end

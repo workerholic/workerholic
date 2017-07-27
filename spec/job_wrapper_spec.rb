@@ -13,7 +13,10 @@ describe Workerholic::JobWrapper do
         enqueued_at: nil,
         errors: [],
         started_at: nil,
-        completed_at: nil
+        completed_at: nil,
+        failed_on: nil,
+        job_class: nil,
+        elapsed_time: nil
       }
     }
     expect(job.to_hash).to eq(expected_result)

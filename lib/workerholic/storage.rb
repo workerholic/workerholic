@@ -43,15 +43,40 @@ module Workerholic
       end
 
       def fetch_queue_names
-        execute { |conn| conn.scan(0, match: 'workerholic:queue*').last }
+        execute { |conn| conn.keys('workerholic:queue*') }
       end
 
-      def add_job_stats(key, value)
+      def push_stats(key, value)
         execute { |conn| conn.rpush(key, value) }
       end
 
-      def get_jobs_stats(key)
-        execute { |conn| conn.lrange(key, 0, -1) }
+      def keys_count(namespace)
+        execute { |conn| conn.keys(namespace + ':*').size }
+      end
+
+      def get_jobs_stats(namespace)
+        execute do |conn|
+          job_classes = conn.keys(namespace + ":*")
+          jobs_stats = {}
+
+          job_classes.each do |job_class|
+            jobs_stats[job_class] = conn.lrange(job_class, 0, -1)
+          end
+
+          jobs_stats
+        end
+      end
+
+      def get_job_classes(namespaces)
+        execute do |conn|
+          unique_classes = []
+
+          namespaces.each do |namespace|
+            unique_classes << conn.keys(namespace + ":*")
+          end
+
+          unique_classes.uniq!
+        end
       end
 
       class RedisCannotRecover < Redis::CannotConnectError; end
