@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <title>Workerholic Overview</title>
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.4/css/bulma.css" rel="stylesheet">
+    <link href='stylesheets/application.css' rel='stylesheet'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="javascripts/application.js"></script>
+  </head>
+
+  <body>
+    <header>
+      Workerholic
+    </header>
+
+    <nav>
+      <ul class='columns'>
+        <li class='column'><a href='overview'>Overview</a></li>
+        <li class='column'><a href='details'>Job Details</a></li>
+        <li class='column'><a href='queues'>Queues</a></li>
+        <li class='column'><a href='workers'>Workers</a></li>
+        <li class='column'><a href='failed'>Failed</a></li>
+        <li class='column'><a href='scheduled'>Scheduled</a></li>
+      </ul>
+    </nav>
+
+    <section>
+      <%= yield %>
+    </section>
+
+    <footer>
+      <p>&copy; 2017 Workerholic. All rights reserved.</p>
+    </footer>
+  </body>
+</html>
