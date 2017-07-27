@@ -78,6 +78,7 @@ module Workerholic
           output_balancer_stats
 
           sleep 2
+          p Statistics.new.queue_names
         end
       end
     end

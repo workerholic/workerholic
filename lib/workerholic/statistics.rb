@@ -46,25 +46,15 @@ module Workerholic
       '%.10f' % time
     end
 
-    def active_jobs
-      namespace = 'workerholic:queue'
-      [storage.get_jobs_stats(namespace), storage.keys_count(namespace)]
-    end
+# available namespaces
+# 'workerholic:stats:completed_jobs'
+# 'workerholic:stats:failed_jobs'
+# 'workerholic:stats:processed_jobs'
+# 'workerholic:stats:active_jobs'
 
-    def completed_jobs
-      namespace = 'workerholic:stats:completed_jobs'
-      [storage.get_jobs_stats(namespace), storage.keys_count(namespace)]
-    end
-
-    def failed_jobs
-      namespace = 'workerholic:stats:failed_jobs'
-      [storage.get_jobs_stats(namespace), storage.keys_count(namespace)]
-    end
-
-    def processed_jobs
-      namespace = 'workerholic:stats:processed_jobs'
-
+    def job_stats_for_namespace(namespace)
       deserialized_stats = {}
+      processed_jobs_count = 0
       classes_hash = storage.get_jobs_stats(namespace)
       classes_hash.keys.each do |key|
         classes_hash[key].each do |serialized_stat|
@@ -73,27 +63,45 @@ module Workerholic
           key = stat_hash[:job_class]
           if deserialized_stats[key]
             deserialized_stats[key] << stat_hash
+            processed_jobs_count += 1
           else
             deserialized_stats[key] = [stat_hash]
+            processed_jobs_count = 1
           end
         end
       end
 
-      [deserialized_stats, storage.keys_count(namespace)]
+      [deserialized_stats, processed_jobs_count]
     end
+
 
     def jobs_classes
       class_namespaces = ['workerholic:stats:active_jobs', 'workerholic:stats:processed_jobs']
       storage.get_job_classes(class_namespaces)
     end
 
-    def queue_names
-      queue_stats = []
+    def queue_names(options={})
+      persist_history = options[:history]
+      namespace = 'workerholic:stats:historic:queues'
+      queues = []
 
-      queues = storage.fetch_queue_names
-      queues.each do |queue|
-        queue_stats << [queue.name, queue.size]
+      fetched_queues = storage.fetch_queue_names
+      fetched_queues.each do |queue|
+        queue_data = [queue.name, queue.size]
+
+        if persist_history
+          append_history(namespace, queue_data)
+        end
+
+        queues << queue_data
       end
+
+      (queues.empty? ? nil : queues) || 'No queues data is available yet.'
+    end
+
+    def append_history(namespace, value)
+      serialized_data = JobSerializer.serialize(value)
+      storage.push_stats(namespace, serialized_data)
     end
 
     def add_stats(job, stats_queue)

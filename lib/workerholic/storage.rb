@@ -54,7 +54,7 @@ module Workerholic
         execute { |conn| conn.keys(namespace + ':*').size }
       end
 
-      def get_jobs_stats(namespace)
+      def get_stats(namespace)
         execute do |conn|
           job_classes = conn.keys(namespace + ":*")
           jobs_stats = {}
@@ -72,10 +72,15 @@ module Workerholic
           unique_classes = []
 
           namespaces.each do |namespace|
-            unique_classes << conn.keys(namespace + ":*")
+            available_class = conn.keys(namespace + ':*').first
+            if available_class
+              # extract actual class name from the namespace
+              clean_class_name = available_class.split(':').last
+              unique_classes << clean_class_name
+            end
           end
 
-          unique_classes.uniq!
+          unique_classes.uniq
         end
       end
 

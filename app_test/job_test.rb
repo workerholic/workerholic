@@ -15,7 +15,6 @@ class JobTestSlow
 
   def perform(str, num)
     sleep(0.5)
-    puts "#{num} - #{str}"
   end
 end
 

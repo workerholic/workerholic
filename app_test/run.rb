@@ -7,10 +7,9 @@ module TestRunner
     end
   end
 
-  def self.blocking(num_of_cycles, delay)
+  def self.blocking(num_of_cycles)
     num_of_cycles.times do |n|
       JobTestSlow.new.perform_async('BLOCKING', n)
-      sleep(delay)
     end
   end
 
@@ -49,7 +48,7 @@ module TestRunner
   end
 end
 
-TestRunner.non_blocking(10)
+TestRunner.blocking(5)
 
 
 
