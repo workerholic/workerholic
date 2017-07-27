@@ -2,7 +2,6 @@ require_relative '../spec_helper'
 
 describe 'enqueuing jobs to Redis' do
   let(:redis) { Redis.new }
-  before { redis.del(TEST_QUEUE) }
 
   context 'successfully creates a job and enqueues it in Redis' do
     it 'enqueues a simple job in redis' do
