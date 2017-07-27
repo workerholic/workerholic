@@ -33,17 +33,17 @@ describe Workerholic::JobProcessor do
     expect(job_processor.process).to eq(complex_job_result)
   end
 
-  # it 'raises a custom error when processing a job with error' do
-  #   serialized_job = Workerholic::JobSerializer.serialize({
-  #                      class: SimpleJobTestWithError,
-  #                      arguments: [],
-  #                      statistics: Workerholic::Statistics.new.to_hash
-  #                    })
+  it 'does not raise an error when processing a job with error' do
+    serialized_job = Workerholic::JobSerializer.serialize({
+                       class: SimpleJobTestWithError,
+                       arguments: [],
+                       statistics: Workerholic::Statistics.new.to_hash
+                     })
 
-  #   job_processor = Workerholic::JobProcessor.new(serialized_job)
+    job_processor = Workerholic::JobProcessor.new(serialized_job)
 
-  #   expect { job_processor.process }.to raise_error(Workerholic::JobProcessingError)
-  # end
+    expect { job_processor.process }.not_to raise_error
+  end
 
   it 'retries job when job processing fails' do
     job = {
@@ -54,7 +54,6 @@ describe Workerholic::JobProcessor do
     serialized_job = Workerholic::JobSerializer.serialize(job)
 
     allow(Workerholic::JobRetry).to receive(:new)
-
     expect(Workerholic::JobRetry).to receive(:new)
 
     Workerholic::JobProcessor.new(serialized_job).process
