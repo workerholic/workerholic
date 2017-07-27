@@ -38,12 +38,14 @@ module Workerholic
         execute(retry_delay) { |conn| conn.zremrangebyscore(key, score, score) }
       end
 
-      def set_empty?(key, retry_delay = 5)
+      def sorted_set_size(key, retry_delay = 5)
         execute(retry_delay) { |conn| conn.zcount(key, 0, '+inf') }
       end
 
       def fetch_queue_names(retry_delay = 5)
-        execute(retry_delay) { |conn| conn.scan(0, match: 'workerholic:queue*').last }
+        queue_name_pattern = $TESTING ? 'workerholic:testing:queue*' : 'workerholic:queue*'
+
+        execute(retry_delay) { |conn| conn.scan(0, match: queue_name_pattern).last }
       end
 
       class RedisCannotRecover < Redis::CannotConnectError; end
