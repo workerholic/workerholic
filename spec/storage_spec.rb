@@ -6,13 +6,11 @@ describe Workerholic::Storage do
   let(:queue_name) { TEST_QUEUE }
   let(:job) { 'test job' }
 
-  before { redis.del(queue_name) }
-
   context 'with Redis running' do
     it 'adds a job to the test queue' do
       storage.push(queue_name, job)
 
-      expect(storage.list_length(queue_name)).to eq(1)
+      expect(redis.llen(queue_name)).to eq(1)
     end
 
     it 'pops a job from the test queue' do
@@ -20,6 +18,55 @@ describe Workerholic::Storage do
       storage.pop(queue_name)
 
       expect(storage.list_length(queue_name)).to eq(0)
+    end
+
+    it 'gets the size for a specific queue' do
+      storage.push(queue_name, job)
+      storage.push(queue_name, job)
+
+      expect(storage.list_length(queue_name)).to eq(2)
+    end
+
+    it 'adds job to sorted set' do
+      score = Time.now.to_f
+      storage.add_to_set(TEST_SCHEDULED_SORTED_SET, score, job)
+
+      expect(redis.zrange(TEST_SCHEDULED_SORTED_SET, 0, 0, with_scores: true).first).to eq([job, score])
+    end
+
+    it 'returns first element in sorted set' do
+      score = Time.now.to_f
+      redis.zadd(TEST_SCHEDULED_SORTED_SET, score, job)
+
+      expect(storage.peek(TEST_SCHEDULED_SORTED_SET)).to eq([job, score])
+    end
+
+    it 'removes specified element from set' do
+      score1 = Time.now.to_f
+      score2 = score1 + 10
+      job2 = 'second test job'
+      redis.zadd(TEST_SCHEDULED_SORTED_SET, score1, job)
+      redis.zadd(TEST_SCHEDULED_SORTED_SET, score2, job2)
+
+      expect(storage.remove_from_set(TEST_SCHEDULED_SORTED_SET, score1)).to eq(1)
+      expect(redis.zcount(TEST_SCHEDULED_SORTED_SET, 0, '+inf')).to eq(1)
+    end
+
+    it 'checks if the sorted set is empty' do
+      score1 = Time.now.to_f
+      score2 = score1 + 10
+      job2 = 'second test job'
+      redis.zadd(TEST_SCHEDULED_SORTED_SET, score1, job)
+      redis.zadd(TEST_SCHEDULED_SORTED_SET, score2, job2)
+
+      expect(storage.sorted_set_size(TEST_SCHEDULED_SORTED_SET)).to eq(2)
+    end
+
+    it 'returns the workerholic queue names that are in redis' do
+      storage.push(queue_name, job)
+      storage.push(ANOTHER_TEST_QUEUE, job)
+
+      expect(storage.fetch_queue_names).to match_array([queue_name, ANOTHER_TEST_QUEUE])
     end
   end
 

@@ -20,7 +20,7 @@ module Workerholic
     end
 
     def empty?
-      storage.list_length(name).zero?
+      storage.list_length(name) == 0
     end
 
     def size

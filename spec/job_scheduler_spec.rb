@@ -13,8 +13,6 @@ describe Workerholic::JobScheduler do
   let(:scheduler) { Workerholic::JobScheduler.new(set_name: TEST_SCHEDULED_SORTED_SET, queue_name: TEST_QUEUE) }
   let(:redis) { Redis.new }
 
-  before { redis.del(TEST_SCHEDULED_SORTED_SET) }
-
   context 'with non-empty set' do
     let(:serialized_job) do
       job = Workerholic::JobWrapper.new(

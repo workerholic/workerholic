@@ -4,6 +4,7 @@ PATH
     workerholic (0.0.2)
       connection_pool (~> 2.2, >= 2.2.0)
       redis (~> 3.3, >= 3.3.3)
+      sinatra
 
 GEM
   remote: https://rubygems.org/

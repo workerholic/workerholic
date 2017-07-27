@@ -1,5 +1,4 @@
 require_relative 'job_test'
-require_relative '../lib/manager.rb'
 
 # 100000.times do |n|
 #   JobTestFast.new.perform_async('NONBLOCKING', n)

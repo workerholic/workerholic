@@ -26,10 +26,7 @@ describe Workerholic::Worker do
     }
   end
 
-  before do
-    redis.del(TEST_SCHEDULED_SORTED_SET)
-    WorkerJobTest.reset
-  end
+  before { WorkerJobTest.reset }
 
   context '#work' do
     it 'polls a job from a thread' do
