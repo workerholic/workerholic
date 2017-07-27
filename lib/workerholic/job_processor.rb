@@ -26,8 +26,6 @@ module Workerholic
         job.statistics.errors.push([e.class, e.message])
         retry_job(job)
 
-        job.statistics.add_stats(job, 'workerholic:stats:failed_jobs')
-
         #@logger.log('error', "Failed: your job from class #{job.klass} was unsuccessful. Retrying in 10 seconds.")
       end
 

@@ -51,16 +51,19 @@ module Workerholic
 # 'workerholic:stats:failed_jobs'
 # 'workerholic:stats:processed_jobs'
 # 'workerholic:stats:active_jobs'
+# 'workerholic:stats:scheduled_jobs'
 
     def job_stats_for_namespace(namespace)
       deserialized_stats = {}
       processed_jobs_count = 0
       classes_hash = storage.get_jobs_stats(namespace)
+
       classes_hash.keys.each do |key|
+
         classes_hash[key].each do |serialized_stat|
           stat_hash = JobSerializer.deserialize_stats(serialized_stat)
-
           key = stat_hash[:job_class]
+
           if deserialized_stats[key]
             deserialized_stats[key] << stat_hash
             processed_jobs_count += 1

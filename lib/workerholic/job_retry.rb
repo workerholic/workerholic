@@ -12,7 +12,10 @@ module Workerholic
     protected
 
     def retry
-      return false if job.retry_count >= 5
+      if job.retry_count >= 5
+        job.statistics.add_stats(job, 'workerholic:stats:failed_jobs')
+        return false
+      end
 
       increment_retry_count
       schedule_job_for_retry
