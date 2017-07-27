@@ -1,5 +1,7 @@
 $LOAD_PATH << __dir__ + '/../lib/'
 
+$TESTING = true
+
 require 'workerholic'
 
 require_relative 'helpers/helper_methods'
