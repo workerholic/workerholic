@@ -1,11 +1,13 @@
 require_relative 'spec_helper'
 
+WORKERS_COUNT = 25
+
 describe Workerholic::Manager do
   it 'creates a number of workers based on workers count' do
     manager = Workerholic::Manager.new
 
     manager.workers.each { |worker| expect(worker).to be_a(Workerholic::Worker) }
-    expect(manager.workers.size).to eq(Workerholic::Manager::WORKERS_COUNT)
+    expect(manager.workers.size).to eq(WORKERS_COUNT)
   end
 
   it 'creates a job scheduler' do
