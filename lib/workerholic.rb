@@ -23,8 +23,6 @@ require 'workerholic/job_serializer'
 require 'workerholic/statistics'
 require 'workerholic/log_manager'
 
-require_relative '../app_test/job_test' # require the application code
-
 module Workerholic
   def self.workers_count
     @workers_count || 25
