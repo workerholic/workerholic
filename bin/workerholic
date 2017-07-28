@@ -3,6 +3,7 @@
 require_relative '../lib/workerholic/cli'
 
 if defined?(Rails)
+  puts 'Loading Rails...'
   require File.expand_path("./config/environment.rb")
   require 'workerholic/adapters/active_job_adapter'
 end
