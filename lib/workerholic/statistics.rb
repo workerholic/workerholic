@@ -49,14 +49,12 @@ module Workerholic
 # available namespaces
 # 'workerholic:stats:completed_jobs'
 # 'workerholic:stats:failed_jobs'
-# 'workerholic:stats:processed_jobs'
-# 'workerholic:stats:active_jobs'
-# 'workerholic:stats:scheduled_jobs'
 
     def job_stats_for_namespace(namespace)
+      namespace = 'workerholic:stats:' + namespace
       deserialized_stats = {}
-      processed_jobs_count = 0
-      classes_hash = storage.get_jobs_stats(namespace)
+      stat_items_count = 0
+      classes_hash = storage.get_stats(namespace)
 
       classes_hash.keys.each do |key|
 
@@ -66,34 +64,33 @@ module Workerholic
 
           if deserialized_stats[key]
             deserialized_stats[key] << stat_hash
-            processed_jobs_count += 1
+            stat_items_count += 1
           else
             deserialized_stats[key] = [stat_hash]
-            processed_jobs_count = 1
+            stat_items_count = 1
           end
         end
       end
 
-      [deserialized_stats, processed_jobs_count]
+      [deserialized_stats, stat_items_count]
     end
 
-
     def jobs_classes
-      class_namespaces = ['workerholic:stats:active_jobs', 'workerholic:stats:processed_jobs']
-      storage.get_job_classes(class_namespaces)
+      class_namespaces = ['workerholic:stats:completed_jobs', 'workerholic:stats:failed_jobs']
+      classes = storage.get_classes(class_namespaces)
+      (classes.empty? ? nil : classes) || 'No class data is available yet.'
     end
 
     def queue_names(options={})
       persist_history = options[:history]
-      namespace = 'workerholic:stats:historic:queues'
       queues = []
 
       fetched_queues = storage.fetch_queue_names
       fetched_queues.each do |queue|
         queue_data = [queue.name, queue.size]
 
-        if persist_history
-          append_history(namespace, queue_data)
+        if persist_history == true
+          append_history('queues', queue_data)
         end
 
         queues << queue_data
@@ -103,19 +100,20 @@ module Workerholic
     end
 
     def append_history(namespace, value)
+      namespace = 'workerholic:stats:historic:' + namespace
       serialized_data = JobSerializer.serialize(value)
       storage.push_stats(namespace, serialized_data)
     end
 
-    def add_stats(job, stats_queue)
+    def add_stats(job, namespace)
       job_class = job.klass.to_s
       job.statistics.job_class = job_class
 
       serialized_job_stats = JobSerializer.serialize(job.statistics)
 
       # form a namespaced queue name like this: 'workerholic:stats:processed_jobs:our_class'
-      composite_queue_name = stats_queue + ":#{job_class}"
-      storage.push_stats(composite_queue_name, serialized_job_stats)
+      namespace = 'workerholic:stats:' + namespace + ":#{job_class}"
+      storage.push(namespace, serialized_job_stats)
     end
   end
 end

@@ -43,12 +43,9 @@ module TestRunner
 
   def self.calculate_primes(num_of_cycles)
     num_of_cycles.times do |n|
-      GetPrimes.new.perform_async(n, 1000000)
+      GetPrimes.new.perform_async(n, 10)
     end
   end
 end
 
-TestRunner.blocking(5)
-
-
-
+TestRunner.calculate_primes(5)

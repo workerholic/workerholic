@@ -13,7 +13,7 @@ module Workerholic
 
     def retry
       if job.retry_count >= 5
-        job.statistics.add_stats(job, 'workerholic:stats:failed_jobs')
+        job.statistics.add_stats(job, 'failed_jobs')
         return false
       end
 

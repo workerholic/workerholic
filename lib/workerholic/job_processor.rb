@@ -19,7 +19,7 @@ module Workerholic
 
         #@logger.log('info', "Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}. It took #{job.statistics.elapsed_time} from start to finish.")
 
-        job.statistics.add_stats(job, 'workerholic:stats:completed_jobs')
+        job.statistics.add_stats(job, 'completed_jobs')
 
         job_result
       rescue Exception => e
@@ -28,8 +28,6 @@ module Workerholic
 
         #@logger.log('error', "Failed: your job from class #{job.klass} was unsuccessful. Retrying in 10 seconds.")
       end
-
-      job.statistics.add_stats(job, 'workerholic:stats:processed_jobs')
 
       job_result
     end

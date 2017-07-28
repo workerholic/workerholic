@@ -46,12 +46,30 @@ module Workerholic
         execute { |conn| conn.keys('workerholic:queue*') }
       end
 
-      def push_stats(key, value)
-        execute { |conn| conn.rpush(key, value) }
-      end
-
       def keys_count(namespace)
         execute { |conn| conn.keys(namespace + ':*').size }
+      end
+
+      def hash_set(namespace, key, value)
+        execute do |conn|
+          key_exists = conn.hexists(namespace, key)
+
+          if key_exists
+            serialized_stats = conn.hget(namespace, key)
+            existing_stat = JobSerializer.deserialize_stats(serialized_stats)
+            existing_stat.push(value)
+            conn.hset(namespace, key, JobSerializer.serialize_stats(existing_stat))
+          else
+            serialized_stat = JobSerializer.serialize_stats([value])
+            conn.hset(namespace, key, serialized_stat)
+          end
+        end
+      end
+
+      def hash_get_key(namespace, key)
+        execute do |conn|
+          conn.hmget(namespace, key)
+        end
       end
 
       def get_stats(namespace)
@@ -67,16 +85,18 @@ module Workerholic
         end
       end
 
-      def get_job_classes(namespaces)
+      def get_classes(namespaces)
         execute do |conn|
           unique_classes = []
 
           namespaces.each do |namespace|
-            available_class = conn.keys(namespace + ':*').first
-            if available_class
+            available_classes = conn.keys(namespace + ':*')
+            if available_classes.size > 0
               # extract actual class name from the namespace
-              clean_class_name = available_class.split(':').last
-              unique_classes << clean_class_name
+              available_classes.each do |klass|
+                clean_class_name = klass.split(':').last
+                unique_classes << clean_class_name
+              end
             end
           end
 
