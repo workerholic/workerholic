@@ -1,3 +1,4 @@
+require 'redis'
 require 'sinatra'
 require 'sinatra/reloader'
 
@@ -27,4 +28,10 @@ end
 
 get '/scheduled' do
   erb :scheduled
+end
+
+get '/redis-data' do
+  redis = Redis.new
+
+  (1..redis.mget('data')[0].to_i).to_a.sample.to_s
 end
