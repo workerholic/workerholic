@@ -1,11 +1,11 @@
-<div id="statistics">
+<!-- <div id="statistics">
   <h2>Your current jobs overview</h2>
   <p id="completed">Finished Jobs: 0</p>
   <p>Jobs in queue: 100,000,000</p>
   <p id="failed">Jobs failed: 10,000,000</p>
-</div>
+</div> -->
 
-<table class='table'>
+<table class='table is-striped'>
   <thead>
     <tr>
       <th>Category</th>
@@ -15,15 +15,26 @@
   <tbody>
     <tr>
       <td>Finished Jobs</td>
-      <td>10,000,000</td>
+      <td class='data'>10,000,000</td>
     </tr>
     <tr>
       <td>Queued Jobs</td>
-      <td>1,000,000</td>
+      <td class='data'>1,000,000</td>
     </tr>
     <tr>
       <td>Failed Jobs</td>
-      <td>1,000,000</td>
+      <td class='data'>1,000,000</td>
+    </tr>
+    <tr>
+      <td>Number of Queues</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>Number of Workers</td>
+      <td>25</td>
     </tr>
   </tbody>
 </table>
+
+<div id="chart_container" style="height: 300px; width: 100%">
+</div>

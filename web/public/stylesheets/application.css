@@ -15,6 +15,7 @@ header {
 
 section {
   width: 1200px;
+  padding-bottom: 100px;
   margin: 0 auto;
 }
 
@@ -59,6 +60,10 @@ nav a:hover {
 
 .last_row {
   border-top: 5px solid #a1a1a1;
+}
+
+.data {
+  width: 200px;
 }
 
 #statistics {
