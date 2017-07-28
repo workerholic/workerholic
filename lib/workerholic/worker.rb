@@ -20,7 +20,7 @@ module Workerholic
         #puts "DONE!"
       end
     rescue ThreadError => e
-      @logger.log('info', e.message)
+      @logger.info(e.message)
       raise Interrupt
     end
 
