@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    workerholic (0.0.2)
+    workerholic (0.0.3)
       connection_pool (~> 2.2, >= 2.2.0)
       redis (~> 3.3, >= 3.3.3)
       sinatra
