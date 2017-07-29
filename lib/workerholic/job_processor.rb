@@ -1,10 +1,9 @@
 module Workerholic
   class JobProcessor
-    attr_reader :serialized_job, :stats_storage
+    attr_reader :serialized_job
 
     def initialize(serialized_job)
       @serialized_job = serialized_job
-      @stats_storage = StatsStorage.new
       @logger = LogManager.new
     end
 
@@ -16,7 +15,7 @@ module Workerholic
         job_result = job.perform
         job.statistics.completed_at = Time.now.to_f
 
-        stats_storage.save_job('completed_jobs', job)
+        StatsStorage.save_job('completed_jobs', job)
 
         # @logger.info("Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}.")
       rescue Exception => e

@@ -1,58 +1,56 @@
 module Workerholic
   class StatsAPI
-    attr_reader :storage
-
-    def initialize
-      @storage = Storage::RedisWrapper.new
-    end
-
     # available categories
     # completed_jobs
     # failed_jobs
 
-    def job_statistics(category)
-      stats = storage.keys_for_namespace("workerholic:stats:#{category}")
-      parse_job_classes(stats)
+    def self.job_statistics(category)
+      stats = self.storage.keys_for_namespace("workerholic:stats:#{category}")
+      self.parse_job_classes(stats)
     end
 
-    def jobs_classes
+    def self.jobs_classes
       class_namespaces = ['workerholic:stats:completed_jobs', 'workerholic:stats:failed_jobs']
-      classes = storage.peek_namespaces(class_namespaces)
+      classes = self.storage.peek_namespaces(class_namespaces)
 
       parsed_classes = classes.map do |klass|
         klass.split(':').last
       end.uniq
 
-      (parsed_classes.empty? ? nil : parsed_classes) || 'No class data is available yet.'
+      parsed_classes.empty? ? 'No class data is available yet.' : parsed_classes
     end
 
-    def queue_names
+    def self.queue_names
       queues = []
 
-      fetched_queues = storage.fetch_queue_names
+      fetched_queues = self.storage.fetch_queue_names
       fetched_queues.each do |queue|
         queue_data = [queue.name, queue.size]
         queues << queue_data
       end
 
-      (queues.empty? ? nil : queues) || 'No queues data is available yet.'
+      (queues.empty? ? 'No queues data is available yet.': queues)
     end
 
     private
 
-    def parse_job_classes(job_classes)
+    def self.parse_job_classes(job_classes)
       job_classes.map do |job_class|
-        get_jobs_for_class(job_class)
+        self.get_jobs_for_class(job_class)
       end
     end
 
-    def get_jobs_for_class(job_class)
-      serialized_jobs = storage.peek_namespace(job_class)
+    def self.get_jobs_for_class(job_class)
+      serialized_jobs = self.storage.peek_namespace(job_class)
       deserialized_stats = serialized_jobs.map do |serialized_job|
         JobSerializer.deserialize_stats(serialized_job)
       end
 
       deserialized_stats
+    end
+
+    def self.storage
+      storage ||= Storage::RedisWrapper.new
     end
   end
 end

@@ -10,7 +10,6 @@ module Workerholic
       @alive = true
       @logger = LogManager.new
       @auto = opts[:auto_balance]
-      @stats_api = StatsAPI.new
     end
 
     def start
@@ -79,6 +78,7 @@ module Workerholic
           output_balancer_stats
 
           sleep 2
+          p StatsAPI.job_statistics('completed_jobs')
         end
       end
     end

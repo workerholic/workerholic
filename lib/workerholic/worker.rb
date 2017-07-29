@@ -11,14 +11,14 @@ module Workerholic
     end
 
     def work
-        @thread = Thread.new do
-          while alive
-            serialized_job = poll
-            JobProcessor.new(serialized_job).process if serialized_job
-          end
-
-          #puts "DONE!"
+      @thread = Thread.new do
+        while alive
+          serialized_job = poll
+          JobProcessor.new(serialized_job).process if serialized_job
         end
+
+        #puts "DONE!"
+      end
     rescue ThreadError => e
       @logger.info(e.message)
       raise Interrupt
