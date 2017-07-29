@@ -50,35 +50,14 @@ module Workerholic
         execute { |conn| conn.keys(namespace + ':*').size }
       end
 
-      def hash_set(namespace, key, value)
-        execute do |conn|
-          key_exists = conn.hexists(namespace, key)
-
-          if key_exists
-            serialized_stats = conn.hget(namespace, key)
-            existing_stat = JobSerializer.deserialize_stats(serialized_stats)
-            existing_stat.push(value)
-            conn.hset(namespace, key, JobSerializer.serialize_stats(existing_stat))
-          else
-            serialized_stat = JobSerializer.serialize_stats([value])
-            conn.hset(namespace, key, serialized_stat)
-          end
-        end
-      end
-
-      def hash_get_key(namespace, key)
-        execute do |conn|
-          conn.hmget(namespace, key)
-        end
-      end
-
       def get_stats(namespace)
         execute do |conn|
           job_classes = conn.keys(namespace + ":*")
-          jobs_stats = {}
+          jobs_stats = []
 
           job_classes.each do |job_class|
-            jobs_stats[job_class] = conn.lrange(job_class, 0, -1)
+            clean_class_name = job_class.split(':').last
+            jobs_stats << [clean_class_name, conn.lrange(job_class, 0, -1)]
           end
 
           jobs_stats

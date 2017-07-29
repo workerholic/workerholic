@@ -77,7 +77,6 @@ module Workerholic
           distribute_unassigned_worker(total_workers_count)
           output_balancer_stats
 
-          p Statistics.new.job_stats_for_namespace('completed_jobs')
           sleep 2
         end
       end

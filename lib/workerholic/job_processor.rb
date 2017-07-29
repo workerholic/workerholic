@@ -15,11 +15,10 @@ module Workerholic
         job.statistics.started_at = Time.now.to_f
         job_result = job.perform
         job.statistics.completed_at = Time.now.to_f
-        job.statistics.set_elapsed_time
+        job.statistics.elapsed_time
 
         #@logger.log('info', "Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}. It took #{job.statistics.elapsed_time} from start to finish.")
-
-        job.statistics.add_stats(job, 'completed_jobs')
+        Statistics.add_stat('completed_jobs', job)
 
         job_result
       rescue Exception => e

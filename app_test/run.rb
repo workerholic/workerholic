@@ -48,4 +48,4 @@ module TestRunner
   end
 end
 
-TestRunner.calculate_primes(5)
+TestRunner.non_blocking(2)
