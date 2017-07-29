@@ -3,11 +3,15 @@ module ActiveJob
     class WorkerholicAdapter
       def enqueue(job)
         job_data = job.serialize
+        queue_name = "workerholic:queue:#{job_data['queue_name']}"
 
-        JobWrapper.new.perform_async(
-          class: job_data[:job_class],
-          arguments: job_data[:arguments]
-        )
+        job = JobWrapper.new
+        job.instance_variable_set(:@queue_name, queue_name)
+
+        # capture job class so it can be passed to `Base.execute` in `JobWrapper#perform`
+        job.instance_variable_set(:@class, job_data['job_class'])
+
+        job.perform_async(*job_data['arguments'])
       end
 
       class JobWrapper
@@ -19,6 +23,4 @@ module ActiveJob
       end
     end
   end
-
-  autoload :WorkerholicAdapter
 end
