@@ -1,11 +1,9 @@
 require 'spec_helper'
 
-describe Workerholic::Statistics do
+describe Workerholic::JobStatistics do
   it 'initializes attributes if no argument supplied' do
-    statistics = Workerholic::Statistics.new
-    expect(statistics.job_class).to be_nil
+    statistics = Workerholic::JobStatistics.new
     expect(statistics.failed_on).to be_nil
-    expect(statistics.job_class).to be_nil
     expect(statistics.enqueued_at).to be_nil
     expect(statistics.errors).to eq([])
     expect(statistics.started_at).to be_nil
@@ -24,10 +22,9 @@ describe Workerholic::Statistics do
       started_at: started_at_time,
       completed_at: completed_at_time,
       elapsed_time: elapsed_time,
-      failed_on: nil,
-      job_class: nil
+      failed_on: nil
     }
 
-    expect(Workerholic::Statistics.new(options).to_hash).to eq(options)
+    expect(Workerholic::JobStatistics.new(options).to_hash).to eq(options)
   end
 end

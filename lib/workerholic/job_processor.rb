@@ -19,12 +19,6 @@ module Workerholic
         stats_storage.save_job('completed_jobs', job)
 
         # @logger.info("Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}.")
-
-        job.statistics.elapsed_time
-
-        Statistics.add_stat('completed_jobs', job)
-
-        job_result
       rescue Exception => e
         job.statistics.errors.push([e.class, e.message])
         retry_job(job)

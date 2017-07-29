@@ -9,7 +9,7 @@ describe 'enqueuing jobs to Redis' do
       serialized_job = redis.lpop(TEST_QUEUE)
       job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
-      expected_job = Workerholic::JobWrapper.new(class: SimpleJobTest, arguments: ['test job'])
+      expected_job = Workerholic::JobWrapper.new(klass: SimpleJobTest, arguments: ['test job'])
       expected_job.statistics.enqueued_at = job_from_redis.statistics.enqueued_at
 
       expect(job_from_redis.to_hash).to eq(expected_job.to_hash)
@@ -21,12 +21,11 @@ describe 'enqueuing jobs to Redis' do
       job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
 
       expected_job = Workerholic::JobWrapper.new(
-        class: ComplexJobTest,
+        klass: ComplexJobTest,
         arguments: ['test job', { a: 1, b: 2 }, [1, 2, 3]]
       )
 
       expected_job.statistics.enqueued_at = job_from_redis.statistics.enqueued_at
-      expected_job.statistics.job_class = job_from_redis.statistics.job_class
 
       expect(job_from_redis.to_hash).to eq(expected_job.to_hash)
     end
