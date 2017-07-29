@@ -1,10 +1,11 @@
 module Workerholic
   class JobWrapper
     attr_accessor :retry_count, :execute_at
-    attr_reader :klass, :arguments, :statistics
+    attr_reader :klass, :arguments, :statistics, :wrapper
 
     def initialize(options={})
       @klass = options[:class]
+      @wrapper = options[:wrapper]
       @arguments = options[:arguments]
       @execute_at = options[:execute_at]
       @retry_count = options[:retry_count] || 0
@@ -14,6 +15,7 @@ module Workerholic
     def to_hash
       {
         class: klass,
+        wrapper: wrapper,
         arguments: arguments,
         retry_count: retry_count,
         execute_at: execute_at,
@@ -22,7 +24,14 @@ module Workerholic
     end
 
     def perform
-      klass.new.perform(*arguments)
+      if wrapper == ActiveJob::QueueAdapters::WorkerholicAdapter::JobWrapper
+        wrapper.new.perform(
+          'job_class' => klass,
+          'arguments' => arguments
+        )
+      else
+        klass.new.perform(*arguments)
+      end
     end
 
     def ==(other)
