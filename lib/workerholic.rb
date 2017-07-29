@@ -23,6 +23,8 @@ require 'workerholic/job_serializer'
 require 'workerholic/statistics'
 require 'workerholic/log_manager'
 
+require 'workerholic/adapters/active_job_adapter' if defined?(Rails)
+
 module Workerholic
   def self.workers_count
     @workers_count || 25
