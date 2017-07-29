@@ -42,40 +42,21 @@ module Workerholic
         execute(retry_delay) { |conn| conn.zcount(key, 0, '+inf') }
       end
 
-      def keys_count(namespace)
-        execute { |conn| conn.keys(namespace + ':*').size }
+      def keys_count(namespace, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.keys(namespace + ':*').size }
       end
 
-      def get_stats(namespace)
-        execute do |conn|
-          job_classes = conn.keys(namespace + ":*")
-          jobs_stats = []
-
-          job_classes.each do |job_class|
-            clean_class_name = job_class.split(':').last
-            jobs_stats << [clean_class_name, conn.lrange(job_class, 0, -1)]
-          end
-
-          jobs_stats
-        end
+      def keys_for_namespace(namespace, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.keys(namespace + ':*') }
       end
 
-      def get_classes(namespaces)
-        execute do |conn|
-          unique_classes = []
+      def peek_namespace(key, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.lrange(key, 0, -1) }
+      end
 
-          namespaces.each do |namespace|
-            available_classes = conn.keys(namespace + ':*')
-            if available_classes.size > 0
-              # extract actual class name from the namespace
-              available_classes.each do |klass|
-                clean_class_name = klass.split(':').last
-                unique_classes << clean_class_name
-              end
-            end
-          end
-
-          unique_classes.uniq
+      def peek_namespaces(keys, retry_delay = 5)
+        execute(retry_delay) do |conn|
+          keys.select { |namespace| conn.keys(namespace + ':*').size > 0 }
         end
       end
 

@@ -1,10 +1,11 @@
 module Workerholic
   class JobRetry
-    attr_reader :job, :sorted_set
+    attr_reader :job, :sorted_set, :stats_storage
 
     def initialize(options={})
       @job = options[:job]
       @sorted_set = options[:sorted_set] || SortedSet.new('workerholic:scheduled_jobs')
+      @stats_storage = StatsStorage.new
 
       self.retry
     end
@@ -13,7 +14,7 @@ module Workerholic
 
     def retry
       if job.retry_count >= 5
-        Statistics.add_stat('failed_jobs', job)
+        stats_storage.save_job('failed_jobs', job)
         return false
       end
 

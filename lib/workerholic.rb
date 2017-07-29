@@ -18,10 +18,13 @@ require 'workerholic/job_retry'
 require 'workerholic/storage'
 require 'workerholic/sorted_set'
 require 'workerholic/queue'
+require 'workerholic/statistics_storage'
 
 require 'workerholic/job_serializer'
-require 'workerholic/statistics'
+require 'workerholic/job_statistics'
 require 'workerholic/log_manager'
+
+require 'workerholic/statistics_api'
 
 module Workerholic
   def self.workers_count

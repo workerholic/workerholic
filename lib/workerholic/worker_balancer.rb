@@ -10,6 +10,7 @@ module Workerholic
       @alive = true
       @logger = LogManager.new
       @auto = opts[:auto_balance]
+      @stats_api = StatsAPI.new
     end
 
     def start

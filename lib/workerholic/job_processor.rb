@@ -1,10 +1,10 @@
 module Workerholic
   class JobProcessor
-    attr_reader :serialized_job, :storage
+    attr_reader :serialized_job, :stats_storage
 
     def initialize(serialized_job)
       @serialized_job = serialized_job
-      @storage = Storage::RedisWrapper.new
+      @stats_storage = StatsStorage.new
       @logger = LogManager.new
     end
 
@@ -15,9 +15,8 @@ module Workerholic
         job.statistics.started_at = Time.now.to_f
         job_result = job.perform
         job.statistics.completed_at = Time.now.to_f
-        job.statistics.elapsed_time
 
-        Statistics.add_stat('completed_jobs', job)
+        stats_storage.save_job('completed_jobs', job)
 
         # @logger.info("Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}.")
 
