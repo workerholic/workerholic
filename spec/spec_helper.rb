@@ -1,5 +1,7 @@
 $LOAD_PATH << __dir__ + '/../lib/'
 
+$TESTING = true
+
 require 'workerholic'
 
 require_relative 'helpers/helper_methods'
@@ -15,4 +17,8 @@ RSpec.configure do |config|
   end
 
   config.shared_context_metadata_behavior = :apply_to_host_groups
+
+  config.before do
+    Redis.new.del(TEST_QUEUE, ANOTHER_TEST_QUEUE, BALANCER_TEST_QUEUE, ANOTHER_BALANCER_TEST_QUEUE, TEST_SCHEDULED_SORTED_SET)
+  end
 end

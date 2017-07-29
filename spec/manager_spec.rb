@@ -5,7 +5,7 @@ describe Workerholic::Manager do
     manager = Workerholic::Manager.new
 
     manager.workers.each { |worker| expect(worker).to be_a(Workerholic::Worker) }
-    expect(manager.workers.size).to eq(Workerholic::Manager::WORKERS_COUNT)
+    expect(manager.workers.size).to eq(Workerholic.workers_count)
   end
 
   it 'creates a job scheduler' do
@@ -17,10 +17,12 @@ describe Workerholic::Manager do
   it 'starts up the workers and the scheduler' do
     manager = Workerholic::Manager.new
 
+    allow_any_instance_of(Workerholic::Worker).to receive(:work) { nil }
+
     expect(manager.workers.first).to receive(:work)
     expect(manager.scheduler).to receive(:start)
-    Thread.new { manager.start }
 
-    sleep(0.1)
+    t = Thread.new { manager.start }
+    sleep(0.01)
   end
 end
