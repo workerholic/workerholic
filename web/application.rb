@@ -1,7 +1,12 @@
+require 'redis'
 require 'sinatra'
 require 'sinatra/reloader'
 
 get '/' do
+  redirect '/overview'
+end
+
+get '/overview' do
   erb :index
 end
 
@@ -10,21 +15,23 @@ get '/details' do
 end
 
 get '/queues' do
-  #placeholder
-  erb :index
+  erb :queues
 end
 
 get '/workers' do
-  #placeholder
   erb :workers
 end
 
 get '/failed' do
-  #placeholder
-  erb :index
+  erb :failed
 end
 
 get '/scheduled' do
-  #placeholder
   erb :scheduled
+end
+
+get '/redis-data' do
+  redis = Redis.new
+
+  (1..redis.mget('data')[0].to_i).to_a.sample.to_s
 end
