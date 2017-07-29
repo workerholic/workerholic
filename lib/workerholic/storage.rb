@@ -46,6 +46,12 @@ module Workerholic
         execute(retry_delay) { |conn| conn.keys(namespace + ':*').size }
       end
 
+      def fetch_queue_names(retry_delay = 5)
+        queue_name_pattern = $TESTING ? 'workerholic:testing:queue*' : 'workerholic:queue*'
+
+        execute(retry_delay) { |conn| conn.scan(0, match: queue_name_pattern).last }
+      end
+
       def keys_for_namespace(namespace, retry_delay = 5)
         execute(retry_delay) { |conn| conn.keys(namespace + ':*') }
       end
@@ -58,12 +64,6 @@ module Workerholic
         execute(retry_delay) do |conn|
           keys.select { |namespace| conn.keys(namespace + ':*').size > 0 }
         end
-      end
-
-      def fetch_queue_names(retry_delay = 5)
-        queue_name_pattern = $TESTING ? 'workerholic:testing:queue*' : 'workerholic:queue*'
-
-        execute(retry_delay) { |conn| conn.scan(0, match: queue_name_pattern).last }
       end
 
       class RedisCannotRecover < Redis::CannotConnectError; end
