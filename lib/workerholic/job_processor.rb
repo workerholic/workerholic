@@ -13,17 +13,16 @@ module Workerholic
         job_result = job.perform
         job.statistics.completed_at = Time.now.to_f
 
-        # @logger.info("Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}.")
+        @logger.info("Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}.")
 
         job_result
       rescue Exception => e
+
         job.statistics.errors.push([e.class, e.message])
         JobRetry.new(job: job)
 
-        # @logger.error("Failed: your job from class #{job.class} was unsuccessful. Retrying in 10 seconds.")
+        @logger.error("Failed: your job from class #{job.class} was unsuccessful. Retrying in 10 seconds.")
       end
-
-      # Push job into some collection
     end
   end
 end
