@@ -87,8 +87,8 @@ module Workerholic
     end
 
     def output_balancer_stats
-      @logger.log('info', queues.map { |q| { name: q.name, size: q.size } })
-      @logger.log('info', current_workers_count_per_queue)
+      @logger.info(queues.map { |q| { name: q.name, size: q.size } })
+      @logger.info(current_workers_count_per_queue)
     end
 
     def assign_one_worker_per_queue

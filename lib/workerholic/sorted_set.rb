@@ -20,7 +20,7 @@ module Workerholic
     end
 
     def empty?
-      storage.set_empty?(name) == 0
+      storage.sorted_set_size(name) == 0
     end
   end
 end

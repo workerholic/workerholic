@@ -1,5 +1,10 @@
 require_relative 'job_test'
 
+unsorted_array = (1..1000).to_a.shuffle
+1000.times do |n|
+  HeavyCalculation.new.perform_async(n, unsorted_array)
+end
+
 module TestRunner
   def self.non_blocking(num_of_cycles)
     num_of_cycles.times do |n|

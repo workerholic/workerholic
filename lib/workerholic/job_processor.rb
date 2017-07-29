@@ -17,15 +17,16 @@ module Workerholic
         job.statistics.completed_at = Time.now.to_f
         job.statistics.elapsed_time
 
-        #@logger.log('info', "Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}. It took #{job.statistics.elapsed_time} from start to finish.")
         Statistics.add_stat('completed_jobs', job)
+
+        # @logger.info("Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}.")
 
         job_result
       rescue Exception => e
         job.statistics.errors.push([e.class, e.message])
         retry_job(job)
 
-        #@logger.log('error', "Failed: your job from class #{job.klass} was unsuccessful. Retrying in 10 seconds.")
+        # @logger.error("Failed: your job from class #{job.class} was unsuccessful. Retrying in 10 seconds.")
       end
 
       job_result

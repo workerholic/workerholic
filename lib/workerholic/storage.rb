@@ -13,37 +13,33 @@ module Workerholic
         end
       end
 
-      def list_length(key)
-        execute { |conn| conn.llen(key) }
+      def list_length(key, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.llen(key) }
       end
 
-      def push(key, value)
-        execute { |conn| conn.rpush(key, value) }
+      def push(key, value, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.rpush(key, value) }
       end
 
       # blocking pop from Redis queue
-      def pop(key, timeout = 1)
-        execute { |conn| conn.blpop(key, timeout) }
+      def pop(key, timeout = 1, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.blpop(key, timeout) }
       end
 
-      def add_to_set(key, score, value)
-        execute { |conn| conn.zadd(key, score, value) }
+      def add_to_set(key, score, value, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.zadd(key, score, value) }
       end
 
-      def peek(key)
-        execute { |conn| conn.zrange(key, 0, 0, with_scores: true).first }
+      def peek(key, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.zrange(key, 0, 0, with_scores: true).first }
       end
 
-      def remove_from_set(key, score)
-        execute { |conn| conn.zremrangebyscore(key, score, score) }
+      def remove_from_set(key, score, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.zremrangebyscore(key, score, score) }
       end
 
-      def set_empty?(key)
-        execute { |conn| conn.zcount(key, 0, '+inf') }
-      end
-
-      def fetch_queue_names
-        execute { |conn| conn.keys('workerholic:queue*') }
+      def sorted_set_size(key, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.zcount(key, 0, '+inf') }
       end
 
       def keys_count(namespace)
@@ -83,22 +79,27 @@ module Workerholic
         end
       end
 
+      def fetch_queue_names(retry_delay = 5)
+        queue_name_pattern = $TESTING ? 'workerholic:testing:queue*' : 'workerholic:queue*'
+
+        execute(retry_delay) { |conn| conn.scan(0, match: queue_name_pattern).last }
+      end
+
       class RedisCannotRecover < Redis::CannotConnectError; end
 
       private
 
-      def execute
+      def execute(retry_delay = 5)
         begin
           result = redis.with { |conn| yield conn }
           reset_retries
         rescue Redis::CannotConnectError
-          # LogManager might want to output our retries to the user
           @retries += 1
           if retries_exhausted?
             raise RedisCannotRecover, 'Redis reconnect retries exhausted. Main Workerholic thread will be terminated now.'
           end
 
-          sleep(5)
+          sleep retry_delay
           retry
         end
 

@@ -9,8 +9,6 @@ end
 describe Workerholic::JobRetry do
   let(:redis) { Redis.new }
 
-  before { redis.del(TEST_SCHEDULED_SORTED_SET) }
-
   it 'increments retry count' do
     job = Workerholic::JobWrapper.new(class: JobWithError, arguments: [])
 
