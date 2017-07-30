@@ -29,7 +29,7 @@ module Workerholic
       OptionParser.new do |opts|
         opts.banner = 'Usage: workerholic [options]'
 
-        opts.on '-ab', '--auto-balance', 'auto-balance workers based on number of jobs in each queue' do
+        opts.on '-a', '--auto-balance', 'auto-balance workers based on number of jobs in each queue' do
           options[:auto_balance] = true
         end
 

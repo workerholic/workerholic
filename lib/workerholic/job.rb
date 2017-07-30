@@ -40,7 +40,7 @@ module Workerholic
     def prepare_job_for_enqueueing(args)
       raise ArgumentError if self.method(:perform).arity != args.size
 
-      job = JobWrapper.new(class: self.class, arguments: args)
+      job = JobWrapper.new(klass: self.class, arguments: args)
       job.statistics.enqueued_at = Time.now.to_f
 
       [JobSerializer.serialize(job), specified_job_options[:queue_name]]

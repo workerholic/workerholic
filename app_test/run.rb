@@ -1,43 +1,51 @@
 require_relative 'job_test'
 
-# 100000.times do |n|
-#   JobTestFast.new.perform_async('NONBLOCKING', n)
-#   # sleep(0.0015)
-# end
+module TestRunner
+  def self.non_blocking(num_of_cycles)
+    num_of_cycles.times do |n|
+       JobTestFast.new.perform_async('NONBLOCKING', n)
+    end
+  end
 
-# 10000.times do |n|
-#   JobTestSlow.new.perform_async('BLOCKING', n)
-#   sleep(0.0015)
-# end
+  def self.blocking(num_of_cycles)
+    num_of_cycles.times do |n|
+      JobTestSlow.new.perform_async('BLOCKING', n)
+    end
+  end
 
-# 100000.times do |n|
-#   ThreadKiller.new.perform_async('Kill', n)
-# end
+  def self.thread_killer(num_of_cycles)
+    num_of_cycles.times do |n|
+      ThreadKiller.new.perform_async('Kill', n)
+    end
+  end
 
-# arg = Array.new(10000, 'string')
-# 10000.times do |n|
-#   LargeArg.new.perform_async(arg, n)
-# end
+  def self.large_arg(num_of_cycles)
+    arg = Array.new(10000, 'string')
 
-# unsorted_array = (1..10000).to_a.shuffle
-unsorted_array = (1..1000).to_a.shuffle
-1000.times do |n|
-  HeavyCalculation.new.perform_async(n, unsorted_array)
+    num_of_cycles.times do |n|
+      LargeArg.new.perform_async(arg, n)
+    end
+  end
+
+  def self.sort_array(num_of_cycles, array_size)
+    unsorted_array = (0..array_size).to_a.shuffle
+
+    num_of_cycles.times do |n|
+      HeavyCalculation.new.perform_async(n, unsorted_array)
+    end
+  end
+
+  def self.many_args(num_of_cycles)
+    num_of_cycles.times do |n|
+      ManyArgs.new.perform_async(n, [1, 2, 3], { key: 'value'}, :symb, 'string', 22, false)
+    end
+  end
+
+  def self.calculate_primes(num_of_cycles)
+    num_of_cycles.times do |n|
+      GetPrimes.new.perform_async(n, 10)
+    end
+  end
 end
 
-5_000.times do |n|
-  JobTestFast.new.perform_async('NON BLOCKING', n)
-  JobTestFast.new.perform_async('NON BLOCKING', n)
-  # JobTestFast.new.perform_async('NON BLOCKING', n)
-  # JobTestFast.new.perform_async('NON BLOCKING', n)
-  # # JobTestSlow.new.perform_async('BLOCKING', n)
-  JobTestSlow.new.perform_async('BLOCKING', n)
-end
-
-# 100000.times do |n|
-#   ManyArgs.new.perform_async(n, [1, 2, 3], { key: 'value'}, :symb, 'string', 22, false)
-# end
-
-# 100000.times do |n|
-#   GetPrimes.new.perform_async(n, 1000000)
-# end
+TestRunner.non_blocking(2)

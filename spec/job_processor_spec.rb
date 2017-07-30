@@ -11,7 +11,7 @@ end
 
 describe Workerholic::JobProcessor do
   it 'processes a simple job' do
-    job = Workerholic::JobWrapper.new(class: SimpleJobTest, arguments: ['test job'])
+    job = Workerholic::JobWrapper.new(klass: SimpleJobTest, arguments: ['test job'])
     serialized_job = Workerholic::JobSerializer.serialize(job)
 
     job_processor = Workerholic::JobProcessor.new(serialized_job)
@@ -22,9 +22,9 @@ describe Workerholic::JobProcessor do
 
   it 'processes a complex job' do
     serialized_job = Workerholic::JobSerializer.serialize({
-      class: ComplexJobTest,
+      klass: ComplexJobTest,
       arguments: ['test job', { a: 1, b: 2 }, [1, 2, 3]],
-      statistics: Workerholic::Statistics.new.to_hash
+      statistics: Workerholic::JobStatistics.new.to_hash
     })
 
     job_processor = Workerholic::JobProcessor.new(serialized_job)
@@ -35,9 +35,9 @@ describe Workerholic::JobProcessor do
 
   it 'does not raise an error when processing a job with error' do
     serialized_job = Workerholic::JobSerializer.serialize({
-                       class: SimpleJobTestWithError,
+                       klass: SimpleJobTestWithError,
                        arguments: [],
-                       statistics: Workerholic::Statistics.new.to_hash
+                       statistics: Workerholic::JobStatistics.new.to_hash
                      })
 
     job_processor = Workerholic::JobProcessor.new(serialized_job)
@@ -47,9 +47,9 @@ describe Workerholic::JobProcessor do
 
   it 'retries job when job processing fails' do
     job = {
-      class: SimpleJobTestWithError,
+      klass: SimpleJobTestWithError,
       arguments: [],
-      statistics: Workerholic::Statistics.new.to_hash
+      statistics: Workerholic::JobStatistics.new.to_hash
     }
     serialized_job = Workerholic::JobSerializer.serialize(job)
 

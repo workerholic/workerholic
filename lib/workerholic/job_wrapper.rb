@@ -4,16 +4,16 @@ module Workerholic
     attr_reader :klass, :arguments, :statistics
 
     def initialize(options={})
-      @klass = options[:class]
+      @klass = options[:klass]
       @arguments = options[:arguments]
       @execute_at = options[:execute_at]
       @retry_count = options[:retry_count] || 0
-      @statistics = Statistics.new(options[:statistics] || {})
+      @statistics = JobStatistics.new(options[:statistics] || {})
     end
 
     def to_hash
       {
-        class: klass,
+        klass: klass,
         arguments: arguments,
         retry_count: retry_count,
         execute_at: execute_at,

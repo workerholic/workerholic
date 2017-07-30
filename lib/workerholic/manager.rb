@@ -28,6 +28,8 @@ module Workerholic
       scheduler.kill
     end
 
+    private
+
 =begin
     def regenerate_workers
       inactive_workers = WORKERS_COUNT - workers.size
