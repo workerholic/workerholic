@@ -1,32 +1,49 @@
-<html>
-  <head>
-    <title>Workerholic Overview</title>
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
-    <link href='stylesheets/application.css' rel='stylesheet'>
-  </head>
+<table class='table'>
+  <thead>
+    <tr>
+      <th>Class</th>
+      <th>Enqueued</th>
+      <th>Failed</th>
+      <th>Completed</th>
+      <th>Total</th>
+    </tr>
+  </thead>
 
-  <body>
-    <header>
-      Workerholic
-    </header>
-    <nav>
-      <ul>
-        <li><a href='/'>Overview</a></li>
-        <li><a href='/details'>Job Details</a></li>
-        <li><a href='/queues'>Queues</a></li>
-        <li><a href='/queues'>Workers</a></li>  
-        <li><a href='/what'>Failed</a></li>
-        <li><a href='/what'>Scheduled</a></li>
-      </ul>
-    </nav>
-
-    <div id="statistics">
-      <h2>Your current active queues:</h2>
-      <p>JobTestFast: 1,234</p>
-      <p>JobtestSlow: 2,144,822</p>
-      <p>GetPrimes:     102,891</p>
-      <p>Total: 2,248,947</p>
-    </div>
-
-  </body>
-</html>
+  <tbody>
+    <tr>
+      <td>JobTestFast</td>
+      <td>1,833,222</td>
+      <td>171,882</td>
+      <td>22,198,122</td>
+      <td>24,123,233</td>
+    </tr>
+    <tr>
+      <td>JobTestSlow</td>
+      <td>1,833,222</td>
+      <td>171,882</td>
+      <td>22,198,122</td>
+      <td>24,123,233</td>
+    </tr>
+    <tr>
+      <td>GetPrime</td>
+      <td>1,833,222</td>
+      <td>171,882</td>
+      <td>22,198,122</td>
+      <td>24,123,233</td>
+    </tr>
+    <tr>
+      <td>SendWelcomeEmail</td>
+      <td>1,833,222</td>
+      <td>171,882</td>
+      <td>22,198,122</td>
+      <td>24,123,233</td>
+    </tr>
+    <tr class='last_row'>
+      <th>Total:</td>
+      <td>1,833,222</td>
+      <td>171,882</td>
+      <td>22,198,122</td>
+      <td>24,123,233</td>
+    </tr>
+  </tbody>
+</table>

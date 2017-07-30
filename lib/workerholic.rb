@@ -18,10 +18,14 @@ require 'workerholic/job_retry'
 require 'workerholic/storage'
 require 'workerholic/sorted_set'
 require 'workerholic/queue'
+require 'workerholic/statistics_storage'
 
 require 'workerholic/job_serializer'
-require 'workerholic/statistics'
+require 'workerholic/job_statistics'
 require 'workerholic/log_manager'
+
+require 'workerholic/statistics_api'
+require 'workerholic/statistics_storage'
 
 require 'workerholic/adapters/active_job_adapter' if defined?(Rails)
 

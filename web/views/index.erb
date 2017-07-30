@@ -1,35 +1,40 @@
-<html>
-  <head>
-    <title>Workerholic Overview</title>
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
-    <link href='stylesheets/application.css' rel='stylesheet'>
-  </head>
+<!-- <div id="statistics">
+  <h2>Your current jobs overview</h2>
+  <p id="completed">Finished Jobs: 0</p>
+  <p>Jobs in queue: 100,000,000</p>
+  <p id="failed">Jobs failed: 10,000,000</p>
+</div> -->
 
-  <body>
-    <header>
-      Workerholic
-    </header>
-    <nav>
-      <ul>
-        <li><a href='/'>Overview</a></li>
-        <li><a href='/details'>Job Details</a></li>
-        <li><a href='/placehold'>Queues</a></li>
-        <li><a href='/workers'>Workers</a></li>
-        <li><a href='/what'>Failed</a></li>
-        <li><a href='/what'>Scheduled</a></li>
-      </ul>
-    </nav>
+<table class='table is-striped'>
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Finished Jobs</td>
+      <td class='data'>10,000,000</td>
+    </tr>
+    <tr>
+      <td>Queued Jobs</td>
+      <td class='data'>1,000,000</td>
+    </tr>
+    <tr>
+      <td>Failed Jobs</td>
+      <td class='data'>1,000,000</td>
+    </tr>
+    <tr>
+      <td>Number of Queues</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>Number of Workers</td>
+      <td>25</td>
+    </tr>
+  </tbody>
+</table>
 
-    <div id="statistics">
-      <h2>Your current jobs overview</h2>
-      <p id="completed">Finished Jobs: 0</p>
-      <p>Jobs in queue: 100,000,000</p>
-      <p id="failed">Jobs failed: 10,000,000</p>
-    </div>
-
-    <footer>
-      <p>&copy; 2017 Workerholic. All rights reserved.</p>
-    </footer>
-
-  </body>
-</html>
+<div id="chart_container" style="height: 300px; width: 100%">
+</div>

@@ -20,9 +20,9 @@ describe Workerholic::Worker do
   let(:redis) { Redis.new }
   let(:job) do
     {
-      class: WorkerJobTest,
+      klass: WorkerJobTest,
       arguments: [],
-      statistics: Workerholic::Statistics.new.to_hash
+      statistics: Workerholic::JobStatistics.new.to_hash
     }
   end
 

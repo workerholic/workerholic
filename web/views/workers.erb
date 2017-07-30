@@ -1,45 +1,45 @@
-<html>
-  <head>
-    <title>Workerholic Overview</title>
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
-    <link href='stylesheets/application.css' rel='stylesheet'>
-  </head>
+<table class='table'>
+  <thead>
+    <tr>
+      <th>Worker</th>
+      <th>Queue</th>
+      <th>Class</th>
+      <th>Arguments</th>
+    </tr>
+  </thead>
 
-  <body>
-    <header>
-      Workerholic
-    </header>
-    <nav>
-      <ul>
-        <li><a href='/'>Overview</a></li>
-        <li><a href='/details'>Job Details</a></li>
-        <li><a href='/placehold'>Queues</a></li>
-        <li><a href='/workers'>Workers</a></li>
-        <li><a href='/what'>Failed</a></li>
-        <li><a href='/what'>Scheduled</a></li>
-      </ul>
-    </nav>
+  <tr>
+    <td>Worker 1</td>
+    <td>workerholic:queue:main</td>
+    <td>GetPrimes</td>
+    <td>[n, 1000000]</td>
+  </tr>
 
-    <div id="workers">
-      <table>
-        <tr>
-          <th>Worker</th>
-          <th>Queue</th>
-          <th>Class</th>
-          <th>Arguments</th>
-        </tr>
-        <tr>
-          <td>Worker 1</td>
-          <td>workerholic:queue:main</td>
-          <td>GetPrimes</td>
-          <td>[n, 1000000]</td>
-        </tr>
-      </table>
-    </div>
+  <tr>
+    <td>Worker 2</td>
+    <td>workerholic:queue:main</td>
+    <td>GetPrimes</td>
+    <td>[n, 1000000]</td>
+  </tr>
 
-    <footer>
-      <p>&copy; 2017 Workerholic. All rights reserved.</p>
-    </footer>
+  <tr>
+    <td>Worker 3</td>
+    <td>workerholic:queue:email</td>
+    <td>SendWelcomeEmail</td>
+    <td>[{ email_address: 'kminevsky@email.com', title: 'I\'m Konstantine', body: 'please hire me' }]</td>
+  </tr>
 
-  </body>
-</html>
+  <tr>
+    <td>Worker 4</td>
+    <td>workerholic:queue:scheduled</td>
+    <td>RequestAPI</td>
+    <td>[n, 1000000]</td>
+  </tr>
+
+  <tr>
+    <td>Worker 5</td>
+    <td>workerholic:queue:main</td>
+    <td>GetPrimes</td>
+    <td>[n, 1000000]</td>
+  </tr>
+</table>
