@@ -26,6 +26,9 @@ module Workerholic
 
     def kill
       self.alive = false
+    end
+
+    def join
       thread.join if thread
     end
 

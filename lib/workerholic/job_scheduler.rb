@@ -35,12 +35,15 @@ module Workerholic
           queue.enqueue(serialized_job)
         end
       else
-        sleep(5)
+        sleep(2)
       end
     end
 
     def kill
       self.alive = false
+    end
+
+    def join
       scheduler_thread.join if scheduler_thread
     end
   end
