@@ -25,6 +25,7 @@ require 'workerholic/job_statistics'
 require 'workerholic/log_manager'
 
 require 'workerholic/statistics_api'
+require 'workerholic/statistics_storage'
 
 module Workerholic
   def self.workers_count

@@ -4,7 +4,7 @@ module Workerholic
 
     def self.job_statistics(options={})
       if CATEGORIES.include? options[:category]
-        job_classes = self.storage.keys_for_namespace(options[:category])
+        job_classes = storage.keys_for_namespace(options[:category])
 
         if options[:count_only]
           self.parse_job_classes(job_classes)
@@ -12,12 +12,12 @@ module Workerholic
           self.parse_job_classes(job_classes, false)
         end
       else
-        self.logger("Invalid arguments. Please specify one of the following categories:\n'completed_jobs', 'failed_jobs'.")
+        logger("Invalid arguments. Please specify one of the following categories:\n'completed_jobs', 'failed_jobs'.")
       end
     end
 
     def self.jobs_classes
-      classes = self.storage.available_keys
+      classes = storage.available_keys
 
       parsed_classes = classes.map do |klass|
         klass.split(':').last
@@ -27,13 +27,25 @@ module Workerholic
     end
 
     def self.queue_names
-      fetched_queues = self.storage.fetch_queue_names
+      fetched_queues = storage.fetch_queue_names
       parsed_queues = fetched_queues.map do |queue|
         queue_data = [queue.name, queue.size]
         queues << queue_data
       end
 
       (parsed_queues.empty? ? 'No queues data is available yet.': parsed_queues)
+    end
+
+    class << self
+      private
+
+      def storage
+        @storage ||= Storage::RedisWrapper.new
+      end
+
+      def logger(message)
+        @log ||= LogManager.new
+      end
     end
 
     private
@@ -49,7 +61,7 @@ module Workerholic
     end
 
     def self.get_jobs_for_class(job_class)
-      serialized_jobs = self.storage.peek_namespace(job_class)
+      serialized_jobs = storage.peek_namespace(job_class)
       deserialized_stats = serialized_jobs.map do |serialized_job|
         JobSerializer.deserialize_stats(serialized_job)
       end
@@ -59,15 +71,7 @@ module Workerholic
 
     def self.jobs_per_class(job_class)
       clean_class_name = job_class.split(':').last
-      [clean_class_name, self.storage.list_length(job_class)]
-    end
-
-    def self.storage
-      Storage::RedisWrapper.new
-    end
-
-    def self.logger(message)
-      LogManager.new.error(message)
+      [clean_class_name, storage.list_length(job_class)]
     end
   end
 end
