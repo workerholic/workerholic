@@ -11,7 +11,7 @@ module Workerholic
     private
 
     def self.storage
-      storage ||= Storage::RedisWrapper.new
+      Storage::RedisWrapper.new
     end
   end
 end

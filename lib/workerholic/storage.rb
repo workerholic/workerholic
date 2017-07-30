@@ -52,8 +52,12 @@ module Workerholic
         execute(retry_delay) { |conn| conn.scan(0, match: queue_name_pattern).last }
       end
 
+      def available_keys(retry_delay = 5)
+        execute(retry_delay) { |conn| conn.keys('workerholic:stats:*') }
+      end
+
       def keys_for_namespace(namespace, retry_delay = 5)
-        execute(retry_delay) { |conn| conn.keys(namespace + ':*') }
+        execute(retry_delay) { |conn| conn.keys('workerholic:stats:' + namespace + ':*') }
       end
 
       def peek_namespace(key, retry_delay = 5)
@@ -62,7 +66,10 @@ module Workerholic
 
       def peek_namespaces(keys, retry_delay = 5)
         execute(retry_delay) do |conn|
-          keys.select { |namespace| conn.keys(namespace + ':*').size > 0 }
+          keys.select do |namespace|
+            full_namespace = 'workerholic:stats:' + namespace
+            conn.keys(full_namespace + ':*').size > 0
+          end
         end
       end
 
