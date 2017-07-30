@@ -27,6 +27,8 @@ require 'workerholic/log_manager'
 require 'workerholic/statistics_api'
 require 'workerholic/statistics_storage'
 
+require 'workerholic/adapters/active_job_adapter' if defined?(Rails)
+
 module Workerholic
   def self.workers_count
     @workers_count || 25

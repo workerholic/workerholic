@@ -19,7 +19,7 @@ module Workerholic
     def perform_async(*args)
       serialized_job, queue_name = prepare_job_for_enqueueing(args)
 
-      Queue.new(queue_name).enqueue(serialized_job)
+      Queue.new(@queue_name || queue_name).enqueue(serialized_job)
     end
 
     def perform_delayed(*args)
@@ -40,7 +40,8 @@ module Workerholic
     def prepare_job_for_enqueueing(args)
       raise ArgumentError if self.method(:perform).arity != args.size
 
-      job = JobWrapper.new(klass: self.class, arguments: args)
+      job = JobWrapper.new(klass: @class || self.class, arguments: args, wrapper: self.class)
+
       job.statistics.enqueued_at = Time.now.to_f
 
       [JobSerializer.serialize(job), specified_job_options[:queue_name]]

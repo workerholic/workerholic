@@ -55,12 +55,19 @@ module Workerholic
     def load_app
       if File.exist?('./config/environment.rb')
         require File.expand_path('./config/environment.rb')
+
         require 'workerholic/adapters/active_job_adapter'
+
+        ActiveSupport.run_load_hooks(:before_eager_load, Rails.application)
+        Rails.application.config.eager_load_namespaces.each(&:eager_load!)
       elsif options[:require]
-        if File.exist?(options[:require])
-          require File.expand_path(options[:require])
+        file_path = File.expand_path(options[:require])
+
+        if File.exist?(file_path)
+          require file_path
         else
-          log.info('The file you specified to load your application is not valid!')
+          logger.info('The file you specified to load your application is not valid!')
+
           exit
         end
       else

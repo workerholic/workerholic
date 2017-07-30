@@ -5,7 +5,7 @@ module Workerholic
 
     def initialize(opts={})
       @sorted_set = SortedSet.new(opts[:set_name] || 'workerholic:scheduled_jobs')
-      @queue = Queue.new(opts[:queue_name] || 'workerholic:main')
+      @queue = Queue.new(opts[:queue_name] || 'workerholic:queue:main')
       @alive = true
     end
 
