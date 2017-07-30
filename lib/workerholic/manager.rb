@@ -26,6 +26,9 @@ module Workerholic
       workers.each(&:kill)
       worker_balancer.kill
       scheduler.kill
+
+      workers.each(&:join)
+      scheduler.join
     end
 
     private

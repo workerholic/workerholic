@@ -22,7 +22,6 @@ module Workerholic
 
     def kill
       thread.kill
-      thread.join
     end
 
     private
