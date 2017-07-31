@@ -8,13 +8,13 @@
 
   <% @queues.each_with_index do |queue, i| %>
     <tr>
-      <td class='queue_name<%= i %>'><%= queue[0] %></td>
-      <td class='queue_count<%= i %>'><%= queue[1] %></td>
+      <td id='queue_name_<%= queue[0].split(':').last %>'><%= queue[0] %></td>
+      <td id='queue_count_<%= queue[0].split(':').last %>'><%= queue[1] %></td>
     </tr>
   <% end %>
 
   <tr class='last_row'>
     <th>Total:</td>
-    <td><%= @total %></td>
+    <td id="queue_total"><%= @total %></td>
   </tr>
 </table>
