@@ -26,7 +26,7 @@ $(document).ready(function() {
   if (tab === 'details') {
     setInterval(function() {
       getDetailData();
-    }, 1000);
+    }, 5000);
   }
 });
 
@@ -121,7 +121,8 @@ function getDetailData() {
 function drawChart() {
   var processedJobsChart = new CanvasJS.Chart('jobs_processed_container', {
     title: {
-      text: 'Jobs Processed',
+      text: 'Jobs Processed per second',
+      fontFamily: 'Arial',
       fontSize: 24,
     },
     axisX: {
@@ -139,7 +140,7 @@ function drawChart() {
     axisY: {
       gridColor: "Silver",
       tickColor: "silver",
-      title: 'Jobs'
+      title: 'Jobs per second',
     },
     data: [{
       type: "line",
@@ -149,19 +150,19 @@ function drawChart() {
       markerType: 'circle',
       lineThickness: 2,
       dataPoints: [
-        { x: '0', y: jobsCompletedHistory[0] },
-        { x: '5', y: jobsCompletedHistory[1] },
-        { x: '10', y: jobsCompletedHistory[2] },
-        { x: '15', y: jobsCompletedHistory[3] },
-        { x: '20', y: jobsCompletedHistory[4] },
-        { x: '25', y: jobsCompletedHistory[5] },
-        { x: '30', y: jobsCompletedHistory[6] },
-        { x: '35', y: jobsCompletedHistory[7] },
-        { x: '40', y: jobsCompletedHistory[8] },
-        { x: '45', y: jobsCompletedHistory[9] },
-        { x: '50', y: jobsCompletedHistory[10] },
-        { x: '55', y: jobsCompletedHistory[11] },
-        { x: '60', y: jobsCompletedHistory[12] },
+        { x: '0', y: (jobsCompletedHistory[0] - jobsCompletedHistory[1]) / 5 || 0 },
+        { x: '5', y: (jobsCompletedHistory[1] - jobsCompletedHistory[2]) / 5 || 0 },
+        { x: '10', y: (jobsCompletedHistory[2] - jobsCompletedHistory[3]) / 5 || 0 },
+        { x: '15', y: (jobsCompletedHistory[3] - jobsCompletedHistory[4]) / 5 || 0 },
+        { x: '20', y: (jobsCompletedHistory[4] - jobsCompletedHistory[5]) / 5 || 0 },
+        { x: '25', y: (jobsCompletedHistory[5] - jobsCompletedHistory[6]) / 5 || 0 },
+        { x: '30', y: (jobsCompletedHistory[6] - jobsCompletedHistory[7]) / 5 || 0 },
+        { x: '35', y: (jobsCompletedHistory[7] - jobsCompletedHistory[8]) / 5 || 0 },
+        { x: '40', y: (jobsCompletedHistory[8] - jobsCompletedHistory[9]) / 5 || 0 },
+        { x: '45', y: (jobsCompletedHistory[9] - jobsCompletedHistory[10]) / 5 || 0 },
+        { x: '50', y: (jobsCompletedHistory[10] - jobsCompletedHistory[11]) / 5 || 0 },
+        { x: '55', y: (jobsCompletedHistory[11] - jobsCompletedHistory[12]) / 5 || 0 },
+        { x: '60', y: (jobsCompletedHistory[12] - jobsCompletedHistory[13]) / 5 || 0 },
       ]
     }]
   });
@@ -169,6 +170,7 @@ function drawChart() {
   var queuedJobsChart = new CanvasJS.Chart('queued_jobs_container', {
     title: {
       text: 'Queued Jobs',
+      fontFamily: 'Arial',
       fontSize: 24,
     },
     axisX: {
@@ -218,6 +220,7 @@ function drawChart() {
   var failedJobsChart = new CanvasJS.Chart('failed_jobs_container', {
     title: {
       text: 'Failed Jobs',
+      fontFamily: 'Arial',
       fontSize: 24,
     },
     axisX: {
