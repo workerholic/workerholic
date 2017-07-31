@@ -24,7 +24,7 @@ module Workerholic
     end
 
     def perform
-      if wrapper == ActiveJob::QueueAdapters::WorkerholicAdapter::JobWrapper
+      if wrapper && wrapper.name == 'ActiveJob::QueueAdapters::WorkerholicAdapter::JobWrapper'
         wrapper.new.perform(
           'job_class' => klass,
           'arguments' => arguments
