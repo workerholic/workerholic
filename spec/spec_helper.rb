@@ -3,6 +3,7 @@ $LOAD_PATH << __dir__ + '/../lib/'
 $TESTING = true
 
 require 'workerholic'
+require 'workerholic/adapters/active_job_adapter'
 
 require_relative 'helpers/helper_methods'
 require_relative 'helpers/job_tests'
