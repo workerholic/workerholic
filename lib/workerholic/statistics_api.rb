@@ -26,14 +26,16 @@ module Workerholic
       parsed_classes.empty? ? 'No class data is available yet.' : parsed_classes
     end
 
-    def self.queue_names
+    def self.queued_jobs
+      # queues = []
       fetched_queues = storage.fetch_queue_names
       parsed_queues = fetched_queues.map do |queue|
-        queue_data = [queue.name, queue.size]
-        queues << queue_data
+        queue_data = [queue, storage.list_length(queue)]
+        # queues << queue_data
       end
 
-      (parsed_queues.empty? ? 'No queues data is available yet.': parsed_queues)
+      # (parsed_queues.empty? ? 'No queues data is available yet.': parsed_queues)
+      parsed_queues
     end
 
     class << self
