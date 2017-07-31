@@ -3,29 +3,18 @@
     <tr>
       <th>Queue Name</th>
       <th>Job Load</th>
-      <th>Worker Count</th>
-      <th>Jobs Processed per second</th>
     </tr>
   </thead>
 
-  <tr>
-    <td>workerholic:queue:main</td>
-    <td>485,981</td>
-    <td>12</td>
-    <td>1442</td>
-  </tr>
-
-  <tr>
-    <td>workerholic:queue:api</td>
-    <td>75,912,999</td>
-    <td>13</td>
-    <td>1233</td>
-  </tr>
+  <% @queues.each_with_index do |queue, i| %>
+    <tr>
+      <td class='queue_name<%= i %>'><%= queue[0] %></td>
+      <td class='queue_count<%= i %>'><%= queue[1] %></td>
+    </tr>
+  <% end %>
 
   <tr class='last_row'>
     <th>Total:</td>
-    <td>76,984,123</td>
-    <td>25</td>
-    <td>2675</td>
+    <td><%= @total %></td>
   </tr>
 </table>
