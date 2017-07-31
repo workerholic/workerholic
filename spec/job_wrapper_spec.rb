@@ -6,6 +6,7 @@ describe Workerholic::JobWrapper do
 
     expected_result = {
       klass: SimpleJobTest,
+      wrapper: nil,
       arguments: ['test job'],
       retry_count: 0,
       execute_at: nil,
