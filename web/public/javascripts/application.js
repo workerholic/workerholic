@@ -3,6 +3,7 @@ var App = {
   failedJobsCountHistory: [],
   jobsCompletedHistory: [],
   totalMemoryHistory: [],
+  tab: null,
   getOverviewData: function() {
     $.ajax({
       url: '/overview-data',
@@ -272,23 +273,20 @@ var App = {
 
     return data;
   },
-  init: function() {
-    var tab = $(location).attr('href').split('/').pop();
-    var $active = $('a[href=' + tab + ']');
+  setActiveTab: function() {
+    this.tab = $(location).attr('href').split('/').pop();
+    var $active = $('a[href=' + this.tab + ']');
 
     $active.css('background', '#a2a2a2');
     $active.css('color', '#fff');
-
+  },
+  pollData: function(tab) {
     if (tab === 'overview') {
       this.getOverviewData();
 
       setInterval(function() {
         this.getOverviewData();
       }.bind(this), 5000);
-
-      $('#memory_usage').on('click', function(e) {
-        $('.nested th').toggle();
-      });
     }
 
     if (tab === 'queues') {
@@ -302,6 +300,16 @@ var App = {
         this.getDetailData();
       }.bind(this), 5000);
     }
+  },
+  bindEvents: function() {
+    $('#memory_usage').on('click', function(e) {
+      $('.nested th').toggle();
+    });
+  },
+  init: function() {
+    this.setActiveTab();
+    this.bindEvents();
+    this.pollData(this.tab);
   }
 }
 
