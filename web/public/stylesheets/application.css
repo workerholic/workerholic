@@ -66,30 +66,6 @@ nav a:hover {
   width: 200px;
 }
 
-#statistics {
-  font-family: 'Monaco', serif;
-  width: 1000px;
-  padding: 25px;
-  margin: 50px auto;
-  border: 2px dotted #000;
-  border-radius: 10px;
-  background: #fff;
-}
-
-#statistics h2 {
-  font-size: 32px;
-}
-
-#statistics p {
-  font-size: 24px;
-  margin-top: 20px;
-}
-
-#completed {
-  color: green;
-}
-
-#failed {
-  color: red;
-  font-weight: bold;
+#queued_jobs_container, #failed_jobs_container, #jobs_processed_container {
+  margin-top: 50px;
 }

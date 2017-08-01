@@ -26,29 +26,25 @@ module Workerholic
       parsed_classes.empty? ? 'No class data is available yet.' : parsed_classes
     end
 
-    def self.queue_names
+    def self.queued_jobs
       fetched_queues = storage.fetch_queue_names
       parsed_queues = fetched_queues.map do |queue|
-        queue_data = [queue.name, queue.size]
-        queues << queue_data
+        [queue, storage.list_length(queue)]
       end
 
-      (parsed_queues.empty? ? 'No queues data is available yet.': parsed_queues)
-    end
-
-    class << self
-      private
-
-      def storage
-        @storage ||= Storage::RedisWrapper.new
-      end
-
-      def logger(message)
-        @log ||= LogManager.new
-      end
+      # (parsed_queues.empty? ? 'No queues data is available yet.': parsed_queues)
+      parsed_queues
     end
 
     private
+
+    def self.storage
+      @storage ||= Storage::RedisWrapper.new
+    end
+
+    def self.logger(message)
+      @log ||= LogManager.new
+    end
 
     def self.parse_job_classes(job_classes, count_only = true)
       job_classes.map do |job_class|

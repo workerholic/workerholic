@@ -70,7 +70,7 @@ module Workerholic
     end
 
     def set_options
-      Workerholic.workers_count = options[:workers_count] if options[:workers_count]
+      Workerholic.workers_count = options[:workers] if options[:workers]
     end
 
     def load_app
