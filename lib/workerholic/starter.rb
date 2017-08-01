@@ -11,6 +11,10 @@ module Workerholic
       launch
     end
 
+    def self.kill_memory_tracker_thread
+      @thread.kill
+    end
+
     private
 
     def self.options
@@ -76,10 +80,6 @@ module Workerholic
 
     def self.cleanup_memory_old_stats
       StatsStorage.delete_memory_stats
-    end
-
-    def self.kill_memory_tracker_thread
-      @thread.kill
     end
 
     def self.launch
