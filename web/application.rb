@@ -65,14 +65,14 @@ get '/overview-data' do
   })
 end
 
-get '/detail-data' do
+get '/details-data' do
   JSON.generate({
     completed_jobs: Workerholic::StatsAPI.job_statistics( {category: 'completed_jobs', count_only: true} ),
     failed_jobs: Workerholic::StatsAPI.job_statistics( {category: 'failed_jobs', count_only: true} )
   })
 end
 
-get '/queue-data' do
+get '/queues-data' do
   JSON.generate({
     queued_jobs: Workerholic::StatsAPI.queued_jobs
   })

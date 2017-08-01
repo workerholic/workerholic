@@ -75,7 +75,7 @@ function getOverviewData() {
 
 function getQueueData() {
   $.ajax({
-    url: '/queue-data',
+    url: '/queues-data',
     success: function(data) {
       var deserializedData = JSON.parse(data);
       var queuedJobs = deserializedData.queued_jobs;
@@ -94,7 +94,7 @@ function getQueueData() {
 
 function getDetailData() {
   $.ajax({
-    url: '/detail-data',
+    url: '/details-data',
     success: function(data) {
       var deserializedData = JSON.parse(data);
       var completedJobs = deserializedData.completed_jobs;
