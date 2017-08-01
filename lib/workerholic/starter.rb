@@ -68,7 +68,7 @@ module Workerholic
     end
 
     def self.track_memory_usage
-      cleanup_memory_old_stats
+      cleanup_old_memory_stats
 
       @thread = Thread.new do
         loop do
@@ -78,7 +78,7 @@ module Workerholic
       end
     end
 
-    def self.cleanup_memory_old_stats
+    def self.cleanup_old_memory_stats
       StatsStorage.delete_memory_stats
     end
 
