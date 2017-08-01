@@ -38,15 +38,15 @@ module Workerholic
 
     private
 
-    def storage
+    def self.storage
       @storage ||= Storage::RedisWrapper.new
     end
 
-    def logger(message)
+    def self.logger(message)
       @log ||= LogManager.new
     end
 
-    def parse_job_classes(job_classes, count_only = true)
+    def self.parse_job_classes(job_classes, count_only = true)
       job_classes.map do |job_class|
         if count_only
           self.jobs_per_class(job_class)
@@ -56,7 +56,7 @@ module Workerholic
       end
     end
 
-    def get_jobs_for_class(job_class)
+    def self.get_jobs_for_class(job_class)
       serialized_jobs = storage.peek_namespace(job_class)
       deserialized_stats = serialized_jobs.map do |serialized_job|
         JobSerializer.deserialize_stats(serialized_job)
@@ -65,7 +65,7 @@ module Workerholic
       deserialized_stats << deserialized_stats.size
     end
 
-    def jobs_per_class(job_class)
+    def self.jobs_per_class(job_class)
       clean_class_name = job_class.split(':').last
       [clean_class_name, storage.list_length(job_class)]
     end
