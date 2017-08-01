@@ -5,6 +5,8 @@ require 'optparse'
 require 'singleton'
 
 module Workerholic
+  PROCESSES_IDS = []
+
   class CLI
     include Singleton
 
@@ -20,7 +22,26 @@ module Workerholic
 
       load_app
 
-      Manager.new(auto_balance: options[:auto_balance]).start
+      # Manager.new(auto_balance: options[:auto_balance]).start
+
+      20.times do
+        PROCESSES_IDS << fork do
+          Manager.new(auto_balance: options[:auto_balance]).start
+        end
+      end
+
+      sleep
+    rescue SystemExit, Interrupt
+      PROCESSES_IDS.each do |pid|
+        Process.kill('INT', pid)
+
+        begin
+          Process.wait(pid)
+        rescue Errno::ECONNRESET
+        end
+      end
+
+      exit
     end
 
     def parse_options

@@ -17,12 +17,12 @@ module Workerholic
 
         StatsStorage.save_job('completed_jobs', job)
 
-        @logger.info("Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}.")
+        # @logger.info("Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}.")
       rescue Exception => e
         job.statistics.errors.push([e.class, e.message])
         retry_job(job)
-
-        @logger.error("Failed: your job from class #{job.class} was unsuccessful. Retrying in 10 seconds.")
+        binding.pry
+        # @logger.error("Failed: your job from class #{job.class} was unsuccessful. Retrying in 10 seconds.")
       end
       job_result
     end
