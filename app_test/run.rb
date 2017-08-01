@@ -48,9 +48,12 @@ module TestRunner
   end
 end
 
-pids = (1..10).to_a.map do
+pids = (1..5).to_a.map do
   fork do
-    TestRunner.blocking(5_000)
+    TestRunner.blocking(2_000)
+    TestRunner.non_blocking(500)
+    TestRunner.sort_array(1_000, 100)
+
     exit
   end
 end
