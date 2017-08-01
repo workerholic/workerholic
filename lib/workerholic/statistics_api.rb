@@ -29,7 +29,8 @@ module Workerholic
     def self.queued_jobs
       fetched_queues = storage.fetch_queue_names
       parsed_queues = fetched_queues.map do |queue|
-        [queue, storage.list_length(queue)]
+        clean_queue_name = queue.split(':').last
+        [clean_queue_name, storage.list_length(queue)]
       end
 
       # (parsed_queues.empty? ? 'No queues data is available yet.': parsed_queues)

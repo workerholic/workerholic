@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
 
   gem.files         = `git ls-files`.split("\n")
   gem.test_files    = `git ls-files -- spec/*`.split("\n")
-  gem.executables   = ['workerholic']
+  gem.executables   = ['workerholic', 'workerholic-web']
   gem.require_paths = ['lib']
 
   gem.required_ruby_version = '>= 2.2.2'
