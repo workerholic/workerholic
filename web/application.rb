@@ -6,6 +6,10 @@ require 'workerholic'
 
 class WorkerholicWeb < Sinatra::Base
 
+  get '/' do
+    redirect '/overview'
+  end
+
   get '/overview' do
     erb :overview
   end
@@ -63,5 +67,5 @@ class WorkerholicWeb < Sinatra::Base
       queued_jobs: Workerholic::StatsAPI.queued_jobs
     })
   end
-  
+
 end
