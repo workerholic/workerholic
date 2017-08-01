@@ -1,9 +1,8 @@
-$LOAD_PATH.unshift(File.dirname('lib/workerholic.rb'))
-require 'redis'
 require 'sinatra'
-require 'sinatra/reloader'
+
+# require 'sinatra/reloader'
 require 'json'
-require_relative '../lib/workerholic'
+require 'workerholic'
 
 get '/' do
   redirect '/overview'
@@ -35,6 +34,7 @@ get '/details' do
 end
 
 get '/queues' do
+  binding.pry
   @queues = Workerholic::StatsAPI.queued_jobs
   @total = 0
   @queues.each do |queue|

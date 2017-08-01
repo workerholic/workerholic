@@ -46,32 +46,30 @@ module Workerholic
       def logger(message)
         @log ||= LogManager.new
       end
-    end
 
-    private
-
-    def self.parse_job_classes(job_classes, count_only = true)
-      job_classes.map do |job_class|
-        if count_only
-          self.jobs_per_class(job_class)
-        else
-          self.get_jobs_for_class(job_class)
+      def parse_job_classes(job_classes, count_only = true)
+        job_classes.map do |job_class|
+          if count_only
+            self.jobs_per_class(job_class)
+          else
+            self.get_jobs_for_class(job_class)
+          end
         end
       end
-    end
 
-    def self.get_jobs_for_class(job_class)
-      serialized_jobs = storage.peek_namespace(job_class)
-      deserialized_stats = serialized_jobs.map do |serialized_job|
-        JobSerializer.deserialize_stats(serialized_job)
+      def get_jobs_for_class(job_class)
+        serialized_jobs = storage.peek_namespace(job_class)
+        deserialized_stats = serialized_jobs.map do |serialized_job|
+          JobSerializer.deserialize_stats(serialized_job)
+        end
+
+        deserialized_stats << deserialized_stats.size
       end
 
-      deserialized_stats << deserialized_stats.size
-    end
-
-    def self.jobs_per_class(job_class)
-      clean_class_name = job_class.split(':').last
-      [clean_class_name, storage.list_length(job_class)]
+      def jobs_per_class(job_class)
+        clean_class_name = job_class.split(':').last
+        [clean_class_name, storage.list_length(job_class)]
+      end
     end
   end
 end
