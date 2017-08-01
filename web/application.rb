@@ -34,7 +34,6 @@ get '/details' do
 end
 
 get '/queues' do
-  binding.pry
   @queues = Workerholic::StatsAPI.queued_jobs
   @total = 0
   @queues.each do |queue|
