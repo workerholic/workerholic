@@ -5,7 +5,7 @@ module Workerholic
 
     def initialize(opts = {})
       @workers = []
-      100.times { @workers << Worker.new }
+      50.times { @workers << Worker.new }
 
       @scheduler = JobScheduler.new
       @worker_balancer = WorkerBalancer.new(workers: workers, auto_balance: opts[:auto_balance])
@@ -20,7 +20,7 @@ module Workerholic
 
       sleep
     rescue SystemExit, Interrupt
-      Signal.trap('INT') {}
+      # Signal.trap('INT') {}
 
       logger.info("Workerholic's process #{Process.pid} is now shutting down...")
       shutdown

@@ -24,7 +24,7 @@ module Workerholic
 
       # Manager.new(auto_balance: options[:auto_balance]).start
 
-      20.times do
+      5.times do
         PROCESSES_IDS << fork do
           Manager.new(auto_balance: options[:auto_balance]).start
         end
@@ -32,14 +32,14 @@ module Workerholic
 
       sleep
     rescue SystemExit, Interrupt
-      PROCESSES_IDS.each do |pid|
-        Process.kill('INT', pid)
+      # PROCESSES_IDS.each do |pid|
+      #   Process.kill('INT', pid)
 
-        begin
-          Process.wait(pid)
-        rescue Errno::ECONNRESET
-        end
-      end
+      #   begin
+      #     Process.wait(pid)
+      #   rescue Errno::ECONNRESET
+      #   end
+      # end
 
       exit
     end
