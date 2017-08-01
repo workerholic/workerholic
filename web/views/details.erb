@@ -2,48 +2,24 @@
   <thead>
     <tr>
       <th>Class</th>
-      <th>Enqueued</th>
       <th>Failed</th>
       <th>Completed</th>
-      <th>Total</th>
     </tr>
   </thead>
 
   <tbody>
-    <tr>
-      <td>JobTestFast</td>
-      <td>1,833,222</td>
-      <td>171,882</td>
-      <td>22,198,122</td>
-      <td>24,123,233</td>
-    </tr>
-    <tr>
-      <td>JobTestSlow</td>
-      <td>1,833,222</td>
-      <td>171,882</td>
-      <td>22,198,122</td>
-      <td>24,123,233</td>
-    </tr>
-    <tr>
-      <td>GetPrime</td>
-      <td>1,833,222</td>
-      <td>171,882</td>
-      <td>22,198,122</td>
-      <td>24,123,233</td>
-    </tr>
-    <tr>
-      <td>SendWelcomeEmail</td>
-      <td>1,833,222</td>
-      <td>171,882</td>
-      <td>22,198,122</td>
-      <td>24,123,233</td>
-    </tr>
+    <% @job_stats.each_with_index do |(name, info), i| %>
+      <tr>
+        <td id='job_<%= name %>'><%= name %></td>
+        <td id='failed_<%= name %>'><%= info[:failed] || 0 %></td>
+        <td id='completed_<%= name %>'><%= info[:completed] || 0 %></td>
+      </tr>
+    <% end %>
+
     <tr class='last_row'>
       <th>Total:</td>
-      <td>1,833,222</td>
-      <td>171,882</td>
-      <td>22,198,122</td>
-      <td>24,123,233</td>
+      <td id="failed_total"><%= @failed_total %></td>
+      <td id="completed_total"><%= @completed_total %></td>
     </tr>
   </tbody>
 </table>
