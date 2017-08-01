@@ -88,12 +88,6 @@ module Workerholic
     def output_balancer_stats
       @logger.info(queues.map { |q| { name: q.name, size: q.size } })
       @logger.info(current_workers_count_per_queue)
-
-      pid, size = `ps -p #{Process.pid} -o pid=,rss=`.scan(/\d+/).map(&:to_i)
-      ppid, psize = `ps -p #{Process.ppid} -o pid=,rss=`.scan(/\d+/).map(&:to_i)
-
-      @logger.info("PID: #{pid} -- Size: #{(size / 1024.to_f).round(2)} MB -- Parent: PID #{ppid} - Size: #{(psize / 1024.to_f).round(2)} MB")
-
     end
 
     def assign_one_worker_per_queue

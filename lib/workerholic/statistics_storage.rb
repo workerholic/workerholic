@@ -8,6 +8,13 @@ module Workerholic
       storage.push(namespace, serialized_job_stats)
     end
 
+    def self.save_processes_memory_usage
+      pid, size = `ps -p #{Process.pid} -o pid=,rss=`.scan(/\d+/).map(&:to_i)
+      ppid, psize = `ps -p #{Process.ppid} -o pid=,rss=`.scan(/\d+/).map(&:to_i)
+
+      @logger.info("PID: #{pid} -- Size: #{(size / 1024.to_f).round(2)} MB -- Parent: PID #{ppid} - Size: #{(psize / 1024.to_f).round(2)} MB")
+    end
+
     class << self
       private
 

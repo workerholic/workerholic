@@ -5,7 +5,7 @@ require 'optparse'
 require 'singleton'
 
 module Workerholic
-  PROCESSES_IDS = []
+  PROCESSES_IDS = [Process.pid]
 
   class CLI
     include Singleton
@@ -23,26 +23,10 @@ module Workerholic
       load_app
 
       # Manager.new(auto_balance: options[:auto_balance]).start
-
-      5.times do
-        PROCESSES_IDS << fork do
-          Manager.new(auto_balance: options[:auto_balance]).start
-        end
-      end
-
-      sleep
-    rescue SystemExit, Interrupt
-      # PROCESSES_IDS.each do |pid|
-      #   Process.kill('INT', pid)
-
-      #   begin
-      #     Process.wait(pid)
-      #   rescue Errno::ECONNRESET
-      #   end
-      # end
-
-      exit
+      start
     end
+
+    private
 
     def parse_options
       @options = {}
@@ -55,7 +39,14 @@ module Workerholic
         end
 
         opts.on '-w', '--workers INT', 'number of concurrent workers' do |count|
-          options[:workers] = count.to_i
+          count = count.to_i
+
+          if count < 1
+            logger.error('Invalid number of workers. Please specify a valid number of workers.')
+            exit
+          else
+            options[:workers] = count.to_i
+          end
         end
 
         opts.on '-r', '--require PATH', 'file to be required to load your application' do |file|
@@ -65,6 +56,17 @@ module Workerholic
         opts.on '-h', '--help', 'show help' do
           logger.info(opts)
           exit
+        end
+
+        opts.on '-p', '--processes INT', 'number of processes to start in parallel' do |count|
+          count = count.to_i
+
+          if count < 1
+            logger.error('Invalid number of processes. Please specify a valid number of processes.')
+            exit
+          else
+            options[:processes] = count.to_i
+          end
         end
       end.parse!
     end
@@ -97,6 +99,22 @@ module Workerholic
 
         exit
       end
+    end
+
+    def start
+      if options[:processes] && options[:processes] > 1
+        options[:processes].times do
+          PROCESSES_IDS << fork do
+            Manager.new(auto_balance: options[:auto_balance]).start
+          end
+        end
+
+        sleep
+      else
+        Manager.new(auto_balance: options[:auto_balance]).start
+      end
+    rescue SystemExit, Interrupt
+      exit
     end
   end
 end
