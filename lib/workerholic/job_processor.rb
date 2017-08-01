@@ -21,7 +21,7 @@ module Workerholic
       rescue Exception => e
         job.statistics.errors.push([e.class, e.message])
         retry_job(job)
-        binding.pry
+
         # @logger.error("Failed: your job from class #{job.class} was unsuccessful. Retrying in 10 seconds.")
       end
       job_result
