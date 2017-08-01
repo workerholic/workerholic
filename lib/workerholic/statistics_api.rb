@@ -36,40 +36,38 @@ module Workerholic
       parsed_queues
     end
 
-    class << self
-      private
+    private
 
-      def storage
-        @storage ||= Storage::RedisWrapper.new
-      end
+    def storage
+      @storage ||= Storage::RedisWrapper.new
+    end
 
-      def logger(message)
-        @log ||= LogManager.new
-      end
+    def logger(message)
+      @log ||= LogManager.new
+    end
 
-      def parse_job_classes(job_classes, count_only = true)
-        job_classes.map do |job_class|
-          if count_only
-            self.jobs_per_class(job_class)
-          else
-            self.get_jobs_for_class(job_class)
-          end
+    def parse_job_classes(job_classes, count_only = true)
+      job_classes.map do |job_class|
+        if count_only
+          self.jobs_per_class(job_class)
+        else
+          self.get_jobs_for_class(job_class)
         end
       end
+    end
 
-      def get_jobs_for_class(job_class)
-        serialized_jobs = storage.peek_namespace(job_class)
-        deserialized_stats = serialized_jobs.map do |serialized_job|
-          JobSerializer.deserialize_stats(serialized_job)
-        end
-
-        deserialized_stats << deserialized_stats.size
+    def get_jobs_for_class(job_class)
+      serialized_jobs = storage.peek_namespace(job_class)
+      deserialized_stats = serialized_jobs.map do |serialized_job|
+        JobSerializer.deserialize_stats(serialized_job)
       end
 
-      def jobs_per_class(job_class)
-        clean_class_name = job_class.split(':').last
-        [clean_class_name, storage.list_length(job_class)]
-      end
+      deserialized_stats << deserialized_stats.size
+    end
+
+    def jobs_per_class(job_class)
+      clean_class_name = job_class.split(':').last
+      [clean_class_name, storage.list_length(job_class)]
     end
   end
 end
