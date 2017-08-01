@@ -59,6 +59,15 @@ nav a:hover {
   width: 200px;
 }
 
-#queued_jobs_container, #failed_jobs_container, #jobs_processed_container {
+.count {
+  width: 50%;
+}
+
+.chart {
   margin-top: 50px;
+}
+
+.nested th {
+  display: none;
+  padding-left: 50px
 }
