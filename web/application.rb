@@ -10,7 +10,7 @@ get '/' do
 end
 
 get '/overview' do
-  erb :index
+  erb :overview
 end
 
 get '/details' do
@@ -61,7 +61,8 @@ get '/overview-data' do
     completed_jobs: Workerholic::StatsAPI.job_statistics( {category: 'completed_jobs', count_only: true} ),
     failed_jobs: Workerholic::StatsAPI.job_statistics( {category: 'failed_jobs', count_only: true} ),
     queued_jobs: Workerholic::StatsAPI.queued_jobs,
-    workers_count: Workerholic.workers_count
+    workers_count: Workerholic.workers_count,
+    # memory_usage: Workerholic::StatsAPI.memory_usage
   })
 end
 
