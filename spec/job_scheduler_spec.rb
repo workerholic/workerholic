@@ -1,16 +1,13 @@
 require_relative 'spec_helper'
 
-class SimpleDelayedJobTest
-  include Workerholic::Job
-  job_options queue_name: TEST_SCHEDULED_SORTED_SET
-
-  def perform(n, s)
-    s
-  end
-end
-
 describe Workerholic::JobScheduler do
-  let(:scheduler) { Workerholic::JobScheduler.new(set_name: TEST_SCHEDULED_SORTED_SET, queue_name: TEST_QUEUE) }
+  let(:scheduler) do
+    Workerholic::JobScheduler.new(
+      sorted_set: Workerholic::SortedSet.new(TEST_SCHEDULED_SORTED_SET),
+      queue_name: TEST_QUEUE
+    )
+  end
+
   let(:redis) { Redis.new }
 
   context 'with non-empty set' do
@@ -45,20 +42,6 @@ describe Workerholic::JobScheduler do
 
       expect(scheduler.queue.empty?).to eq(false)
       expect(scheduler.queue.dequeue).to eq(serialized_job)
-    end
-  end
-
-  context 'with delayed job option specified' do
-    it 'adds delayed job to the scheduled sorted set' do
-      SimpleDelayedJobTest.new.perform_delayed(2, 'test arg')
-
-      expect(scheduler.sorted_set.empty?).to eq(false)
-    end
-
-    it 'raises an ArgumentError if perform_delayed first argument is not of Numeric type' do
-      job = SimpleDelayedJobTest.new
-
-      expect { job.perform_delayed("wrong type", 'test arg') }.to raise_error(ArgumentError)
     end
   end
 end

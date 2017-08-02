@@ -22,7 +22,6 @@ module Workerholic
         job.statistics.errors.push([e.class, e.message])
         retry_job(job)
 
-        # @logger.error("Failed: your job from class #{job.class} was unsuccessful. Retrying in 10 seconds.")
       end
       job_result
     end
@@ -30,9 +29,13 @@ module Workerholic
     private
 
     def retry_job(job)
-      limit_reached = JobRetry.new(job: job)
-      if limit_reached
+      if JobRetry.new(job: job).retry
+        # @logger.error("Failed: your job from class #{job.class} was unsuccessful. Retrying in 10 secs...")
+      else
         job.statistics.failed_on = Time.now.to_f
+        StatsStorage.save_job('failed_jobs', job)
+
+        # @logger.error("Failed: your job from class #{job.class} was unsuccessful.")
       end
     end
   end

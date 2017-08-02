@@ -16,8 +16,8 @@ describe Workerholic::WorkerBalancer do
   it 'fetches queues' do
     allow(Workerholic::WorkerBalancer.new).to receive(:fetch_queues).and_return(TESTED_QUEUES)
 
-    manager = Workerholic::WorkerBalancer.new(workers: [])
+    balancer = Workerholic::WorkerBalancer.new(workers: [])
 
-    expect(manager.queues.map(&:name)).to match_array(TESTED_QUEUES)
+    expect(balancer.queues.map(&:name)).to match_array(TESTED_QUEUES)
   end
 end

@@ -68,6 +68,25 @@ describe Workerholic::Storage do
 
       expect(storage.fetch_queue_names).to match_array([queue_name, ANOTHER_TEST_QUEUE])
     end
+
+    it 'sets k and a value to a hash in redis' do
+      storage.hash_set(HASH_TEST, 'key_test', 1234)
+
+      expect(redis.hget(HASH_TEST, 'key_test')).to eq('1234')
+    end
+
+    it 'gets the value for a given key of a hash in redis' do
+      redis.hset(HASH_TEST, 'key_test', 1234)
+
+      expect(storage.hash_get(HASH_TEST, 'key_test')).to eq('1234')
+    end
+
+    it 'deletes a key from redis' do
+      redis.set(TEST_QUEUE, 'something')
+      storage.delete(TEST_QUEUE)
+
+      expect(redis.exists(TEST_QUEUE)).to eq(false)
+    end
   end
 
   context 'with Redis not running' do

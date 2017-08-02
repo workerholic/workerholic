@@ -5,17 +5,10 @@ module Workerholic
     def initialize(options={})
       @job = options[:job]
       @sorted_set = options[:sorted_set] || SortedSet.new('workerholic:scheduled_jobs')
-
-      self.retry
     end
 
-    protected
-
     def retry
-      if job.retry_count >= 5
-        StatsStorage.save_job('failed_jobs', job)
-        return false
-      end
+      return if job.retry_count >= 5
 
       increment_retry_count
       schedule_job_for_retry

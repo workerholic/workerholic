@@ -1,3 +1,4 @@
+$LOAD_PATH.unshift(__dir__ + '/../lib')
 require 'workerholic'
 require 'prime'
 
@@ -75,5 +76,21 @@ class GetPrimes
     Prime.each(max) do |prime|
       prime
     end
+  end
+end
+
+class FutureJob
+  include Workerholic::Job
+
+  def perform(n)
+    n
+  end
+end
+
+class FailedJob
+  include Workerholic::Job
+
+  def perform(n)
+    raise Exception
   end
 end
