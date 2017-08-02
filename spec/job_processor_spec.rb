@@ -52,10 +52,10 @@ describe Workerholic::JobProcessor do
       statistics: Workerholic::JobStatistics.new.to_hash
     }
     serialized_job = Workerholic::JobSerializer.serialize(job)
+    job_processor = Workerholic::JobProcessor.new(serialized_job)
 
-    allow(Workerholic::JobRetry).to receive(:new)
-    expect(Workerholic::JobRetry).to receive(:new)
+    expect(job_processor).to receive(:retry_job)
 
-    Workerholic::JobProcessor.new(serialized_job).process
+    job_processor.process
   end
 end
