@@ -39,8 +39,7 @@ module Workerholic
     def self.queued_jobs
       fetched_queues = storage.fetch_queue_names
       parsed_queues = fetched_queues.map do |queue|
-        clean_queue_name = queue.split(':').last
-        [clean_queue_name, storage.list_length(queue)]
+        [queue, storage.list_length(queue)]
       end
 
       parsed_queues
@@ -68,7 +67,8 @@ module Workerholic
 
     def self.parse_scheduled_jobs(jobs)
       jobs.map do |job|
-        JobSerializer.deserialize_stats(job)
+        deserialized_job = JobSerializer.deserialize_stats(job)
+        self.convert_klass_to_string(deserialized_job)
       end
     end
 

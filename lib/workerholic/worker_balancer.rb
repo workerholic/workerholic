@@ -77,7 +77,7 @@ module Workerholic
           output_balancer_stats
 
           sleep 2
-          p StatsAPI.job_statistics(category: 'completed_jobs')
+          p StatsAPI.scheduled_jobs
         end
       end
     end
