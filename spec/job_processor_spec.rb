@@ -2,7 +2,6 @@ require_relative 'spec_helper'
 
 class SimpleJobTestWithError
   include Workerholic::Job
-  job_options queue_name: TEST_SCHEDULED_SORTED_SET
 
   def perform
     raise Exception
@@ -34,13 +33,14 @@ describe Workerholic::JobProcessor do
   end
 
   it 'does not raise an error when processing a job with error' do
-    serialized_job = Workerholic::JobSerializer.serialize({
-                       klass: SimpleJobTestWithError,
-                       arguments: [],
-                       statistics: Workerholic::JobStatistics.new.to_hash
-                     })
+    serialized_job = Workerholic::JobSerializer.serialize(
+      klass: SimpleJobTestWithError,
+      arguments: [],
+      statistics: Workerholic::JobStatistics.new.to_hash
+    )
 
     job_processor = Workerholic::JobProcessor.new(serialized_job)
+    allow(job_processor).to receive(:retry_job)
 
     expect { job_processor.process }.not_to raise_error
   end
