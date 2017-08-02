@@ -90,3 +90,6 @@ pids = (1..5).to_a.map do
 end
 
 pids.each { |pid| Process.wait(pid) }
+
+#TestRunner.non_blocking(10)
+#TestRunner.non_blocking(1)

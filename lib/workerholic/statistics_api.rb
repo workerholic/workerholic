@@ -85,8 +85,7 @@ module Workerholic
     def self.get_jobs_for_class(job_class)
       serialized_jobs = storage.get_all_elements_from_list(job_class)
       deserialized_stats = serialized_jobs.map do |serialized_job|
-        deserialized_job = JobSerializer.deserialize_stats(serialized_job)
-        self.convert_klass_to_string(deserialized_job)
+        JobSerializer.deserialize_stats(serialized_job)
       end
 
       deserialized_stats << deserialized_stats.size
