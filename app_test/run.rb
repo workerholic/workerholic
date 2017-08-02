@@ -46,16 +46,14 @@ module TestRunner
       GetPrimes.new.perform_async(n, 10)
     end
   end
-end
 
-pids = (1..5).to_a.map do
-  fork do
-    TestRunner.blocking(2_000)
-    TestRunner.non_blocking(500)
-    TestRunner.sort_array(1_000, 100)
-
-    exit
+  def self.enqueue_delayed(num_of_cycles)
+    num_of_cycles.times do |n|
+      FutureJob.new.perform_delayed(100, n)
+    end
   end
 end
 
-pids.each { |pid| Process.wait(pid) }
+#TestRunner.non_blocking(10)
+TestRunner.enqueue_delayed(10)
+#TestRunner.sort_array(10, 20)
