@@ -48,4 +48,14 @@ module TestRunner
   end
 end
 
-TestRunner.non_blocking(2)
+pids = (1..5).to_a.map do
+  fork do
+    TestRunner.blocking(2_000)
+    TestRunner.non_blocking(500)
+    TestRunner.sort_array(1_000, 100)
+
+    exit
+  end
+end
+
+pids.each { |pid| Process.wait(pid) }

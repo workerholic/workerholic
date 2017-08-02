@@ -4,6 +4,7 @@ require 'connection_pool'
 require 'logger'
 require 'pry-byebug'
 
+require 'workerholic/starter'
 require 'workerholic/manager'
 require 'workerholic/worker_balancer'
 
@@ -30,6 +31,8 @@ require 'workerholic/statistics_storage'
 require 'workerholic/adapters/active_job_adapter' if defined?(Rails)
 
 module Workerholic
+  PIDS = [Process.pid]
+
   def self.workers_count
     @workers_count || 25
   end

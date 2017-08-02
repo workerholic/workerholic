@@ -8,6 +8,17 @@ module Workerholic
       storage.push(namespace, serialized_job_stats)
     end
 
+    def self.save_processes_memory_usage
+      PIDS.each do |pid|
+        size = `ps -p #{Process.pid} -o pid=,rss=`.scan(/\d+/).last
+        storage.hash_set('workerholic:stats:memory:processes', pid, size)
+      end
+    end
+
+    def self.delete_memory_stats
+      storage.delete('workerholic:stats:memory:processes')
+    end
+
     class << self
       private
 
