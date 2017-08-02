@@ -33,6 +33,7 @@ module Workerholic
       limit_reached = JobRetry.new(job: job)
       if limit_reached
         job.statistics.failed_on = Time.now.to_f
+        StatsStorage.save_job('failed_jobs', job)
       end
     end
   end
