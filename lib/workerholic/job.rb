@@ -23,18 +23,19 @@ module Workerholic
     end
 
     def perform_delayed(*args)
-      delay_in_sec = verify_delay(args[0])
-      serialized_job, queue_name = prepare_job_for_enqueueing(args)
+      execution_time = Time.now.to_f + verify_delay(args)
+      serialized_job = prepare_job_for_enqueueing(args).first
 
-      JobScheduler.new(set_name: queue_name).schedule(serialized_job, delay_in_sec)
+      sorted_set = SortedSet.new
+      sorted_set.add(serialized_job, execution_time)
     end
 
     private
 
-    def verify_delay(delay_arg)
-      raise ArgumentError, 'Delay argument has to be of Numeric type' unless delay_arg.is_a? Numeric
+    def verify_delay(args)
+      raise ArgumentError, 'Delay argument has to be of Numeric type' unless args[0].is_a? Numeric
 
-      delay_arg
+      args.shift
     end
 
     def prepare_job_for_enqueueing(args)

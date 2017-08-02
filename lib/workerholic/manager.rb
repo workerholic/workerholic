@@ -30,16 +30,5 @@ module Workerholic
       workers.each(&:join)
       scheduler.join
     end
-
-    private
-
-=begin
-    def regenerate_workers
-      inactive_workers = WORKERS_COUNT - workers.size
-      if inactive_workers > 0
-        inactive_workers.times { @workers << Worker.new }
-      end
-    end
-=end
   end
 end

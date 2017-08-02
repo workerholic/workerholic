@@ -46,6 +46,14 @@ module TestRunner
       GetPrimes.new.perform_async(n, 10)
     end
   end
+
+  def self.enqueue_delayed(num_of_cycles)
+    num_of_cycles.times do |n|
+      FutureJob.new.perform_delayed(100, n)
+    end
+  end
 end
 
-TestRunner.non_blocking(2)
+#TestRunner.non_blocking(10)
+#TestRunner.enqueue_delayed(10)
+TestRunner.sort_array(10, 20)
