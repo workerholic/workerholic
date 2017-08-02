@@ -20,7 +20,7 @@ class FirstJobBalancerTest
   include Workerholic::Job
   job_options queue_name: BALANCER_TEST_QUEUE
 
-  def perform(str, num)
+  def perform(str)
     str
   end
 end
@@ -29,8 +29,15 @@ class SecondJobBalancerTest
   include Workerholic::Job
   job_options queue_name: ANOTHER_BALANCER_TEST_QUEUE
 
-  def perform(str, num)
+  def perform(str)
     str
   end
 end
 
+class DelayedJobTest
+  include Workerholic::Job
+
+  def perform(str)
+    str
+  end
+end

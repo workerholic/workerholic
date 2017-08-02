@@ -61,4 +61,4 @@ module TestRunner
 end
 
 #TestRunner.non_blocking(10)
-TestRunner.failed_jobs(10)
+TestRunner.failed_jobs(1)

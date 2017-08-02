@@ -33,7 +33,6 @@ class WorkerholicWeb < Sinatra::Base
       else
         @job_stats[job[0]] = { failed: job[1] }
       end
-
       @failed_total += job[1]
     end
 

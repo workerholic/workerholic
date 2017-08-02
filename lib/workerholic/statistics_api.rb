@@ -4,7 +4,7 @@ module Workerholic
 
     def self.job_statistics(options={})
       if CATEGORIES.include? options[:category]
-        job_classes = storage.keys_for_namespace(options[:category])
+        job_classes = storage.get_keys_for_namespace('workerholic:stats:' + options[:category] + ':*')
 
         if options[:count_only]
           self.parse_job_classes(job_classes)
@@ -27,7 +27,7 @@ module Workerholic
     end
 
     def self.jobs_classes
-      classes = storage.available_keys
+      classes = storage.get_keys_for_namespace('workerholic:stats:*')
 
       parsed_classes = classes.map do |klass|
         klass.split(':').last
@@ -83,7 +83,7 @@ module Workerholic
     end
 
     def self.get_jobs_for_class(job_class)
-      serialized_jobs = storage.peek_namespace(job_class)
+      serialized_jobs = storage.get_all_elements_from_list(job_class)
       deserialized_stats = serialized_jobs.map do |serialized_job|
         deserialized_job = JobSerializer.deserialize_stats(serialized_job)
         self.convert_klass_to_string(deserialized_job)

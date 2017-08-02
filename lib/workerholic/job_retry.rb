@@ -5,16 +5,12 @@ module Workerholic
     def initialize(options={})
       @job = options[:job]
       @sorted_set = options[:sorted_set] || SortedSet.new('workerholic:scheduled_jobs')
-
-      self.retry
     end
 
-    protected
-
     def retry
+      increment_retry_count
       return false if job.retry_count >= 5
 
-      increment_retry_count
       schedule_job_for_retry
       sorted_set.add(JobSerializer.serialize(job), job.execute_at)
     end
@@ -26,7 +22,7 @@ module Workerholic
     end
 
     def schedule_job_for_retry
-      job.execute_at = Time.now.to_f + 10 * job.retry_count
+      job.execute_at = Time.now.to_f + 3 * job.retry_count
     end
   end
 end

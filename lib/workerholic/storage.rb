@@ -72,25 +72,12 @@ module Workerholic
         execute(retry_delay) { |conn| conn.scan(0, match: queue_name_pattern).last }
       end
 
-      def available_keys(retry_delay = 5)
-        execute(retry_delay) { |conn| conn.keys('workerholic:stats:*') }
+      def get_keys_for_namespace(namespace, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.keys(namespace) }
       end
 
-      def keys_for_namespace(namespace, retry_delay = 5)
-        execute(retry_delay) { |conn| conn.keys('workerholic:stats:' + namespace + ':*') }
-      end
-
-      def peek_namespace(key, retry_delay = 5)
+      def get_all_elements_from_list(key, retry_delay = 5)
         execute(retry_delay) { |conn| conn.lrange(key, 0, -1) }
-      end
-
-      def peek_namespaces(keys, retry_delay = 5)
-        execute(retry_delay) do |conn|
-          keys.select do |namespace|
-            full_namespace = 'workerholic:stats:' + namespace
-            conn.keys(full_namespace + ':*').size > 0
-          end
-        end
       end
 
       def hash_get(key, field, retry_delay = 5)

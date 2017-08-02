@@ -30,8 +30,9 @@ module Workerholic
     private
 
     def retry_job(job)
-      limit_reached = JobRetry.new(job: job)
-      if limit_reached
+      retries_left = JobRetry.new(job: job).retry
+
+      if retries_left == false
         job.statistics.failed_on = Time.now.to_f
         StatsStorage.save_job('failed_jobs', job)
       end
