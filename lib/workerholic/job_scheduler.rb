@@ -1,11 +1,10 @@
 module Workerholic
   class JobScheduler
-    attr_reader :sorted_set, :queue, :scheduler_thread
+    attr_reader :sorted_set, :scheduler_thread
     attr_accessor :alive
 
     def initialize(opts={})
       @sorted_set = opts[:sorted_set] || SortedSet.new
-      @queue = Queue.new(opts[:queue_name] || 'workerholic:queue:main')
       @alive = true
     end
 
@@ -31,8 +30,12 @@ module Workerholic
       if job_due?
         while job_due?
           serialized_job, job_execution_time = sorted_set.peek
-          sorted_set.remove(job_execution_time)
+          job = JobSerializer.deserialize(serialized_job)
+          queue = job.queue ? Queue.new(job.queue) : Queue.new
+
           queue.enqueue(serialized_job)
+
+          sorted_set.remove(job_execution_time)
         end
       else
         sleep(2)
