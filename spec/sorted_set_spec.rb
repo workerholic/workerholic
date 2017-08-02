@@ -2,7 +2,7 @@ require_relative 'spec_helper'
 
 describe Workerholic::SortedSet do
   let(:job) {{ class: SimpleJobTest, arguments: [] }}
-  let(:redis) { Redis.new }
+  let(:redis) { Redis.new(url: Workerholic::REDIS_URL) }
   let(:sorted_set) { Workerholic::SortedSet.new(TEST_SCHEDULED_SORTED_SET) }
 
   it 'adds a serialized job to the sorted set' do

@@ -7,7 +7,7 @@ class JobWithError
 end
 
 describe Workerholic::JobRetry do
-  let(:redis) { Redis.new }
+  let(:redis) { Redis.new(url: Workerholic::REDIS_URL) }
 
   it 'increments retry count' do
     job = Workerholic::JobWrapper.new(class: JobWithError, arguments: [])

@@ -49,7 +49,13 @@ module TestRunner
 
   def self.enqueue_delayed(num_of_cycles)
     num_of_cycles.times do |n|
-      FutureJob.new.perform_delayed(100, n)
+      FutureJob.new.perform_delayed(10, n)
+    end
+  end
+
+  def self.enqueue_delayed_with_queue(num_of_cycles)
+    num_of_cycles.times do |n|
+      FutureJobWithQueue.new.perform_delayed(10, n)
     end
   end
 
@@ -58,7 +64,29 @@ module TestRunner
       FailedJob.new.perform_async(n)
     end
   end
+
+  def self.failed_jobs_with_queue(num_of_cycles)
+    num_of_cycles.times do |n|
+      FailedJobWithQueue.new.perform_async(n)
+    end
+  end
 end
 
-#TestRunner.non_blocking(10)
-TestRunner.failed_jobs(1)
+pids = (1..5).to_a.map do
+    fork do
+      TestRunner.blocking(200)
+
+      TestRunner.non_blocking(100)
+      TestRunner.sort_array(100, 100)
+
+      TestRunner.failed_jobs(1)
+      TestRunner.failed_jobs_with_queue(1)
+
+      TestRunner.enqueue_delayed(1)
+      TestRunner.enqueue_delayed_with_queue(1)
+
+      exit
+    end
+end
+
+pids.each { |pid| Process.wait(pid) }

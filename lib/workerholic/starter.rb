@@ -13,6 +13,7 @@ module Workerholic
 
     def self.kill_memory_tracker_thread
       @thread.kill
+      StatsStorage.delete_memory_stats
     end
 
     private
@@ -68,18 +69,12 @@ module Workerholic
     end
 
     def self.track_memory_usage
-      cleanup_old_memory_stats
-
       @thread = Thread.new do
         loop do
           sleep 5
           StatsStorage.save_processes_memory_usage
         end
       end
-    end
-
-    def self.cleanup_old_memory_stats
-      StatsStorage.delete_memory_stats
     end
 
     def self.launch

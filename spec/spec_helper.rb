@@ -20,10 +20,6 @@ RSpec.configure do |config|
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
   config.before do
-    Redis.new.del(TEST_QUEUE, ANOTHER_TEST_QUEUE, BALANCER_TEST_QUEUE, ANOTHER_BALANCER_TEST_QUEUE, TEST_SCHEDULED_SORTED_SET, HASH_TEST)
-  end
-
-  config.after do
-    Redis.new.del(TEST_QUEUE, ANOTHER_TEST_QUEUE, BALANCER_TEST_QUEUE, ANOTHER_BALANCER_TEST_QUEUE, TEST_SCHEDULED_SORTED_SET, HASH_TEST)
+    Redis.new(url: Workerholic::REDIS_URL).flushdb
   end
 end

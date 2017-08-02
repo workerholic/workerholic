@@ -10,7 +10,7 @@ module Workerholic
         define_method(:specified_job_options) do
           {
             execute_at: params[:execute_at],
-            queue_name: params[:queue_name] || 'workerholic:queue:main'
+            queue_name: 'workerholic:queue:' + (params[:queue_name] || 'main')
           }
         end
       end
@@ -41,7 +41,12 @@ module Workerholic
     def prepare_job_for_enqueueing(args)
       raise ArgumentError if self.method(:perform).arity != args.size
 
-      job = JobWrapper.new(klass: @class || self.class, arguments: args, wrapper: self.class)
+      job = JobWrapper.new(
+        klass: @class || self.class,
+        arguments: args,
+        wrapper: self.class,
+        queue: specified_job_options[:queue_name]
+      )
 
       job.statistics.enqueued_at = Time.now.to_f
 

@@ -17,7 +17,7 @@ class WorkerJobTest
 end
 
 describe Workerholic::Worker do
-  let(:redis) { Redis.new }
+  let(:redis) { Redis.new(url: Workerholic::REDIS_URL) }
   let(:job) do
     {
       klass: WorkerJobTest,

@@ -1,6 +1,5 @@
 module Workerholic
   class Storage
-    # Wraps redis-rb gem methods for enqueueing/dequeuing purposes
     class RedisWrapper
       attr_reader :redis, :retries
 
@@ -67,7 +66,7 @@ module Workerholic
       end
 
       def fetch_queue_names(retry_delay = 5)
-        queue_name_pattern = $TESTING ? 'workerholic:testing:queue*' : 'workerholic:queue*'
+        queue_name_pattern = 'workerholic:queue*'
 
         execute(retry_delay) { |conn| conn.scan(0, match: queue_name_pattern).last }
       end

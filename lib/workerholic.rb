@@ -32,6 +32,7 @@ require 'workerholic/adapters/active_job_adapter' if defined?(Rails)
 
 module Workerholic
   PIDS = [Process.pid]
+  REDIS_URL = ENV['REDIS_URL'] || 'redis://localhost:' + ($TESTING ? '1234' : '6379')
 
   def self.workers_count
     @workers_count || 25
@@ -43,6 +44,8 @@ module Workerholic
   end
 
   def self.redis_pool
-    @redis ||= ConnectionPool.new(size: workers_count + 5, timeout: 5) { Redis.new }
+    @redis ||= ConnectionPool.new(size: workers_count + 5, timeout: 5) do
+      Redis.new(url: REDIS_URL)
+    end
   end
 end
