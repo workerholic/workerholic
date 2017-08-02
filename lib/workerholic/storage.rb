@@ -13,6 +13,18 @@ module Workerholic
         end
       end
 
+      def hash_set(key, field, value, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.hset(key, field, value) }
+      end
+
+      def hash_get(key, field, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.hget(key, field) }
+      end
+
+      def delete(key, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.del(key) }
+      end
+
       def list_length(key, retry_delay = 5)
         execute(retry_delay) { |conn| conn.llen(key) }
       end
