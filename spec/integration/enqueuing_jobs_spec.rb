@@ -61,5 +61,11 @@ describe 'enqueuing jobs to Redis' do
     it 'raises an error when wrong number of arguments is specified to perform_async' do
       expect { SimpleJobTest.new.perform_async(1, 2, 3) }.to raise_error(ArgumentError)
     end
+
+    it 'raises an ArgumentError if perform_delayed first argument is not of Numeric type' do
+      job = DelayedJobTest.new
+
+      expect { job.perform_delayed('wrong type', 'test arg') }.to raise_error(ArgumentError)
+    end
   end
 end
