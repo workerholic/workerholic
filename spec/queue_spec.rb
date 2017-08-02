@@ -1,7 +1,7 @@
 require_relative 'spec_helper'
 
 describe Workerholic::Queue do
-  let(:redis) { Redis.new }
+  let(:redis) { Redis.new(url: Workerholic::REDIS_URL) }
   let(:queue) { Workerholic::Queue.new(TEST_QUEUE) }
   let(:job) { 'test job' }
 

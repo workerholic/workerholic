@@ -1,7 +1,7 @@
 require_relative '../spec_helper'
 
 describe 'dequeuing and processesing of jobs' do
-  let(:redis) { Redis.new }
+  let(:redis) { Redis.new(url: Workerholic::REDIS_URL) }
 
   xit 'successfully dequeues and process a simple job' do
     serialized_job = Workerholic::JobSerializer.serialize(

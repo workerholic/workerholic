@@ -1,10 +1,13 @@
 require_relative 'spec_helper'
 
-TESTED_QUEUES = [BALANCER_TEST_QUEUE, ANOTHER_BALANCER_TEST_QUEUE]
+TESTED_QUEUES = [
+  WORKERHOLIC_QUEUE_NAMESPACE + BALANCER_TEST_QUEUE,
+  WORKERHOLIC_QUEUE_NAMESPACE + ANOTHER_BALANCER_TEST_QUEUE
+]
 
 describe Workerholic::WorkerBalancer do
   let(:storage) { Workerholic::Storage::RedisWrapper.new }
-  let(:redis) { Redis.new }
+  let(:redis) { Redis.new(url: Workerholic::REDIS_URL) }
 
   before do
     100.times do |n|

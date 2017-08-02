@@ -2,7 +2,7 @@ require_relative 'spec_helper'
 
 describe Workerholic::Storage do
   let(:storage) { Workerholic::Storage::RedisWrapper.new }
-  let(:redis) { Redis.new }
+  let(:redis) { Redis.new(url: Workerholic::REDIS_URL) }
   let(:queue_name) { TEST_QUEUE }
   let(:job) { 'test job' }
 
@@ -63,10 +63,10 @@ describe Workerholic::Storage do
     end
 
     it 'returns the workerholic queue names that are in redis' do
-      storage.push(queue_name, job)
-      storage.push(ANOTHER_TEST_QUEUE, job)
+      storage.push(WORKERHOLIC_QUEUE_NAMESPACE + queue_name, job)
+      storage.push(WORKERHOLIC_QUEUE_NAMESPACE + ANOTHER_TEST_QUEUE, job)
 
-      expect(storage.fetch_queue_names).to match_array([queue_name, ANOTHER_TEST_QUEUE])
+      expect(storage.fetch_queue_names).to match_array([WORKERHOLIC_QUEUE_NAMESPACE + queue_name, WORKERHOLIC_QUEUE_NAMESPACE + ANOTHER_TEST_QUEUE])
     end
 
     it 'sets k and a value to a hash in redis' do
