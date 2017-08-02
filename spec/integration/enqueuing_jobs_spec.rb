@@ -31,6 +31,17 @@ describe 'enqueuing jobs to Redis' do
       expect(job_from_redis.to_hash).to eq(expected_job.to_hash)
     end
 
+    xit 'enqueues a delayed job in redis' do
+      DelayedJobTest.new.perform_delayed(100, 'test job')
+      serialized_job = redis.lpop(TEST_QUEUE)
+      job_from_redis = Workerholic::JobSerializer.deserialize(serialized_job)
+
+      expected_job = Workerholic::JobWrapper.new(klass: SimpleJobTest, arguments: ['test job'], wrapper: SimpleJobTest)
+      expected_job.statistics.enqueued_at = job_from_redis.statistics.enqueued_at
+
+      expect(job_from_redis.to_hash).to eq(expected_job.to_hash)
+    end
+
     it 'enqueues a job with the right statistics' do
       SimpleJobTest.new.perform_async('test_job')
       serialized_job = redis.lpop(TEST_QUEUE)
