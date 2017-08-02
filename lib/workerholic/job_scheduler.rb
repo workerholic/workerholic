@@ -4,7 +4,7 @@ module Workerholic
     attr_accessor :alive
 
     def initialize(opts={})
-      @sorted_set = SortedSet.new
+      @sorted_set = opts[:sorted_set] || SortedSet.new
       @queue = Queue.new(opts[:queue_name] || 'workerholic:queue:main')
       @alive = true
     end
