@@ -11,7 +11,7 @@ class WorkerholicWeb < Sinatra::Base
   end
 
   get '/overview' do
-    erb :index
+    erb :overview
   end
 
   get '/details' do
@@ -45,37 +45,27 @@ class WorkerholicWeb < Sinatra::Base
     erb :queues
   end
 
-  # get '/workers' do
-  #   erb :workers
-  # end
-  #
-  # get '/failed' do
-  #   erb :failed
-  # end
-  #
-  # get '/scheduled' do
-  #   erb :scheduled
-  # end
-
   get '/overview-data' do
     JSON.generate({
       completed_jobs: Workerholic::StatsAPI.job_statistics( {category: 'completed_jobs', count_only: true} ),
       failed_jobs: Workerholic::StatsAPI.job_statistics( {category: 'failed_jobs', count_only: true} ),
       queued_jobs: Workerholic::StatsAPI.queued_jobs,
-      workers_count: Workerholic.workers_count
+      workers_count: Workerholic.workers_count,
+      # memory_usage: Workerholic::StatsAPI.memory_usage
     })
   end
 
-  get '/detail-data' do
+  get '/details-data' do
     JSON.generate({
       completed_jobs: Workerholic::StatsAPI.job_statistics( {category: 'completed_jobs', count_only: true} ),
       failed_jobs: Workerholic::StatsAPI.job_statistics( {category: 'failed_jobs', count_only: true} )
     })
   end
 
-  get '/queue-data' do
+  get '/queues-data' do
     JSON.generate({
       queued_jobs: Workerholic::StatsAPI.queued_jobs
     })
   end
+
 end
