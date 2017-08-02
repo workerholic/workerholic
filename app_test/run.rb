@@ -52,8 +52,13 @@ module TestRunner
       FutureJob.new.perform_delayed(100, n)
     end
   end
+
+  def self.failed_jobs(num_of_cycles)
+    num_of_cycles.times do |n|
+      FailedJob.new.perform_async(n)
+    end
+  end
 end
 
 #TestRunner.non_blocking(10)
-TestRunner.enqueue_delayed(10)
-#TestRunner.sort_array(10, 20)
+TestRunner.failed_jobs(10)

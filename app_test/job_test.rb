@@ -86,3 +86,11 @@ class FutureJob
     n
   end
 end
+
+class FailedJob
+  include Workerholic::Job
+
+  def perform(n)
+    raise Exception
+  end
+end

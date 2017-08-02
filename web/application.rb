@@ -15,8 +15,8 @@ class WorkerholicWeb < Sinatra::Base
   end
 
   get '/details' do
-    completed_jobs = Workerholic::StatsAPI.job_statistics( {category: 'completed_jobs', count_only: true} )
-    failed_jobs = Workerholic::StatsAPI.job_statistics( {category: 'failed_jobs', count_only: true} )
+    completed_jobs = Workerholic::StatsAPI.job_statistics(category: 'completed_jobs', count_only: true)
+    failed_jobs = Workerholic::StatsAPI.job_statistics(category: 'failed_jobs', count_only: true)
 
     @job_stats = {}
     @completed_total = 0
@@ -28,7 +28,12 @@ class WorkerholicWeb < Sinatra::Base
     end
 
     failed_jobs.each do |job|
-      @job_stats[job[0]].merge( { failed: job[1] })
+      if @job_stats[job[0]]
+        @job_stats[job[0]].merge({ failed: job[1] })
+      else
+        @job_stats[job[0]] = { failed: job[1] }
+      end
+
       @failed_total += job[1]
     end
 
