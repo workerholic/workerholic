@@ -11,6 +11,8 @@ class WorkerholicWeb < Sinatra::Base
   end
 
   get '/overview' do
+    @processes = Workerholic::StatsAPI.process_stats
+
     erb :overview
   end
 
@@ -54,8 +56,9 @@ class WorkerholicWeb < Sinatra::Base
       completed_jobs: Workerholic::StatsAPI.job_statistics( {category: 'completed_jobs', count_only: true} ),
       failed_jobs: Workerholic::StatsAPI.job_statistics( {category: 'failed_jobs', count_only: true} ),
       queued_jobs: Workerholic::StatsAPI.queued_jobs,
+      scheduled_jobs: Workerholic::StatsAPI.scheduled_jobs( { count_only: true }),
       workers_count: Workerholic.workers_count,
-      # memory_usage: Workerholic::StatsAPI.memory_usage
+      memory_usage: Workerholic::StatsAPI.process_stats,
     })
   end
 

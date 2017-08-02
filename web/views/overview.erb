@@ -22,6 +22,10 @@
       <td class='queued_jobs_count count'></td>
     </tr>
     <tr>
+      <td>Scheduled Jobs</td>
+      <td class='scheduled_jobs count'></td>
+    </tr>
+    <tr>
       <td>Failed Jobs</td>
       <td class='failed_jobs count'></td>
     </tr>
@@ -35,12 +39,18 @@
     </tr>
     <tr id='memory_usage'>
       <td>Total Memory Usage</td>
-      <td class='memory_usage count'>0</td>
+      <td class='memory_usage count'></td>
     </tr>
     <tr class='nested'>
       <th>Process Id</th>
       <th>Memory Usage</th>
     </tr>
+    <% @processes.each do |id, memory| %>
+      <tr class='nested'>
+        <td><%= id %></td>
+        <td id='process_<%= id %>'></td>
+      </tr>
+    <% end %>
   </tbody>
 </table>
 

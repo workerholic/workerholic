@@ -67,7 +67,7 @@ nav a:hover {
   margin-top: 50px;
 }
 
-.nested th {
+.nested th, .nested td {
   display: none;
   padding-left: 50px
 }
