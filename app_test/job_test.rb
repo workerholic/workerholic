@@ -4,7 +4,7 @@ require 'prime'
 
 class JobTestFast
   include Workerholic::Job
-  job_options queue_name: 'workerholic:queue:job_fast'
+  job_options queue_name: 'job_fast'
 
   def perform(str, num)
     str
@@ -13,7 +13,7 @@ end
 
 class JobTestSlow
   include Workerholic::Job
-  job_options queue_name: 'workerholic:queue:job_slow'
+  job_options queue_name: 'job_slow'
 
   def perform(str, num)
     sleep(0.5)
@@ -87,8 +87,26 @@ class FutureJob
   end
 end
 
+class FutureJobWithQueue
+  include Workerholic::Job
+  job_options queue_name: 'specific_queue_for_delayed_jobs'
+
+  def perform(n)
+    n
+  end
+end
+
 class FailedJob
   include Workerholic::Job
+
+  def perform(n)
+    raise Exception
+  end
+end
+
+class FailedJobWithQueue
+  include Workerholic::Job
+  job_options queue_name: 'specific_queue_for_failed_jobs'
 
   def perform(n)
     raise Exception
