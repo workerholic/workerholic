@@ -8,6 +8,7 @@ gem 'sinatra'
 
 group :development, :test do
   gem 'pry-byebug'
+  gem 'sinatra-reloader'
 end
 
 group :test do
