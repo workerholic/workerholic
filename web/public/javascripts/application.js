@@ -314,7 +314,7 @@ var App = {
         gridColor: 'Silver',
         tickColor: 'silver',
         animationEnabled: true,
-        title: 'Time ago (s)',
+        title: 'Date',
         minimum: parseInt((completed_jobs['date_ranges'][days]) * 1000),
       },
       toolTip: {
@@ -345,13 +345,11 @@ var App = {
         fontSize: 24,
       },
       axisX: {
-        reversed: true,
         gridColor: 'Silver',
         tickColor: 'silver',
         animationEnabled: true,
-        title: 'Time ago (s)',
-        minimum: 0,
-        maximum: days,
+        title: 'Date',
+        minimum: parseInt((completed_jobs['date_ranges'][days]) * 1000),
       },
       toolTip: {
         shared: true
@@ -369,6 +367,7 @@ var App = {
         color: "#20B2AA",
         markerType: 'circle',
         lineThickness: 2,
+        xValueType: 'dateTime',
         dataPoints: this.setHistoryDataPoints(failed_jobs),
       }],
     });
@@ -380,8 +379,7 @@ var App = {
     data = []
     console.log(jobs['date_ranges']);
     for (var i = 0; i <= jobs['date_ranges'].length; i++) {
-      // var point = { x: new Date(parseInt(jobs['date_ranges'][i]) * 1000), y: jobs['job_counts'][i]};
-      var point = { x: parseInt(jobs['date_ranges'][i]) * 1000, y: jobs['job_counts'][i]};
+      var point = { x: this.getLocalDate(parseInt(jobs['date_ranges'][i])).getTime(), y: jobs['job_counts'][i]};
 
       data.push(point);
     }
@@ -397,6 +395,14 @@ var App = {
     }
 
     return data;
+  },
+  getLocalDate: function(seconds) {
+    var date = new Date(seconds * 1000);
+    var day = date.getUTCDate();
+    var month = date.getUTCMonth();
+    var year = date.getUTCFullYear();
+
+    return new Date(year, month, day);
   },
   setActiveTab: function() {
     this.tab = $(location).attr('href').match(/(?:(?!\?).)*/)[0].split('/').pop();
