@@ -1,16 +1,16 @@
 <div id="day_tabs">
-  <a class='button' id="button_7" href='/history?days=7'>7 Days</a>
-  <a class='button' id="button_30" href='/history?days=30'>30 Days</a>
-  <a class='button' id="button_180" href='/history?days=180'>180 Days</a>
-  <a class='button' id="button_365" href='/history?days=365'>365 Days</a>
+  <a class='button' id="button_7" data-day="7" href='/history?days=7'>7 Days</a>
+  <a class='button' id="button_30" data-day="30" href='/history?days=30'>30 Days</a>
+  <a class='button' id="button_180" data-day="180" href='/history?days=180'>180 Days</a>
+  <a class='button' id="button_365" data-day="365" href='/history?days=365'>365 Days</a>
 </div>
 
 <div class="select" id="class_selector">
   <select>
-    <option disabled>Select a class</option>
-    <option value="JobTestFast">JobTestFast</option>
-    <option value="JobTestSlow">JobTestSlow</option>
-    <option value="Fibonacci">Fibonacci</option>
+    <option>Select a class</option>
+    <% @classes.each do |class_name| %>
+      <option value="<%= class_name %>" <%= 'selected' if class_name == @class %>><%= class_name %></option>
+    <% end %>
   </select>
 </div>
 
