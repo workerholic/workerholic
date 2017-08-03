@@ -16,6 +16,7 @@ module Workerholic
         job.statistics.completed_at = Time.now.to_f
 
         StatsStorage.save_job('completed_jobs', job)
+        StatsStorage.update_historical_stats('completed_jobs', job.klass.name)
 
         # @logger.info("Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}.")
       rescue Exception => e
@@ -34,6 +35,7 @@ module Workerholic
       else
         job.statistics.failed_on = Time.now.to_f
         StatsStorage.save_job('failed_jobs', job)
+        StatsStorage.update_historical_stats('failed_jobs', job.klass.name)
 
         # @logger.error("Failed: your job from class #{job.class} was unsuccessful.")
       end
