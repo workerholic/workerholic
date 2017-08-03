@@ -57,6 +57,10 @@ module Workerholic
         execute(retry_delay) { |conn| conn.zremrangebyscore(key, score, score) }
       end
 
+      def hash_increment_field(key, field, increment, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.hincrby(key, field, increment) }
+      end
+
       def sorted_set_size(key, retry_delay = 5)
         execute(retry_delay) { |conn| conn.zcount(key, 0, '+inf') }
       end
