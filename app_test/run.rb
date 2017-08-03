@@ -91,6 +91,7 @@ module TestRunner
 end
 
 
-TestRunner.non_blocking(10)
-TestRunner.blocking(10)
+TestRunner.non_blocking(25000)
+TestRunner.blocking(5000)
+TestRunner.fibonacci_cruncher(10000)
 #TestRunner.generate_array(200, 1_000_000)
