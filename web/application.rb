@@ -1,6 +1,6 @@
 require 'sinatra/base'
 
-# require 'sinatra/reloader'
+require 'sinatra/reloader'
 require 'json'
 require 'workerholic'
 
@@ -49,6 +49,13 @@ class WorkerholicWeb < Sinatra::Base
     end
 
     erb :queues
+  end
+
+  get '/history' do
+
+    @class = 'JobTestFast'
+
+    erb :history
   end
 
   get '/overview-data' do
