@@ -17,6 +17,19 @@ var App = {
       this.totalMemoryHistory.pop();
     }
   },
+  getUrlParameter: function(param) {
+    var pageUrl = decodeURIComponent(window.location.search.substring(1));
+    var urlVariables = pageUrl.split('&')
+    var parameterName;
+
+    for (var i = 0; i < urlVariables.length; i++) {
+      parameterName = urlVariables[i].split('=');
+
+      if (parameterName[0] === param) {
+        return parameterName[1] === undefined ? true : parameterName[1];
+      }
+    }
+  },
   getOverviewData: function() {
     $.ajax({
       url: '/overview-data',
@@ -45,11 +58,11 @@ var App = {
 
         for (id in memoryUsage) {
           totalMemoryUsage = totalMemoryUsage + parseInt(memoryUsage[id]);
-          // if ($('#process_' + id).length === 1) {
-          $('#process_' + id).text(parseInt(memoryUsage[id]) / 1000 + ' MB');
-          // } else {
-          //   $('.nested').last().after("<tr class='nested'><td>" + id + "</td><td id='process_'" + id + ">" + memoryUsage[id] + "</td></tr>")
-          // }
+          if ($('#process_' + id).length === 1) {
+            $('#process_' + id).text(parseInt(memoryUsage[id]) / 1000 + ' MB');
+          } else {
+            $('.nested').last().after("<tr class='nested'><td>" + id + "</td><td id='process_" + id + "''>" + memoryUsage[id] + "</td></tr>")
+          }
         }
 
         this.queuedJobsCountHistory.unshift(queuedJobsCount);
@@ -115,13 +128,33 @@ var App = {
     })
   },
   getHistoryData: function() {
-    var days = parseInt($(location).attr('href').match(/\d*$/)[0]) || 7;
+    var className = $('#class_selector select').find(':selected').text();;
+    // var days = parseInt($(location).attr('href').match(/\d*$/)[0]) || 7;
+    var days = this.getUrlParameter('days') || 7;
+
     $('#button_' + days).addClass('is-dark');
-    this.drawHistoryChart(days);
 
     $('#class_selector').on('change', function(e) {
-      window.location = location + '&' + 'class=' + e.target.value;
+      location = window.location.origin + window.location.pathname + '?days=' + days + '&class=' + e.target.value;
     });
+
+    $('#day_tabs a').on('click', function(e) {
+      e.preventDefault();
+      // console.log($(e.target).attr('data-day'));
+      location = window.location.origin + window.location.pathname + '?days=' + $(e.target).attr('data-day') + '&class=' + className;
+    });
+
+    $.ajax({
+      url: '/historic-data',
+      data: {
+        days: days,
+        className: className,
+      },
+      dataType: 'json',
+      success: function(data) {
+        this.drawHistoryChart(days, className, data['completed_jobs'], data['failed_jobs']);
+      }.bind(this)
+    })
   },
   drawChart: function() {
     var processedJobsChart = new CanvasJS.Chart('jobs_processed_container', {
@@ -269,7 +302,7 @@ var App = {
     processedJobsChart.render();
     totalMemoryChart.render();
   },
-  drawHistoryChart: function(days) {
+  drawHistoryChart: function(days, className, completed_jobs, failed_jobs) {
     var completedHistoryChart = new CanvasJS.Chart('history_container_completed', {
       title: {
         text: 'Completed History for ' + days + ' days',
@@ -297,11 +330,11 @@ var App = {
       data: [{
         type: "line",
         showInLegend: true,
-        name: "Failed Jobs",
+        name: "Completed Job for " + className,
         color: "#20B2AA",
         markerType: 'circle',
         lineThickness: 2,
-        dataPoints: [],
+        dataPoints: this.setHistoryDataPoints(completed_jobs),
       }],
     });
 
@@ -332,16 +365,26 @@ var App = {
       data: [{
         type: "line",
         showInLegend: true,
-        name: "Failed Jobs",
+        name: "Failed Jobs for " + className,
         color: "#20B2AA",
         markerType: 'circle',
         lineThickness: 2,
-        dataPoints: [],
+        dataPoints: this.setHistoryDataPoints(failed_jobs),
       }],
     });
 
     completedHistoryChart.render();
     failedHistoryChart.render();
+  },
+  setHistoryDataPoints: function(jobs) {
+    data = []
+
+    for (var i = 0; i <= jobs['date_ranges'].length; i++) {
+      var point = { x: i, y: jobs['job_counts'][i]};
+      data.push(point);
+    }
+
+    return data;
   },
   setDataPoints: function(array, count) {
     var data = [];
