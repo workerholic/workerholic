@@ -65,30 +65,23 @@ module Workerholic
       end
 
       period = options[:period] || 30
-      dates_range = self.get_past_dates(period)
+      date_ranges = self.get_past_dates(period)
 
-      job_range = storage.hash_get_multiple_elements(namespace, dates_range)
+      existing_ranges = storage.hash_get_multiple_elements(namespace, date_ranges)
 
-      combine_ranges(job_range: job_range,
-                     dates_range: dates_range,
-                     klass: options[:klass])
+      combine_ranges(existing_ranges: existing_ranges, date_ranges: date_ranges)
     end
 
     private
 
     def self.combine_ranges(options={})
-      return [] if options[:job_range].empty?
+      existing_ranges = options[:existing_ranges]
+      existing_ranges.map!(&:to_i)
 
-      job_range = options[:job_range]
-      dates_range = options[:dates_range]
-
-      combined_ranges = []
-      dates_range.each_with_index do |time, idx|
-        found_date = job_range[idx]
-        combined_ranges << [time, found_date.to_i] if found_date
-      end
-
-      combined_ranges
+      {
+        date_ranges: options[:date_ranges],
+        existing_ranges: existing_ranges
+      }
     end
 
     def self.get_past_dates(days)
