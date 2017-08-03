@@ -46,8 +46,18 @@ end
 class HeavyCalculation
   include Workerholic::Job
 
-  def perform(n, arr)
-    arr = bubble_sort(arr)
+  def perform(arr_size)
+    #arr = bubble_sort(arr)
+    generate_large_array(arr_size)
+  end
+
+  def generate_large_array(arr_size)
+    result = []
+    arr_size.times do
+      result << rand(50 ** 10)
+    end
+
+    result
   end
 
   def bubble_sort(array)
@@ -110,5 +120,19 @@ class FailedJobWithQueue
 
   def perform(n)
     raise Exception
+  end
+end
+
+class FibCruncher
+  include Workerholic::Job
+
+  def perform(n)
+    a, b = 0, 1
+
+    while b < n
+      a, b = b, a + b
+    end
+
+    puts b
   end
 end

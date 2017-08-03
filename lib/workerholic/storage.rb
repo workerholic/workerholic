@@ -20,6 +20,14 @@ module Workerholic
         execute(retry_delay) { |conn| conn.hget(key, field) }
       end
 
+      def hash_get_all(key, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.hgetall(key) }
+      end
+
+      def hash_keys(namespace, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.hkeys(namespace) }
+      end
+
       def delete(key, retry_delay = 5)
         execute(retry_delay) { |conn| conn.del(key) }
       end
@@ -77,18 +85,6 @@ module Workerholic
 
       def get_all_elements_from_list(key, retry_delay = 5)
         execute(retry_delay) { |conn| conn.lrange(key, 0, -1) }
-      end
-
-      def hash_get(key, field, retry_delay = 5)
-        execute(retry_delay) { |conn| conn.hget(key, field) }
-      end
-
-      def hash_get_all(key, retry_delay = 5)
-        execute(retry_delay) { |conn| conn.hgetall(key) }
-      end
-
-      def hash_keys(namespace, retry_delay = 5)
-        execute(retry_delay) { |conn| conn.hkeys(namespace) }
       end
 
       class RedisCannotRecover < Redis::CannotConnectError; end

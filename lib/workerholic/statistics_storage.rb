@@ -2,7 +2,10 @@ module Workerholic
   class StatsStorage
 
     def self.save_job(category, job)
-      serialized_job_stats = JobSerializer.serialize(job)
+      job_hash = job.to_hash
+      job_hash[:klass] = job.klass.to_s
+      job_hash[:wrapper] = nil
+      serialized_job_stats = JobSerializer.serialize(job_hash)
 
       namespace = "workerholic:stats:#{category}:#{job.klass}"
       storage.push(namespace, serialized_job_stats)
