@@ -55,36 +55,32 @@ module Workerholic
       storage.hash_keys(namespace)
     end
 
-    def self.history_for_period(category, period = 30)
-      namespace = "workerholic:stats:historical:#{category}"
+    def self.history_for_period(options={})
+      raise ArgumentError, 'Please provide a category namespace' unless options[:category]
 
+      if options[:klass]
+        namespace = "workerholic:stats:historical:#{options[:category]}:#{options[:klass]}"
+      else
+        namespace = "workerholic:stats:historical:#{category}"
+      end
+
+      period = options[:period] || 30
       start_time = self.convert_to_time_ago(period)
       end_time = Time.now.to_i
-      # with scores
-      jobs_range = storage.members_in_range(namespace, start_time, end_time)
+      job_ranges = storage.members_in_range(namespace, start_time, end_time)
 
-      jobs_range.map do |range|
-        jobs_count, time_int = range
-        [jobs_count, self.time_to_date(time_int)]
-      end
-    end
-
-    def self.history_for_class(category, klass, period = 30)
-      namespace = "workerholic:stats:historical:#{category}:#{klass}"
-
-      start_time = self.convert_to_time_ago(period)
-      end_time = Time.now.to_i
-      # with scores
-      classes_range = storage.members_in_range(namespace, start_time, end_time)
-
-      classes_range.map do |range|
-        classes_count, time_int = range
-        date = self.convert_time_to_date(time_int)
-        [classes_count, date]
-      end
+      parse_job_ranges(job_ranges: job_ranges, klass: klass)
     end
 
     private
+
+    def self.parse_job_ranges(options={})
+      job_ranges.map do |range|
+        jobs_count, time_int = range
+        date = self.convert_time_to_date(time_int)
+        options[:klass] ? [jobs_count, date] : [options[:klass], jobs_count, date]
+      end
+    end
 
     def self.convert_to_time_ago(days)
       Time.now.to_i - 86400 * 30 - Time.now.to_i % 86400
