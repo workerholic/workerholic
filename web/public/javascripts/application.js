@@ -6,7 +6,7 @@ var App = {
   totalMemoryHistory: [],
   maxTime: 180,
   freshDataCount: function() {
-    return (this.maxTime / 5) + 1
+    return (this.maxTime / 5) + 1;
   },
   tab: null,
   removeStaleData: function() {
@@ -113,6 +113,15 @@ var App = {
         $('#completed_total').text(completedTotal);
       }
     })
+  },
+  getHistoryData: function() {
+    var days = parseInt($(location).attr('href').match(/\d*$/)[0]) || 7;
+    $('#button_' + days).addClass('is-dark');
+    this.drawHistoryChart(days);
+
+    $('#class_selector').on('change', function(e) {
+      window.location = location + '&' + 'class=' + e.target.value;
+    });
   },
   drawChart: function() {
     var processedJobsChart = new CanvasJS.Chart('jobs_processed_container', {
@@ -260,6 +269,80 @@ var App = {
     processedJobsChart.render();
     totalMemoryChart.render();
   },
+  drawHistoryChart: function(days) {
+    var completedHistoryChart = new CanvasJS.Chart('history_container_completed', {
+      title: {
+        text: 'Completed History for ' + days + ' days',
+        fontFamily: 'Arial',
+        fontSize: 24,
+      },
+      axisX: {
+        reversed: true,
+        gridColor: 'Silver',
+        tickColor: 'silver',
+        animationEnabled: true,
+        title: 'Time ago (s)',
+        // minimum: 0,
+        maximum: days,
+      },
+      toolTip: {
+        shared: true
+      },
+      theme: "theme2",
+      axisY: {
+        gridColor: "Silver",
+        tickColor: "silver",
+        title: 'Jobs'
+      },
+      data: [{
+        type: "line",
+        showInLegend: true,
+        name: "Failed Jobs",
+        color: "#20B2AA",
+        markerType: 'circle',
+        lineThickness: 2,
+        dataPoints: [],
+      }],
+    });
+
+    var failedHistoryChart = new CanvasJS.Chart('history_container_failed', {
+      title: {
+        text: 'Failed History for ' + days + ' days',
+        fontFamily: 'Arial',
+        fontSize: 24,
+      },
+      axisX: {
+        reversed: true,
+        gridColor: 'Silver',
+        tickColor: 'silver',
+        animationEnabled: true,
+        title: 'Time ago (s)',
+        // minimum: 0,
+        maximum: days,
+      },
+      toolTip: {
+        shared: true
+      },
+      theme: "theme2",
+      axisY: {
+        gridColor: "Silver",
+        tickColor: "silver",
+        title: 'Jobs'
+      },
+      data: [{
+        type: "line",
+        showInLegend: true,
+        name: "Failed Jobs",
+        color: "#20B2AA",
+        markerType: 'circle',
+        lineThickness: 2,
+        dataPoints: [],
+      }],
+    });
+
+    completedHistoryChart.render();
+    failedHistoryChart.render();
+  },
   setDataPoints: function(array, count) {
     var data = [];
 
@@ -271,7 +354,7 @@ var App = {
     return data;
   },
   setActiveTab: function() {
-    this.tab = $(location).attr('href').split('/').pop();
+    this.tab = $(location).attr('href').match(/(?:(?!\?).)*/)[0].split('/').pop();
     var $active = $('a[href=' + this.tab + ']');
 
     $active.css('background', '#a2a2a2');
@@ -296,6 +379,10 @@ var App = {
       setInterval(function() {
         this.getDetailData();
       }.bind(this), 5000);
+    }
+
+    if (tab === 'history') {
+      this.getHistoryData();
     }
   },
   bindEvents: function() {
