@@ -27,11 +27,9 @@ module TestRunner
     end
   end
 
-  def self.sort_array(num_of_cycles, array_size)
-    unsorted_array = (0..array_size).to_a.shuffle
-
-    num_of_cycles.times do |n|
-      HeavyCalculation.new.perform_async(n, unsorted_array)
+  def self.generate_array(num_of_cycles, array_size)
+    num_of_cycles.times do
+      HeavyCalculation.new.perform_async(array_size)
     end
   end
 
@@ -70,26 +68,28 @@ module TestRunner
       FailedJobWithQueue.new.perform_async(n)
     end
   end
-end
 
-pids = (1..5).to_a.map do
-    fork do
-      TestRunner.blocking(200)
+  def self.multiple_processes(num_of_proc, jobs)
+    pids = (1..num_of_proc).to_a.map do
+      fork do
+        jobs.each do |job|
+          TestRunner.send(:job[0], job[1..-1])
+        end
 
-      TestRunner.non_blocking(100)
-      TestRunner.sort_array(100, 100)
-
-      TestRunner.failed_jobs(1)
-      TestRunner.failed_jobs_with_queue(1)
-
-      TestRunner.enqueue_delayed(1)
-      TestRunner.enqueue_delayed_with_queue(1)
-
-      exit
+        exit
+      end
     end
+
+    pids.each { |pid| Process.wait(pid) }
+  end
+
+  def self.fibonacci_cruncher(num_of_cycles)
+    num_of_cycles.times do |n|
+      FibCruncher.new.perform_async(1_000_000_000)
+    end
+  end
 end
 
-pids.each { |pid| Process.wait(pid) }
 
 #TestRunner.non_blocking(10)
-#TestRunner.non_blocking(1)
+TestRunner.generate_array(200, 1_000_000)
