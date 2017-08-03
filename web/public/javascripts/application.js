@@ -45,11 +45,11 @@ var App = {
 
         for (id in memoryUsage) {
           totalMemoryUsage = totalMemoryUsage + parseInt(memoryUsage[id]);
-          // if ($('#process_' + id).length === 1) {
-          $('#process_' + id).text(parseInt(memoryUsage[id]) / 1000 + ' MB');
-          // } else {
-          //   $('.nested').last().after("<tr class='nested'><td>" + id + "</td><td id='process_'" + id + ">" + memoryUsage[id] + "</td></tr>")
-          // }
+          if ($('#process_' + id).length === 1) {
+            $('#process_' + id).text(parseInt(memoryUsage[id]) / 1000 + ' MB');
+          } else {
+            $('.nested').last().after("<tr class='nested'><td>" + id + "</td><td id='process_" + id + "''>" + memoryUsage[id] + "</td></tr>")
+          }
         }
 
         this.queuedJobsCountHistory.unshift(queuedJobsCount);
