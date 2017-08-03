@@ -140,7 +140,6 @@ var App = {
 
     $('#day_tabs a').on('click', function(e) {
       e.preventDefault();
-      // console.log($(e.target).attr('data-day'));
       location = window.location.origin + window.location.pathname + '?days=' + $(e.target).attr('data-day') + '&class=' + className;
     });
 
@@ -377,7 +376,7 @@ var App = {
   },
   setHistoryDataPoints: function(jobs) {
     data = []
-    console.log(jobs['date_ranges']);
+    
     for (var i = 0; i <= jobs['date_ranges'].length; i++) {
       var point = { x: this.getLocalDate(parseInt(jobs['date_ranges'][i])).getTime(), y: jobs['job_counts'][i]};
 
