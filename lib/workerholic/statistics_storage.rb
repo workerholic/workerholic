@@ -11,7 +11,7 @@ module Workerholic
     end
 
     def self.update_historical_stats(category, klass)
-      current_day_secs = Time.now.to_i - (Time.now.to_i % 86400)
+      current_day_secs = Time.now.utc.to_i - (Time.now.utc.to_i % 86400)
       namespace = "workerholic:stats:historical:#{category}"
       namespace_with_class = "workerholic:stats:historical:#{category}:#{klass}"
 

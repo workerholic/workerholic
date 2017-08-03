@@ -85,7 +85,7 @@ module Workerholic
     end
 
     def self.get_past_dates(days)
-      today = Time.now.to_i - Time.now.to_i % 86400
+      today = Time.now.utc.to_i - Time.now.utc.to_i % 86400
 
       (0..days).map { |day| today - day * 86400 }
     end
