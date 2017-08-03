@@ -4,7 +4,7 @@ var App = {
   jobsCompletedHistory: [],
   jobsCompletedPerSecondHistory: [],
   totalMemoryHistory: [],
-  maxTime: 180,
+  maxTime: 240,
   freshDataCount: function() {
     return (this.maxTime / 5) + 1;
   },
@@ -186,7 +186,7 @@ var App = {
         name: "Jobs completed",
         color: "blue",
         markerType: 'circle',
-        lineThickness: 2,
+        lineThickness: 6,
         dataPoints: this.setDataPoints(this.jobsCompletedPerSecondHistory, this.freshDataCount()),
       }]
     });
@@ -218,7 +218,7 @@ var App = {
       data: [{
         type: "line",
         showInLegend: true,
-        lineThickness: 2,
+        lineThickness: 6,
         name: "Queued Jobs",
         markerType: "circle",
         color: "#F08080",
@@ -256,7 +256,7 @@ var App = {
           name: "Failed Jobs",
           color: "#20B2AA",
           markerType: 'circle',
-          lineThickness: 2,
+          lineThickness: 6,
           dataPoints: this.setDataPoints(this.failedJobsCountHistory, this.freshDataCount()),
         },
       ]
@@ -292,7 +292,7 @@ var App = {
         name: "Memory usage",
         color: "#20B2AA",
         markerType: 'circle',
-        lineThickness: 2,
+        lineThickness: 6,
         dataPoints: this.setDataPoints(this.totalMemoryHistory, this.freshDataCount()),
       }],
     });
