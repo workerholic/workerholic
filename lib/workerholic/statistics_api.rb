@@ -27,8 +27,8 @@ module Workerholic
     end
 
     def self.jobs_classes
-      completed_classes = storage.get_keys_for_namespace('workerholic:stats:completed_jobs:*')
-      failed_classes = storage.get_keys_for_namespace('workerholic:stats:failed_jobs:*')
+      completed_classes = storage.get_keys_for_namespace('workerholic:stats:historical:completed_jobs:*')
+      failed_classes = storage.get_keys_for_namespace('workerholic:stats:historical:failed_jobs:*')
       combined_classes = completed_classes + failed_classes
 
       parsed_classes = combined_classes.map do |klass|

@@ -82,9 +82,9 @@ module Workerholic
       end
 
       def fetch_queue_names(retry_delay = 5)
-        queue_name_pattern = 'workerholic:queue*'
+        queue_name_pattern = 'workerholic:queue:*'
 
-        execute(retry_delay) { |conn| conn.scan(0, match: queue_name_pattern).last }
+        execute(retry_delay) { |conn| conn.keys(queue_name_pattern) }
       end
 
       def get_keys_for_namespace(namespace, retry_delay = 5)
