@@ -73,3 +73,7 @@ nav a:hover {
   display: none;
   padding-left: 50px
 }
+
+#day_tabs {
+  margin-top: 50px;
+}
