@@ -55,14 +55,39 @@ module Workerholic
       storage.hash_keys(namespace)
     end
 
-    private
+    def self.history_for_period(options={})
+      raise ArgumentError, 'Please provide a category namespace' unless options[:category]
 
-    def self.storage
-      @storage ||= Storage::RedisWrapper.new
+      if options[:klass]
+        namespace = "workerholic:stats:historical:#{options[:category]}:#{options[:klass]}"
+      else
+        namespace = "workerholic:stats:historical:#{options[:category]}"
+      end
+
+      period = options[:period] || 30
+      date_ranges = self.get_past_dates(period)
+
+      job_counts = storage.hash_get_multiple_elements(namespace, date_ranges)
+
+      combine_ranges(job_counts: job_counts, date_ranges: date_ranges)
     end
 
-    def self.logger(message)
-      @log ||= LogManager.new
+    private
+
+    def self.combine_ranges(options={})
+      job_counts = options[:job_counts]
+      job_counts.map!(&:to_i)
+
+      {
+        date_ranges: options[:date_ranges],
+        job_counts: job_counts
+      }
+    end
+
+    def self.get_past_dates(days)
+      today = Time.now.to_i - Time.now.to_i % 86400
+
+      (0..days).map { |day| today - day * 86400 }
     end
 
     def self.parse_scheduled_jobs(jobs)
@@ -100,6 +125,14 @@ module Workerholic
       obj[:klass] = obj[:klass].to_s
       obj[:wrapper] = obj[:wrapper].to_s
       obj
+    end
+
+    def self.storage
+      @storage ||= Storage::RedisWrapper.new
+    end
+
+    def self.logger(message)
+      @log ||= LogManager.new
     end
   end
 end
