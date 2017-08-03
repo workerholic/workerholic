@@ -91,5 +91,6 @@ module TestRunner
 end
 
 
-#TestRunner.non_blocking(10)
-TestRunner.generate_array(200, 1_000_000)
+TestRunner.non_blocking(10)
+TestRunner.blocking(10)
+#TestRunner.generate_array(200, 1_000_000)

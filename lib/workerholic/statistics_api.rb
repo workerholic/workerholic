@@ -61,33 +61,40 @@ module Workerholic
       if options[:klass]
         namespace = "workerholic:stats:historical:#{options[:category]}:#{options[:klass]}"
       else
-        namespace = "workerholic:stats:historical:#{category}"
+        namespace = "workerholic:stats:historical:#{options[:category]}"
       end
 
       period = options[:period] || 30
-      start_time = self.convert_to_time_ago(period)
-      end_time = Time.now.to_i
-      job_ranges = storage.members_in_range(namespace, start_time, end_time)
+      dates_range = self.get_past_dates(period)
 
-      parse_job_ranges(job_ranges: job_ranges, klass: klass)
+      job_range = storage.hash_get_multiple_elements(namespace, dates_range)
+
+      combine_ranges(job_range: job_range,
+                     dates_range: dates_range,
+                     klass: options[:klass])
     end
 
     private
 
-    def self.parse_job_ranges(options={})
-      job_ranges.map do |range|
-        jobs_count, time_int = range
-        date = self.convert_time_to_date(time_int)
-        options[:klass] ? [jobs_count, date] : [options[:klass], jobs_count, date]
+    def self.combine_ranges(options={})
+      return [] if options[:job_range].empty?
+
+      job_range = options[:job_range]
+      dates_range = options[:dates_range]
+
+      combined_ranges = []
+      dates_range.each_with_index do |time, idx|
+        found_date = job_range[idx]
+        combined_ranges << [time, found_date.to_i] if found_date
       end
+
+      combined_ranges
     end
 
-    def self.convert_to_time_ago(days)
-      Time.now.to_i - 86400 * 30 - Time.now.to_i % 86400
-    end
+    def self.get_past_dates(days)
+      today = Time.now.to_i - Time.now.to_i % 86400
 
-    def self.convert_time_to_date(time_int)
-      Time.at time_int
+      (0..days).map { |day| today - day * 86400 }
     end
 
     def self.parse_scheduled_jobs(jobs)

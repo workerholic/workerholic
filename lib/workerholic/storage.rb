@@ -28,6 +28,10 @@ module Workerholic
         execute(retry_delay) { |conn| conn.hkeys(namespace) }
       end
 
+      def hash_get_multiple_elements(key, fields, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.hmget(key, *fields) }
+      end
+
       def delete(key, retry_delay = 5)
         execute(retry_delay) { |conn| conn.del(key) }
       end
