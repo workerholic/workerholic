@@ -67,20 +67,20 @@ module Workerholic
       period = options[:period] || 30
       date_ranges = self.get_past_dates(period)
 
-      job_count = storage.hash_get_multiple_elements(namespace, date_ranges)
+      job_counts = storage.hash_get_multiple_elements(namespace, date_ranges)
 
-      combine_ranges(job_count: job_count, date_ranges: date_ranges)
+      combine_ranges(job_counts: job_counts, date_ranges: date_ranges)
     end
 
     private
 
     def self.combine_ranges(options={})
-      job_count = options[:job_count]
-      job_count.map!(&:to_i)
+      job_counts = options[:job_counts]
+      job_counts.map!(&:to_i)
 
       {
         date_ranges: options[:date_ranges],
-        job_count: job_count
+        job_counts: job_counts
       }
     end
 
