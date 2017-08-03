@@ -310,13 +310,12 @@ var App = {
         fontSize: 24,
       },
       axisX: {
-        reversed: true,
+        // reversed: true,
         gridColor: 'Silver',
         tickColor: 'silver',
         animationEnabled: true,
         title: 'Time ago (s)',
-        // minimum: 0,
-        maximum: days,
+        minimum: parseInt((completed_jobs['date_ranges'][days]) * 1000),
       },
       toolTip: {
         shared: true
@@ -334,6 +333,7 @@ var App = {
         color: "#20B2AA",
         markerType: 'circle',
         lineThickness: 2,
+        xValueType: 'dateTime',
         dataPoints: this.setHistoryDataPoints(completed_jobs),
       }],
     });
@@ -350,7 +350,7 @@ var App = {
         tickColor: 'silver',
         animationEnabled: true,
         title: 'Time ago (s)',
-        // minimum: 0,
+        minimum: 0,
         maximum: days,
       },
       toolTip: {
@@ -378,9 +378,11 @@ var App = {
   },
   setHistoryDataPoints: function(jobs) {
     data = []
-
+    console.log(jobs['date_ranges']);
     for (var i = 0; i <= jobs['date_ranges'].length; i++) {
-      var point = { x: i, y: jobs['job_counts'][i]};
+      // var point = { x: new Date(parseInt(jobs['date_ranges'][i]) * 1000), y: jobs['job_counts'][i]};
+      var point = { x: parseInt(jobs['date_ranges'][i]) * 1000, y: jobs['job_counts'][i]};
+
       data.push(point);
     }
 
