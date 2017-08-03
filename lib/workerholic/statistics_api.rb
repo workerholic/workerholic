@@ -125,7 +125,7 @@ module Workerholic
 
     def self.convert_klass_to_string(obj)
       obj[:klass] = obj[:klass].to_s
-      obj[:wrapper] = obj[:wrapper].to_s
+      obj[:wrapper] = nil
       obj
     end
 
