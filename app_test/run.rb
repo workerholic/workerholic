@@ -85,12 +85,12 @@ module TestRunner
 
   def self.fibonacci_cruncher(num_of_cycles)
     num_of_cycles.times do |n|
-      FibCruncher.new.perform_async(1_000_000_000)
+      FibCruncher.new.perform_async(1_000)
     end
   end
 end
 
 
-TestRunner.non_blocking(10)
-TestRunner.blocking(10)
+TestRunner.fibonacci_cruncher(100)
+#TestRunner.blocking(10)
 #TestRunner.generate_array(200, 1_000_000)
