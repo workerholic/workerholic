@@ -4,7 +4,7 @@ var App = {
   jobsCompletedHistory: [],
   jobsCompletedPerSecondHistory: [],
   totalMemoryHistory: [],
-  maxTime: 180,
+  maxTime: 240,
   freshDataCount: function() {
     return (this.maxTime / 5) + 1;
   },
@@ -140,7 +140,6 @@ var App = {
 
     $('#day_tabs a').on('click', function(e) {
       e.preventDefault();
-      // console.log($(e.target).attr('data-day'));
       location = window.location.origin + window.location.pathname + '?days=' + $(e.target).attr('data-day') + '&class=' + className;
     });
 
@@ -186,7 +185,7 @@ var App = {
         name: "Jobs completed",
         color: "blue",
         markerType: 'circle',
-        lineThickness: 2,
+        lineThickness: 6,
         dataPoints: this.setDataPoints(this.jobsCompletedPerSecondHistory, this.freshDataCount()),
       }]
     });
@@ -218,7 +217,7 @@ var App = {
       data: [{
         type: "line",
         showInLegend: true,
-        lineThickness: 2,
+        lineThickness: 6,
         name: "Queued Jobs",
         markerType: "circle",
         color: "#F08080",
@@ -256,7 +255,7 @@ var App = {
           name: "Failed Jobs",
           color: "#20B2AA",
           markerType: 'circle',
-          lineThickness: 2,
+          lineThickness: 6,
           dataPoints: this.setDataPoints(this.failedJobsCountHistory, this.freshDataCount()),
         },
       ]
@@ -292,7 +291,7 @@ var App = {
         name: "Memory usage",
         color: "#20B2AA",
         markerType: 'circle',
-        lineThickness: 2,
+        lineThickness: 6,
         dataPoints: this.setDataPoints(this.totalMemoryHistory, this.freshDataCount()),
       }],
     });
@@ -310,13 +309,12 @@ var App = {
         fontSize: 24,
       },
       axisX: {
-        reversed: true,
+        // reversed: true,
         gridColor: 'Silver',
         tickColor: 'silver',
         animationEnabled: true,
-        title: 'Time ago (s)',
-        // minimum: 0,
-        maximum: days,
+        title: 'Date',
+        minimum: parseInt((completed_jobs['date_ranges'][days]) * 1000),
       },
       toolTip: {
         shared: true
@@ -334,6 +332,7 @@ var App = {
         color: "#20B2AA",
         markerType: 'circle',
         lineThickness: 2,
+        xValueType: 'dateTime',
         dataPoints: this.setHistoryDataPoints(completed_jobs),
       }],
     });
@@ -345,13 +344,11 @@ var App = {
         fontSize: 24,
       },
       axisX: {
-        reversed: true,
         gridColor: 'Silver',
         tickColor: 'silver',
         animationEnabled: true,
-        title: 'Time ago (s)',
-        // minimum: 0,
-        maximum: days,
+        title: 'Date',
+        minimum: parseInt((completed_jobs['date_ranges'][days]) * 1000),
       },
       toolTip: {
         shared: true
@@ -369,6 +366,7 @@ var App = {
         color: "#20B2AA",
         markerType: 'circle',
         lineThickness: 2,
+        xValueType: 'dateTime',
         dataPoints: this.setHistoryDataPoints(failed_jobs),
       }],
     });
@@ -378,9 +376,10 @@ var App = {
   },
   setHistoryDataPoints: function(jobs) {
     data = []
-
+    
     for (var i = 0; i <= jobs['date_ranges'].length; i++) {
-      var point = { x: i, y: jobs['job_counts'][i]};
+      var point = { x: this.getLocalDate(parseInt(jobs['date_ranges'][i])).getTime(), y: jobs['job_counts'][i]};
+
       data.push(point);
     }
 
@@ -395,6 +394,14 @@ var App = {
     }
 
     return data;
+  },
+  getLocalDate: function(seconds) {
+    var date = new Date(seconds * 1000);
+    var day = date.getUTCDate();
+    var month = date.getUTCMonth();
+    var year = date.getUTCFullYear();
+
+    return new Date(year, month, day);
   },
   setActiveTab: function() {
     this.tab = $(location).attr('href').match(/(?:(?!\?).)*/)[0].split('/').pop();

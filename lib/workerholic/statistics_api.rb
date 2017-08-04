@@ -35,7 +35,7 @@ module Workerholic
         klass.split(':').last
       end.uniq
 
-      parsed_classes.empty? ? 'No class data is available yet.' : parsed_classes
+      parsed_classes.empty? ? [] : parsed_classes
     end
 
     def self.queued_jobs
