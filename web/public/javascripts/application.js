@@ -70,7 +70,10 @@ var App = {
         this.failedJobsCountHistory.unshift(failedJobsCount);
         this.jobsCompletedHistory.unshift(completedJobs);
         this.totalMemoryHistory.unshift(totalMemoryUsage / 1000);
-        this.jobsCompletedPerSecondHistory.unshift((this.jobsCompletedHistory[0] - this.jobsCompletedHistory[1]) / 5 || 0);
+
+        for (var i = 0; i < this.freshDataCount(); i++) {
+          this.jobsCompletedPerSecondHistory[i] = (parseInt(deserializedData.completed_jobs_per_second[i]) / 10 || 0);
+        }
 
         this.removeStaleData();
         this.drawChart();
@@ -160,10 +163,8 @@ var App = {
       url: '/overview-data-on-load',
       dataType: 'json',
       success: function(data) {
-        // var dataPointsCount = Math.min(data['completed_jobs'].length, this.freshDataCount());
-
         for (var i = 0; i < this.freshDataCount(); i++) {
-          this.jobsCompletedPerSecondHistory.push(parseInt(data['completed_jobs'][i]) / 10 || 0);
+          this.jobsCompletedPerSecondHistory[i] = (parseInt(data['completed_jobs'][i]) / 10 || 0);
         }
 
         for (var i = 0; i < this.freshDataCount(); i++) {

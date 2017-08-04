@@ -12,7 +12,6 @@ class WorkerholicWeb < Sinatra::Base
   end
 
   get '/overview' do
-    # require 'pry'; binding.pry
     @processes = Workerholic::StatsAPI.process_stats
 
     erb :overview
@@ -76,6 +75,7 @@ class WorkerholicWeb < Sinatra::Base
       scheduled_jobs: Workerholic::StatsAPI.scheduled_jobs( { count_only: true }),
       workers_count: Workerholic.workers_count,
       memory_usage: Workerholic::StatsAPI.process_stats,
+      completed_jobs_per_second: Workerholic::StatsAPI.job_statistics_history('completed_jobs'),
     })
   end
 
