@@ -170,6 +170,14 @@ var App = {
           this.failedJobsCountHistory.push(parseInt(data['failed_jobs'][i]) || 0);
         }
 
+        for (var i = 0; i < this.freshDataCount(); i++) {
+          this.queuedJobsCountHistory.push(0);
+        }
+
+        for (var i = 0; i < this.freshDataCount(); i++) {
+          this.totalMemoryHistory.push(0);
+        }
+
         this.drawChart();
       }.bind(this)
     })
