@@ -57,13 +57,11 @@ var App = {
         var memoryUsage = deserializedData.memory_usage;
         var totalMemoryUsage = 0;
 
+        $('.removable').remove();
+
         for (id in memoryUsage) {
           totalMemoryUsage = totalMemoryUsage + parseInt(memoryUsage[id]);
-          if ($('#process_' + id).length === 1) {
-            $('#process_' + id).text(parseInt(memoryUsage[id]) / 1000 + ' MB');
-          } else {
-            $('.nested').last().after("<tr class='nested'><td>" + id + "</td><td id='process_" + id + "''>" + memoryUsage[id] + "</td></tr>")
-          }
+          $('.nested').last().after("<tr class='nested removable'><td>" + id + "</td><td id='process_" + id + "'" + "class='process_memory'" + ">" + memoryUsage[id] / 1000 + ' MB' + "</td></tr>")
         }
 
         this.queuedJobsCountHistory.unshift(queuedJobsCount);

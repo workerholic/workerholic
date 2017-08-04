@@ -39,9 +39,9 @@
       <th>Memory Usage</th>
     </tr>
     <% @processes.each do |id, memory| %>
-      <tr class='nested'>
+      <tr class='nested removable'>
         <td><%= id %></td>
-        <td id='process_<%= id %>'></td>
+        <td id='process_<%= id %>' class='process_memory'></td>
       </tr>
     <% end %>
   </tbody>
