@@ -16,7 +16,7 @@ module Workerholic
         job.statistics.completed_at = Time.now.to_f
 
         StatsStorage.save_job('completed_jobs', job)
-        StatsStorage.update_historical_stats('completed_jobs', job.klass.name)
+        StatsStorage.update_historical_stats('completed_jobs', job.klass.to_s)
 
         # @logger.info("Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}.")
       rescue Exception => e

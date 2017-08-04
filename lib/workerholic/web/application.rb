@@ -1,14 +1,18 @@
-$LOAD_PATH << __dir__ + '/../lib'
+$LOAD_PATH << __dir__ + '/../..'
 require 'sinatra/base'
 
-require 'sinatra/reloader'
+# require 'sinatra/reloader'
 require 'json'
 require 'workerholic'
 
 class WorkerholicWeb < Sinatra::Base
 
   get '/' do
-    redirect '/overview'
+    if defined? Rails
+      redirect '/workerholic/overview'
+    else
+      redirect '/overview'
+    end
   end
 
   get '/overview' do
