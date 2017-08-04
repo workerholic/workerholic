@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title DemoApp
+    = csrf_meta_tags
+
+    = stylesheet_link_tag    'application'
+    = javascript_include_tag 'application'
+
+  body
+    header
+      = render 'header'
+    main
+      = yield
+    footer
+      = render 'footer'
