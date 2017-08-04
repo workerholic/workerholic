@@ -32,6 +32,10 @@ module Workerholic
         execute(retry_delay) { |conn| conn.hmget(key, *fields) }
       end
 
+      def hash_increment_field(key, field, increment, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.hincrby(key, field, increment) }
+      end
+
       def delete(key, retry_delay = 5)
         execute(retry_delay) { |conn| conn.del(key) }
       end
@@ -61,20 +65,20 @@ module Workerholic
         execute(retry_delay) { |conn| conn.zremrangebyscore(key, score, score) }
       end
 
-      def hash_increment_field(key, field, increment, retry_delay = 5)
-        execute(retry_delay) { |conn| conn.hincrby(key, field, increment) }
-      end
-
       def sorted_set_size(key, retry_delay = 5)
-        execute(retry_delay) { |conn| conn.zcount(key, 0, '+inf') }
+        execute(retry_delay) { |conn| conn.zcard(key) }
       end
 
-      def sorted_set_members(key, retry_delay = 5)
+      def sorted_set_all_members(key, retry_delay = 5)
         execute(retry_delay) { |conn| conn.zrange(key, 0, -1) }
       end
 
-      def sorted_set_members_count(key, retry_delay = 5)
-        execute(retry_delay) { |conn| conn.zcard(key) }
+      def sorted_set_range_members(key, minscore, maxscore, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.zrangebyscore(key, minscore, maxscore, with_scores: true) }
+      end
+
+      def remove_range_from_set(key, minscore, maxscore, retry_delay = 5)
+        execute(retry_delay) { |conn| conn.zremrangebyscore(key, minscore, maxscore) }
       end
 
       def keys_count(namespace, retry_delay = 5)

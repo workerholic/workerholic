@@ -1,41 +1,52 @@
 module Workerholic
   class StatsAPI
     CATEGORIES = %w(completed_jobs failed_jobs)
+    POLLING_INTERVAL = 10
 
     def self.job_statistics(options={})
-      if CATEGORIES.include? options[:category]
-        job_classes = storage.get_keys_for_namespace('workerholic:stats:' + options[:category] + ':*')
+      raise ArgumentError, "Please specify one of the following categories: 'completed_jobs', 'failed_jobs'" unless CATEGORIES.include? options[:category]
 
-        if options[:count_only]
-          self.parse_job_classes(job_classes)
-        else
-          self.parse_job_classes(job_classes, false)
-        end
+      job_classes = storage.get_keys_for_namespace("workerholic:stats:#{options[:category]}:*")
+
+      if options[:count_only]
+        self.parse_job_classes(job_classes)
       else
-        logger("Invalid arguments. Please specify one of the following categories:\n'completed_jobs', 'failed_jobs'.")
+        self.parse_job_classes(job_classes, false)
+      end
+    end
+
+    def self.job_statistics_history(category)
+      raise ArgumentError, "Please specify one of the following categories: 'completed_jobs', 'failed_jobs'" unless CATEGORIES.include? category
+
+      current_time = Time.now.to_i
+      all_job_stats(category).reduce([]) do |result, job|
+        completed_time = job.last.to_i
+        index = (current_time - completed_time) / POLLING_INTERVAL
+
+        result[index] = result[index] ? result[index] + 1 : 1
+
+        result
       end
     end
 
     def self.scheduled_jobs(options={})
       namespace = 'workerholic:scheduled_jobs'
       if options[:count_only]
-        storage.sorted_set_members_count(namespace)
+        storage.sorted_set_size(namespace)
       else
-        serialized_jobs = storage.sorted_set_members(namespace)
+        serialized_jobs = storage.sorted_set_all_members(namespace)
         parse_scheduled_jobs(serialized_jobs)
       end
     end
 
-    def self.jobs_classes
-      completed_classes = storage.get_keys_for_namespace('workerholic:stats:historical:completed_jobs:*')
-      failed_classes = storage.get_keys_for_namespace('workerholic:stats:historical:failed_jobs:*')
+    def self.jobs_classes(historical)
+      base_namespace = historical ? 'workerholic:stats:historical:' : 'workerholic:stats:'
+
+      completed_classes = storage.get_keys_for_namespace( base_namespace + 'completed_jobs:*')
+      failed_classes = storage.get_keys_for_namespace(base_namespace + 'failed_jobs:*')
       combined_classes = completed_classes + failed_classes
 
-      parsed_classes = combined_classes.map do |klass|
-        klass.split(':').last
-      end.uniq
-
-      parsed_classes.empty? ? [] : parsed_classes
+      combined_classes.map { |klass| klass.split(':').last }.uniq
     end
 
     def self.queued_jobs
@@ -110,7 +121,7 @@ module Workerholic
     end
 
     def self.get_jobs_for_class(job_class)
-      serialized_jobs = storage.get_all_elements_from_list(job_class)
+      serialized_jobs = storage.sorted_set_all_members(job_class)
       deserialized_stats = serialized_jobs.map do |serialized_job|
         JobSerializer.deserialize_stats(serialized_job)
       end
@@ -120,7 +131,7 @@ module Workerholic
 
     def self.jobs_per_class(job_class)
       clean_class_name = job_class.split(':').last
-      [clean_class_name, storage.list_length(job_class)]
+      [clean_class_name, storage.sorted_set_size(job_class)]
     end
 
     def self.convert_klass_to_string(obj)
@@ -135,6 +146,14 @@ module Workerholic
 
     def self.logger(message)
       @log ||= LogManager.new
+    end
+
+    def self.all_job_stats(category)
+      current_time = Time.now.to_i
+
+      jobs_classes(false).map do |klass|
+        storage.sorted_set_range_members("workerholic:stats:#{category}:#{klass}", current_time - 100 * POLLING_INTERVAL, current_time)
+      end.flatten(1)
     end
   end
 end
