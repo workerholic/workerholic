@@ -5,6 +5,7 @@ var App = {
   jobsCompletedPerSecondHistory: [],
   totalMemoryHistory: [],
   maxTime: 240,
+  pollingInterval: 5000,
   freshDataCount: function() {
     return (this.maxTime / 5) + 1;
   },
@@ -415,19 +416,19 @@ var App = {
 
       setInterval(function() {
         this.getOverviewData();
-      }.bind(this), 5000);
+      }.bind(this), this.pollingInterval);
     }
 
     if (tab === 'queues') {
       setInterval(function() {
         this.getQueueData();
-      }.bind(this), 5000);
+      }.bind(this), this.pollingInterval);
     }
 
     if (tab === 'details') {
       setInterval(function() {
         this.getDetailData();
-      }.bind(this), 5000);
+      }.bind(this), this.pollingInterval);
     }
 
     if (tab === 'history') {
