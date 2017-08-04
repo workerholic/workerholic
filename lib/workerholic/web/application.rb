@@ -8,7 +8,11 @@ require 'workerholic'
 class WorkerholicWeb < Sinatra::Base
 
   get '/' do
-    redirect '/workerholic/overview'
+    if defined? Rails
+      redirect '/workerholic/overview'
+    else
+      redirect '/overview'
+    end
   end
 
   get '/overview' do
