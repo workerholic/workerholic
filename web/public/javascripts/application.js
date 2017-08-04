@@ -5,9 +5,10 @@ var App = {
   jobsCompletedPerSecondHistory: [],
   totalMemoryHistory: [],
   maxTime: 240,
-  pollingInterval: 10000,
+  pollingInterval: 10,
+  chartFont: 'arial',
   freshDataCount: function() {
-    return (this.maxTime / (this.pollingInterval / 1000) ) + 1;
+    return (this.maxTime / (this.pollingInterval) ) + 1;
   },
   tab: null,
   removeStaleData: function() {
@@ -181,6 +182,8 @@ var App = {
         fontSize: 24,
       },
       axisX: {
+        labelFontFamily: this.chartFont,
+        titleFontFamily: this.chartFont,
         reversed: true,
         gridColor: 'Silver',
         tickColor: 'silver',
@@ -193,13 +196,15 @@ var App = {
       },
       theme: "theme2",
       axisY: {
+        labelFontFamily: this.chartFont,
+        titleFontFamily: this.chartFont,
         gridColor: "Silver",
         tickColor: "silver",
         title: 'Jobs per second',
       },
       data: [{
         type: "line",
-        showInLegend: true,
+        showInLegend: false,
         name: "Jobs completed",
         color: "blue",
         markerType: 'circle',
@@ -215,6 +220,8 @@ var App = {
         fontSize: 24,
       },
       axisX: {
+        labelFontFamily: this.chartFont,
+        titleFontFamily: this.chartFont,
         reversed: true,
         gridColor: 'Silver',
         tickColor: 'silver',
@@ -228,13 +235,15 @@ var App = {
       },
       theme: "theme2",
       axisY: {
+        labelFontFamily: this.chartFont,
+        titleFontFamily: this.chartFont,
         gridColor: "Silver",
         tickColor: "silver",
         title: 'Jobs'
       },
       data: [{
         type: "line",
-        showInLegend: true,
+        showInLegend: false,
         lineThickness: 6,
         name: "Queued Jobs",
         markerType: "circle",
@@ -250,6 +259,8 @@ var App = {
         fontSize: 24,
       },
       axisX: {
+        labelFontFamily: this.chartFont,
+        titleFontFamily: this.chartFont,
         reversed: true,
         gridColor: 'Silver',
         tickColor: 'silver',
@@ -263,13 +274,15 @@ var App = {
       },
       theme: "theme2",
       axisY: {
+        labelFontFamily: this.chartFont,
+        titleFontFamily: this.chartFont,
         gridColor: "Silver",
         tickColor: "silver",
         title: 'Jobs'
       },
       data: [{
           type: "line",
-          showInLegend: true,
+          showInLegend: false,
           name: "Failed Jobs",
           color: "#20B2AA",
           markerType: 'circle',
@@ -286,6 +299,8 @@ var App = {
         fontSize: 24,
       },
       axisX: {
+        labelFontFamily: this.chartFont,
+        titleFontFamily: this.chartFont,
         reversed: true,
         gridColor: 'Silver',
         tickColor: 'silver',
@@ -299,13 +314,15 @@ var App = {
       },
       theme: "theme2",
       axisY: {
+        labelFontFamily: this.chartFont,
+        titleFontFamily: this.chartFont,
         gridColor: "Silver",
         tickColor: "silver",
         title: 'Memory (mb)'
       },
       data: [{
         type: "line",
-        showInLegend: true,
+        showInLegend: false,
         name: "Memory usage",
         color: "#20B2AA",
         markerType: 'circle',
@@ -327,7 +344,8 @@ var App = {
         fontSize: 24,
       },
       axisX: {
-        // reversed: true,
+        labelFontFamily: this.chartFont,
+        titleFontFamily: this.chartFont,
         gridColor: 'Silver',
         tickColor: 'silver',
         animationEnabled: true,
@@ -339,13 +357,15 @@ var App = {
       },
       theme: "theme2",
       axisY: {
+        labelFontFamily: this.chartFont,
+        titleFontFamily: this.chartFont,
         gridColor: "Silver",
         tickColor: "silver",
         title: 'Jobs'
       },
       data: [{
         type: "line",
-        showInLegend: true,
+        showInLegend: false,
         name: "Completed Job for " + className,
         color: "#20B2AA",
         markerType: 'circle',
@@ -362,6 +382,8 @@ var App = {
         fontSize: 24,
       },
       axisX: {
+        labelFontFamily: this.chartFont,
+        titleFontFamily: this.chartFont,
         gridColor: 'Silver',
         tickColor: 'silver',
         animationEnabled: true,
@@ -373,13 +395,15 @@ var App = {
       },
       theme: "theme2",
       axisY: {
+        labelFontFamily: this.chartFont,
+        titleFontFamily: this.chartFont,
         gridColor: "Silver",
         tickColor: "silver",
         title: 'Jobs'
       },
       data: [{
         type: "line",
-        showInLegend: true,
+        showInLegend: false,
         name: "Failed Jobs for " + className,
         color: "#20B2AA",
         markerType: 'circle',
@@ -407,7 +431,7 @@ var App = {
     var data = [];
 
     for (var i = 0; i <= count; i++) {
-      var point = { x: (i * this.pollingInterval / 1000).toString(), y: array[i] };
+      var point = { x: (i * this.pollingInterval).toString(), y: array[i] };
       data.push(point);
     }
 
@@ -435,19 +459,19 @@ var App = {
 
       setInterval(function() {
         this.getOverviewData();
-      }.bind(this), this.pollingInterval);
+      }.bind(this), this.pollingInterval * 1000);
     }
 
     if (tab === 'queues') {
       setInterval(function() {
         this.getQueueData();
-      }.bind(this), this.pollingInterval);
+      }.bind(this), this.pollingInterval * 1000);
     }
 
     if (tab === 'details') {
       setInterval(function() {
         this.getDetailData();
-      }.bind(this), this.pollingInterval);
+      }.bind(this), this.pollingInterval * 1000);
     }
 
     if (tab === 'history') {
