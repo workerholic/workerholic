@@ -1,3 +1,4 @@
+$LOAD_PATH << __dir__ + '/../lib'
 require 'sinatra/base'
 
 require 'sinatra/reloader'
@@ -53,7 +54,7 @@ class WorkerholicWeb < Sinatra::Base
 
   get '/history' do
     @days = params[:days]
-    @classes = Workerholic::StatsAPI.jobs_classes
+    @classes = Workerholic::StatsAPI.jobs_classes(true)
     @class = params[:class] || 'completed'
 
     erb :history

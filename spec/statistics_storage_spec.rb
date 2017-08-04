@@ -12,14 +12,14 @@ describe Workerholic::StatsStorage do
     job_hash[:wrapper] = nil
 
     local_namespace = ":completed_jobs:#{job.klass.to_s}"
+    namespace = stats_namespace + local_namespace
 
     Workerholic::StatsStorage.save_job('completed_jobs', job)
 
-    namespace = stats_namespace + local_namespace
-    serialized_stats = storage.get_all_elements_from_list(namespace).first
+    serialized_stats = storage.sorted_set_all_members(namespace).first
     deserialized_stats = Workerholic::JobSerializer.deserialize_stats(serialized_stats)
 
-    expect(storage.list_length(namespace)).to eq 1
+    expect(storage.sorted_set_size(namespace)).to eq 1
     expect(deserialized_stats).to eq job_hash
   end
 

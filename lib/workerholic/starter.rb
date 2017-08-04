@@ -7,7 +7,7 @@ module Workerholic
     def self.start
       apply_options
       load_app
-      track_memory_usage
+      track_memory_usage_and_expire_job_stats
       launch
     end
 
@@ -68,11 +68,12 @@ module Workerholic
       exit
     end
 
-    def self.track_memory_usage
+    def self.track_memory_usage_and_expire_job_stats
       @thread = Thread.new do
         loop do
           sleep 5
           StatsStorage.save_processes_memory_usage
+          StatsStorage.delete_expired_job_stats
         end
       end
     end
