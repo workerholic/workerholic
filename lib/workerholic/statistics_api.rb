@@ -8,9 +8,9 @@ module Workerholic
       job_classes = storage.get_keys_for_namespace("workerholic:stats:#{options[:category]}:*")
 
       if options[:count_only]
-        self.parse_job_classes(job_classes)
+        parse_job_classes(job_classes)
       else
-        self.parse_job_classes(job_classes, false)
+        parse_job_classes(job_classes, false)
       end
     end
 
@@ -77,7 +77,7 @@ module Workerholic
       end
 
       period = options[:period] || 30
-      date_ranges = self.get_past_dates(period)
+      date_ranges = get_past_dates(period)
 
       job_counts = storage.hash_get_multiple_elements(namespace, date_ranges)
 
@@ -105,16 +105,16 @@ module Workerholic
     def self.parse_scheduled_jobs(jobs)
       jobs.map do |job|
         deserialized_job = JobSerializer.deserialize_stats(job)
-        self.convert_klass_to_string(deserialized_job)
+        convert_klass_to_string(deserialized_job)
       end
     end
 
     def self.parse_job_classes(job_classes, count_only = true)
       job_classes.map do |job_class|
         if count_only
-          self.jobs_per_class(job_class)
+          jobs_per_class(job_class)
         else
-          self.get_jobs_for_class(job_class)
+          get_jobs_for_class(job_class)
         end
       end
     end

@@ -2,18 +2,17 @@ require_relative 'spec_helper'
 
 describe Workerholic::StatsAPI do
   let(:storage) { Workerholic::Storage::RedisWrapper.new }
-  let(:stats_namespace) { 'workerholic:stats' }
   let(:job) { Workerholic::JobWrapper.new(klass: SimpleJobTest, arguments: ['test job']) }
 
   it 'returns full statistics for category' do
-    namespace = stats_namespace + ':completed_jobs:*'
+    namespace = 'workerholic:stats:completed_jobs:*'
 
     Workerholic::StatsStorage.save_job('completed_jobs', job)
 
-    job_class = storage.get_keys_for_namespace(namespace).first
+    jobs_classes = storage.get_keys_for_namespace(namespace)
 
-    serialized_job = storage.get_all_elements_from_list(job_class).first
-    deserialized_job = Workerholic::JobSerializer.deserialize_stats(serialized_job)
+    serialized_job = storage.sorted_set_all_members(jobs_classes.first)
+    deserialized_job = Workerholic::JobSerializer.deserialize_stats(serialized_job.first)
 
     stats_api_result = Workerholic::StatsAPI.job_statistics(category: 'completed_jobs')
     first_job_stat = stats_api_result.first[0]
@@ -46,7 +45,7 @@ describe Workerholic::StatsAPI do
     end
 
     it 'returns scheduled jobs statistics' do
-      serialized_job = storage.sorted_set_members(namespace).first
+      serialized_job = storage.sorted_set_all_members(namespace).first
       deserialized_job = Workerholic::JobSerializer.deserialize_stats(serialized_job)
 
       stats_api_result = Workerholic::StatsAPI.scheduled_jobs
