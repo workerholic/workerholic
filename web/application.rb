@@ -54,7 +54,7 @@ class WorkerholicWeb < Sinatra::Base
   get '/history' do
     @days = params[:days]
     @classes = Workerholic::StatsAPI.jobs_classes
-    @class = params[:class] || @classes[0]
+    @class = params[:class] || 'completed'
 
     erb :history
   end
@@ -84,7 +84,12 @@ class WorkerholicWeb < Sinatra::Base
   end
 
   get '/historic-data' do
+    puts params[:className]
+    params[:className] = nil if params[:className] == 'completed'
+
     JSON.generate({
+      # all_completed_jobs: Workerholic::StatsAPI.history_for_period({ category: 'completed_jobs', period: params[:days].to_i }),
+      # all_failed_jobs: Workerholic::StatsAPI.history_for_period({ category: 'failed_jobs', period: params[:days].to_i }),
       completed_jobs: Workerholic::StatsAPI.history_for_period({ category: 'completed_jobs', klass: params[:className], period: params[:days].to_i }),
       failed_jobs: Workerholic::StatsAPI.history_for_period({ category: 'failed_jobs', klass: params[:className], period: params[:days].to_i })
     })

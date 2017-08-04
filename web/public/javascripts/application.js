@@ -128,8 +128,7 @@ var App = {
     })
   },
   getHistoryData: function() {
-    var className = $('#class_selector select').find(':selected').text();;
-    // var days = parseInt($(location).attr('href').match(/\d*$/)[0]) || 7;
+    var className = $('#class_selector select').find(':selected').val();
     var days = this.getUrlParameter('days') || 7;
 
     $('#button_' + days).addClass('is-dark');
@@ -376,7 +375,7 @@ var App = {
   },
   setHistoryDataPoints: function(jobs) {
     data = []
-    
+
     for (var i = 0; i <= jobs['date_ranges'].length; i++) {
       var point = { x: this.getLocalDate(parseInt(jobs['date_ranges'][i])).getTime(), y: jobs['job_counts'][i]};
 

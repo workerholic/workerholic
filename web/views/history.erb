@@ -8,6 +8,7 @@
 <div class="select" id="class_selector">
   <select>
     <option disabled>Select a class</option>
+    <option value='completed'>Completed</option>
     <% @classes.each do |class_name| %>
       <option value="<%= class_name %>" <%= 'selected' if class_name == @class %>><%= class_name %></option>
     <% end %>
