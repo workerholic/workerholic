@@ -1,6 +1,7 @@
 module Workerholic
   class StatsAPI
     CATEGORIES = %w(completed_jobs failed_jobs)
+    POLLING_INTERVAL = 10
 
     def self.job_statistics(options={})
       raise ArgumentError, "Please specify one of the following categories: 'completed_jobs', 'failed_jobs'" unless CATEGORIES.include? options[:category]
@@ -20,7 +21,7 @@ module Workerholic
       current_time = Time.now.to_i
       all_job_stats(category).reduce([]) do |result, job|
         completed_time = job.last.to_i
-        index = (current_time - completed_time) / 10
+        index = (current_time - completed_time) / POLLING_INTERVAL
 
         result[index] = result[index] ? result[index] + 1 : 1
 
@@ -151,7 +152,7 @@ module Workerholic
       current_time = Time.now.to_i
 
       jobs_classes(false).map do |klass|
-        storage.sorted_set_range_members("workerholic:stats:#{category}:#{klass}", current_time - 1000, current_time)
+        storage.sorted_set_range_members("workerholic:stats:#{category}:#{klass}", current_time - 100 * POLLING_INTERVAL, current_time)
       end.flatten(1)
     end
   end
