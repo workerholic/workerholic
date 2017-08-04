@@ -4,9 +4,9 @@ var App = {
   jobsCompletedHistory: [],
   jobsCompletedPerSecondHistory: [],
   totalMemoryHistory: [],
-  maxTime: 180,
+  maxTime: 240,
   freshDataCount: function() {
-    return (this.maxTime / 5) + 1
+    return (this.maxTime / 5) + 1;
   },
   tab: null,
   removeStaleData: function() {
@@ -15,6 +15,19 @@ var App = {
       this.failedJobsCountHistory.pop();
       this.jobsCompletedHistory.pop();
       this.totalMemoryHistory.pop();
+    }
+  },
+  getUrlParameter: function(param) {
+    var pageUrl = decodeURIComponent(window.location.search.substring(1));
+    var urlVariables = pageUrl.split('&')
+    var parameterName;
+
+    for (var i = 0; i < urlVariables.length; i++) {
+      parameterName = urlVariables[i].split('=');
+
+      if (parameterName[0] === param) {
+        return parameterName[1] === undefined ? true : parameterName[1];
+      }
     }
   },
   getOverviewData: function() {
@@ -45,11 +58,11 @@ var App = {
 
         for (id in memoryUsage) {
           totalMemoryUsage = totalMemoryUsage + parseInt(memoryUsage[id]);
-          // if ($('#process_' + id).length === 1) {
-          $('#process_' + id).text(parseInt(memoryUsage[id]) / 1000 + ' MB');
-          // } else {
-          //   $('.nested').last().after("<tr class='nested'><td>" + id + "</td><td id='process_'" + id + ">" + memoryUsage[id] + "</td></tr>")
-          // }
+          if ($('#process_' + id).length === 1) {
+            $('#process_' + id).text(parseInt(memoryUsage[id]) / 1000 + ' MB');
+          } else {
+            $('.nested').last().after("<tr class='nested'><td>" + id + "</td><td id='process_" + id + "''>" + memoryUsage[id] + "</td></tr>")
+          }
         }
 
         this.queuedJobsCountHistory.unshift(queuedJobsCount);
@@ -114,6 +127,34 @@ var App = {
       }
     })
   },
+  getHistoryData: function() {
+    var className = $('#class_selector select').find(':selected').text();;
+    // var days = parseInt($(location).attr('href').match(/\d*$/)[0]) || 7;
+    var days = this.getUrlParameter('days') || 7;
+
+    $('#button_' + days).addClass('is-dark');
+
+    $('#class_selector').on('change', function(e) {
+      location = window.location.origin + window.location.pathname + '?days=' + days + '&class=' + e.target.value;
+    });
+
+    $('#day_tabs a').on('click', function(e) {
+      e.preventDefault();
+      location = window.location.origin + window.location.pathname + '?days=' + $(e.target).attr('data-day') + '&class=' + className;
+    });
+
+    $.ajax({
+      url: '/historic-data',
+      data: {
+        days: days,
+        className: className,
+      },
+      dataType: 'json',
+      success: function(data) {
+        this.drawHistoryChart(days, className, data['completed_jobs'], data['failed_jobs']);
+      }.bind(this)
+    })
+  },
   drawChart: function() {
     var processedJobsChart = new CanvasJS.Chart('jobs_processed_container', {
       title: {
@@ -144,7 +185,7 @@ var App = {
         name: "Jobs completed",
         color: "blue",
         markerType: 'circle',
-        lineThickness: 2,
+        lineThickness: 6,
         dataPoints: this.setDataPoints(this.jobsCompletedPerSecondHistory, this.freshDataCount()),
       }]
     });
@@ -176,7 +217,7 @@ var App = {
       data: [{
         type: "line",
         showInLegend: true,
-        lineThickness: 2,
+        lineThickness: 6,
         name: "Queued Jobs",
         markerType: "circle",
         color: "#F08080",
@@ -214,7 +255,7 @@ var App = {
           name: "Failed Jobs",
           color: "#20B2AA",
           markerType: 'circle',
-          lineThickness: 2,
+          lineThickness: 6,
           dataPoints: this.setDataPoints(this.failedJobsCountHistory, this.freshDataCount()),
         },
       ]
@@ -250,7 +291,7 @@ var App = {
         name: "Memory usage",
         color: "#20B2AA",
         markerType: 'circle',
-        lineThickness: 2,
+        lineThickness: 6,
         dataPoints: this.setDataPoints(this.totalMemoryHistory, this.freshDataCount()),
       }],
     });
@@ -259,6 +300,90 @@ var App = {
     failedJobsChart.render();
     processedJobsChart.render();
     totalMemoryChart.render();
+  },
+  drawHistoryChart: function(days, className, completed_jobs, failed_jobs) {
+    var completedHistoryChart = new CanvasJS.Chart('history_container_completed', {
+      title: {
+        text: 'Completed History for ' + days + ' days',
+        fontFamily: 'Arial',
+        fontSize: 24,
+      },
+      axisX: {
+        // reversed: true,
+        gridColor: 'Silver',
+        tickColor: 'silver',
+        animationEnabled: true,
+        title: 'Date',
+        minimum: parseInt((completed_jobs['date_ranges'][days]) * 1000),
+      },
+      toolTip: {
+        shared: true
+      },
+      theme: "theme2",
+      axisY: {
+        gridColor: "Silver",
+        tickColor: "silver",
+        title: 'Jobs'
+      },
+      data: [{
+        type: "line",
+        showInLegend: true,
+        name: "Completed Job for " + className,
+        color: "#20B2AA",
+        markerType: 'circle',
+        lineThickness: 2,
+        xValueType: 'dateTime',
+        dataPoints: this.setHistoryDataPoints(completed_jobs),
+      }],
+    });
+
+    var failedHistoryChart = new CanvasJS.Chart('history_container_failed', {
+      title: {
+        text: 'Failed History for ' + days + ' days',
+        fontFamily: 'Arial',
+        fontSize: 24,
+      },
+      axisX: {
+        gridColor: 'Silver',
+        tickColor: 'silver',
+        animationEnabled: true,
+        title: 'Date',
+        minimum: parseInt((completed_jobs['date_ranges'][days]) * 1000),
+      },
+      toolTip: {
+        shared: true
+      },
+      theme: "theme2",
+      axisY: {
+        gridColor: "Silver",
+        tickColor: "silver",
+        title: 'Jobs'
+      },
+      data: [{
+        type: "line",
+        showInLegend: true,
+        name: "Failed Jobs for " + className,
+        color: "#20B2AA",
+        markerType: 'circle',
+        lineThickness: 2,
+        xValueType: 'dateTime',
+        dataPoints: this.setHistoryDataPoints(failed_jobs),
+      }],
+    });
+
+    completedHistoryChart.render();
+    failedHistoryChart.render();
+  },
+  setHistoryDataPoints: function(jobs) {
+    data = []
+    
+    for (var i = 0; i <= jobs['date_ranges'].length; i++) {
+      var point = { x: this.getLocalDate(parseInt(jobs['date_ranges'][i])).getTime(), y: jobs['job_counts'][i]};
+
+      data.push(point);
+    }
+
+    return data;
   },
   setDataPoints: function(array, count) {
     var data = [];
@@ -270,8 +395,16 @@ var App = {
 
     return data;
   },
+  getLocalDate: function(seconds) {
+    var date = new Date(seconds * 1000);
+    var day = date.getUTCDate();
+    var month = date.getUTCMonth();
+    var year = date.getUTCFullYear();
+
+    return new Date(year, month, day);
+  },
   setActiveTab: function() {
-    this.tab = $(location).attr('href').split('/').pop();
+    this.tab = $(location).attr('href').match(/(?:(?!\?).)*/)[0].split('/').pop();
     var $active = $('a[href=' + this.tab + ']');
 
     $active.css('background', '#a2a2a2');
@@ -296,6 +429,10 @@ var App = {
       setInterval(function() {
         this.getDetailData();
       }.bind(this), 5000);
+    }
+
+    if (tab === 'history') {
+      this.getHistoryData();
     }
   },
   bindEvents: function() {

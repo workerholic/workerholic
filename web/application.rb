@@ -1,6 +1,7 @@
+$LOAD_PATH << __dir__ + '/../lib'
 require 'sinatra/base'
 
-# require 'sinatra/reloader'
+require 'sinatra/reloader'
 require 'json'
 require 'workerholic'
 
@@ -51,6 +52,14 @@ class WorkerholicWeb < Sinatra::Base
     erb :queues
   end
 
+  get '/history' do
+    @days = params[:days]
+    @classes = Workerholic::StatsAPI.jobs_classes(true)
+    @class = params[:class] || @classes[0]
+
+    erb :history
+  end
+
   get '/overview-data' do
     JSON.generate({
       completed_jobs: Workerholic::StatsAPI.job_statistics( {category: 'completed_jobs', count_only: true} ),
@@ -75,4 +84,10 @@ class WorkerholicWeb < Sinatra::Base
     })
   end
 
+  get '/historic-data' do
+    JSON.generate({
+      completed_jobs: Workerholic::StatsAPI.history_for_period({ category: 'completed_jobs', klass: params[:className], period: params[:days].to_i }),
+      failed_jobs: Workerholic::StatsAPI.history_for_period({ category: 'failed_jobs', klass: params[:className], period: params[:days].to_i })
+    })
+  end
 end
