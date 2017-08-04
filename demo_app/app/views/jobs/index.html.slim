@@ -1,1 +1,8 @@
+- if flash[:success] || flash[:error]
+  div.message
+    - if flash[:success]
+      p.success = flash[:success]
+    - else
+      p.error = flash[:error]
+
 = render 'actions_form'

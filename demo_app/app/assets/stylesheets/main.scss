@@ -116,3 +116,22 @@ footer {
     }
   }
 }
+
+.message {
+  text-align: center;
+  font-size: 14px;
+  margin: 4px 0;
+  color: rgba(0, 0, 0, 0.65);
+
+  .success {
+    border-radius: 4px;
+    background: #c3e8c3;
+    padding: 6px 0;
+  }
+
+  .error {
+    border-radius: 4px;
+    background: #e8aeae;
+    padding: 6px 0;
+  }
+}

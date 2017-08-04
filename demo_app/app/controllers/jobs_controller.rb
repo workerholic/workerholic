@@ -3,9 +3,14 @@ class JobsController < ApplicationController
   end
 
   def create
-    redirect_to root_path if parse_jobs.all?(&:zero?)
+    if parse_jobs.all?(&:zero?)
+      flash[:error] = 'Please add at least 1 job.'
+      redirect_to root_path and return
+    end
 
     non_blocking, cpu, io = parse_jobs
+
+=begin
     non_blocking.times do |n|
       NonBlockingJob.new.perform_async(n)
     end
@@ -17,6 +22,10 @@ class JobsController < ApplicationController
     io.times do |n|
       IoBoundJob.new.perform_async
     end
+=end
+
+    flash[:success] = 'Jobs successfully added.'
+    redirect_to root_path
   end
 
   private
