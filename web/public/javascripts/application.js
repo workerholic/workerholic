@@ -5,9 +5,9 @@ var App = {
   jobsCompletedPerSecondHistory: [],
   totalMemoryHistory: [],
   maxTime: 240,
-  pollingInterval: 5000,
+  pollingInterval: 10000,
   freshDataCount: function() {
-    return (this.maxTime / 5) + 1;
+    return (this.maxTime / (this.pollingInterval / 1000) ) + 1;
   },
   tab: null,
   removeStaleData: function() {
@@ -152,6 +152,25 @@ var App = {
       dataType: 'json',
       success: function(data) {
         this.drawHistoryChart(days, className, data['completed_jobs'], data['failed_jobs']);
+      }.bind(this)
+    })
+  },
+  getHistoricalOverviewData: function() {
+    $.ajax({
+      url: '/overview-data-on-load',
+      dataType: 'json',
+      success: function(data) {
+        // var dataPointsCount = Math.min(data['completed_jobs'].length, this.freshDataCount());
+
+        for (var i = 0; i < this.freshDataCount(); i++) {
+          this.jobsCompletedPerSecondHistory.push(parseInt(data['completed_jobs'][i]) / 10 || 0);
+        }
+
+        for (var i = 0; i < this.freshDataCount(); i++) {
+          this.failedJobsCountHistory.push(parseInt(data['failed_jobs'][i]) || 0);
+        }
+
+        this.drawChart();
       }.bind(this)
     })
   },
@@ -389,7 +408,7 @@ var App = {
     var data = [];
 
     for (var i = 0; i <= count; i++) {
-      var point = { x: (i * 5).toString(), y: array[i] };
+      var point = { x: (i * this.pollingInterval / 1000).toString(), y: array[i] };
       data.push(point);
     }
 
@@ -412,6 +431,7 @@ var App = {
   },
   pollData: function(tab) {
     if (tab === 'overview') {
+      this.getHistoricalOverviewData();
       this.getOverviewData();
 
       setInterval(function() {

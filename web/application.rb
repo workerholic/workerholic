@@ -12,6 +12,7 @@ class WorkerholicWeb < Sinatra::Base
   end
 
   get '/overview' do
+    # require 'pry'; binding.pry
     @processes = Workerholic::StatsAPI.process_stats
 
     erb :overview
@@ -58,6 +59,13 @@ class WorkerholicWeb < Sinatra::Base
     @class = params[:class] || 'completed'
 
     erb :history
+  end
+
+  get '/overview-data-on-load' do
+    JSON.generate({
+      completed_jobs: Workerholic::StatsAPI.job_statistics_history('completed_jobs'),
+      failed_jobs: Workerholic::StatsAPI.job_statistics_history('failed_jobs')
+    })
   end
 
   get '/overview-data' do
