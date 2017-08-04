@@ -3,11 +3,10 @@ module Workerholic
     def self.save_job(category, job)
       job_hash = job.to_hash
       job_hash[:klass] = job.klass.to_s
-      job_hash[:wrapper] = nil
       serialized_job_stats = JobSerializer.serialize(job_hash)
 
       namespace = "workerholic:stats:#{category}:#{job.klass}"
-      storage.push(namespace, serialized_job_stats)
+      storage.add_to_set(namespace, job.statistics.completed_at, serialized_job_stats)
     end
 
     def self.update_historical_stats(category, klass)
@@ -28,6 +27,14 @@ module Workerholic
 
     def self.delete_memory_stats
       storage.delete('workerholic:stats:memory:processes')
+    end
+
+    def self.delete_expired_job_stats
+      max_time = Time.now.to_i - 1001
+      StatsAPI.jobs_classes(false).each do |klass|
+        storage.remove_range_from_set("workerholic:stats:completed_jobs:#{klass}", 0, max_time)
+        storage.remove_range_from_set("workerholic:stats:failed_jobs:#{klass}", 0, max_time)
+      end
     end
 
     class << self
