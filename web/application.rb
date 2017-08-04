@@ -88,8 +88,6 @@ class WorkerholicWeb < Sinatra::Base
     params[:className] = nil if params[:className] == 'completed'
 
     JSON.generate({
-      # all_completed_jobs: Workerholic::StatsAPI.history_for_period({ category: 'completed_jobs', period: params[:days].to_i }),
-      # all_failed_jobs: Workerholic::StatsAPI.history_for_period({ category: 'failed_jobs', period: params[:days].to_i }),
       completed_jobs: Workerholic::StatsAPI.history_for_period({ category: 'completed_jobs', klass: params[:className], period: params[:days].to_i }),
       failed_jobs: Workerholic::StatsAPI.history_for_period({ category: 'failed_jobs', klass: params[:className], period: params[:days].to_i })
     })
