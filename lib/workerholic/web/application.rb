@@ -64,6 +64,13 @@ class WorkerholicWeb < Sinatra::Base
     erb :history
   end
 
+  get '/overview-data-on-load' do
+    JSON.generate({
+      completed_jobs: Workerholic::StatsAPI.job_statistics_history('completed_jobs'),
+      failed_jobs: Workerholic::StatsAPI.job_statistics_history('failed_jobs')
+    })
+  end
+
   get '/overview-data' do
     JSON.generate({
       completed_jobs: Workerholic::StatsAPI.job_statistics( {category: 'completed_jobs', count_only: true} ),
@@ -72,6 +79,7 @@ class WorkerholicWeb < Sinatra::Base
       scheduled_jobs: Workerholic::StatsAPI.scheduled_jobs( { count_only: true }),
       workers_count: Workerholic.workers_count,
       memory_usage: Workerholic::StatsAPI.process_stats,
+      completed_jobs_per_second: Workerholic::StatsAPI.job_statistics_history('completed_jobs'),
     })
   end
 

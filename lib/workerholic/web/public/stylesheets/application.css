@@ -70,7 +70,6 @@ nav a:hover {
 }
 
 .nested th, .nested td {
-  display: none;
   padding-left: 50px
 }
 
