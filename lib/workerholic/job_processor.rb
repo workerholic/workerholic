@@ -21,7 +21,7 @@ module Workerholic
         @logger.info("Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}.")
       rescue Exception => e
         job.statistics.errors.push([e.class, e.message])
-        retry_job(job)
+        retry_job(job, e)
 
       end
       job_result
@@ -29,9 +29,9 @@ module Workerholic
 
     private
 
-    def retry_job(job)
+    def retry_job(job, error)
       if JobRetry.new(job: job).retry
-        @logger.error("Failed: your job from class #{job.class} was unsuccessful. Retrying in 10 secs...")
+        @logger.error("Failed: your job from class #{job.class} was unsuccessful because of the folloing error: #{error} => #{error.message}. Retrying in 10 secs...")
       else
         job.statistics.failed_on = Time.now.to_f
         StatsStorage.save_job('failed_jobs', job)
