@@ -6,21 +6,21 @@ html {
   margin: 0 auto;
 }
 
-body {
-}
-
 header {
+  width: 70%;
+  margin: 0 auto;
   text-align: center;
 
   #app-header {
-    background-color: rgb(243, 243, 243);
+    background-color: rgba(243, 243, 243, 0.62);
     border-radius: 4px;
     padding: 10px;
-    box-shadow: 1px 1px 0.5px 0.5px rgba(0, 0, 0, 0.33);
+    box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.15);
   }
 
   h1 {
-    color: rgba(65, 131, 196, 0.84);
+    color: rgba(122, 135, 173, 0.84);
+    cursor: default;
   }
 }
 
@@ -41,7 +41,7 @@ main {
     fieldset.actions {
       margin: 50px 0;
       text-align: center;
-      width: 70%;
+      width: 60%;
 
       input[type='submit'], button[type='reset'] {
         width: 100px;
@@ -98,6 +98,7 @@ footer {
   text-align: center;
 
   #app-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.09);
     position: absolute;
     transform: translateX(-50%);
     bottom: 10px;
@@ -121,8 +122,9 @@ footer {
 .message {
   text-align: center;
   font-size: 14px;
-  margin: 4px 0;
+  margin: 4px auto;
   color: rgba(0, 0, 0, 0.65);
+  width: 70%;
 
   .success {
     border-radius: 4px;
