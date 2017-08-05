@@ -1,13 +1,13 @@
 = form_tag('/add', method: 'post', class: 'work-form') do
   fieldset.jobs-params
     = label_tag 'jobs[non_blocking', 'Non-blocking jobs:'
-    = number_field_tag 'jobs[non_blocking'
+    = number_field_tag 'jobs[non_blocking', nil, in: 1..10_000, step: 1
     br
     = label_tag 'jobs[cpu_bound]', 'CPU-bound jobs:'
-    = number_field_tag 'jobs[cpu_bound]'
+    = number_field_tag 'jobs[cpu_bound]', nil, in: 1..10_000, step: 1
     br
     = label_tag 'jobs[io_bound]', 'IO-bound jobs:'
-    = number_field_tag 'jobs[io_bound]'
+    = number_field_tag 'jobs[io_bound]', nil, in: 1..100, step: 1
     br
 
   fieldset.actions

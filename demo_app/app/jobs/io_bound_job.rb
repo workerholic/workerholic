@@ -3,6 +3,6 @@ class IoBoundJob
   job_options queue_name: 'io_bound'
 
   def perform
-    puts HTTP.get('https://api.github.com/repos/workerholic/workerholic').parse
+    puts HTTP.get('https://jsonplaceholder.typicode.com/posts/1').parse
   end
 end
