@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-require_relative '../web/application'
+require_relative '../lib/workerholic/web/application'
 
 WorkerholicWeb.run!
-
