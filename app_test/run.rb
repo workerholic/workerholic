@@ -90,6 +90,6 @@ module TestRunner
   end
 end
 
-TestRunner.non_blocking(200)
-TestRunner.blocking(50000)
-TestRunner.fibonacci_cruncher(100)
+TestRunner.non_blocking(10000)
+TestRunner.blocking(10000)
+TestRunner.fibonacci_cruncher(10000)
