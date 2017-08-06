@@ -28,6 +28,7 @@ module Workerholic
 
     def self.apply_options
       Workerholic.workers_count = options[:workers] if options[:workers]
+      Workerholic.redis_connections_count = options[:redis_connections] if options[:redis_connections]
     end
 
     def self.load_app
