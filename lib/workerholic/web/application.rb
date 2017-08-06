@@ -1,14 +1,18 @@
-$LOAD_PATH << __dir__ + '/../lib'
+$LOAD_PATH << __dir__ + '/../..'
 require 'sinatra/base'
 
-require 'sinatra/reloader'
+# require 'sinatra/reloader'
 require 'json'
 require 'workerholic'
 
 class WorkerholicWeb < Sinatra::Base
 
   get '/' do
-    redirect '/overview'
+    if defined? Rails
+      redirect '/workerholic/overview'
+    else
+      redirect '/overview'
+    end
   end
 
   get '/overview' do
@@ -55,9 +59,16 @@ class WorkerholicWeb < Sinatra::Base
   get '/history' do
     @days = params[:days]
     @classes = Workerholic::StatsAPI.jobs_classes(true)
-    @class = params[:class] || @classes[0]
+    @class = params[:class] || 'completed'
 
     erb :history
+  end
+
+  get '/overview-data-on-load' do
+    JSON.generate({
+      completed_jobs: Workerholic::StatsAPI.job_statistics_history('completed_jobs'),
+      failed_jobs: Workerholic::StatsAPI.job_statistics_history('failed_jobs')
+    })
   end
 
   get '/overview-data' do
@@ -68,6 +79,7 @@ class WorkerholicWeb < Sinatra::Base
       scheduled_jobs: Workerholic::StatsAPI.scheduled_jobs( { count_only: true }),
       workers_count: Workerholic.workers_count,
       memory_usage: Workerholic::StatsAPI.process_stats,
+      completed_jobs_per_second: Workerholic::StatsAPI.job_statistics_history('completed_jobs'),
     })
   end
 
@@ -85,6 +97,9 @@ class WorkerholicWeb < Sinatra::Base
   end
 
   get '/historic-data' do
+    puts params[:className]
+    params[:className] = nil if params[:className] == 'completed'
+
     JSON.generate({
       completed_jobs: Workerholic::StatsAPI.history_for_period({ category: 'completed_jobs', klass: params[:className], period: params[:days].to_i }),
       failed_jobs: Workerholic::StatsAPI.history_for_period({ category: 'failed_jobs', klass: params[:className], period: params[:days].to_i })

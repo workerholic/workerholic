@@ -86,8 +86,16 @@ module Workerholic
     end
 
     def output_balancer_stats
-      @logger.info(queues.map { |q| { name: q.name, size: q.size } })
-      @logger.info(current_workers_count_per_queue)
+      queues_with_size = queues.map { |q| { name: q.name, size: q.size } }
+
+      queues_with_size.each do |q|
+        output = <<~LOG
+          Queue #{q[:name]}:
+          => #{q[:size]} jobs
+          => #{current_workers_count_per_queue[q[:name]]} workers
+        LOG
+        @logger.info(output)
+      end
     end
 
     def assign_one_worker_per_queue
