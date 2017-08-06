@@ -19,7 +19,9 @@ class JobsController < ApplicationController
       IoBoundJob.new.perform_async
     end
 
-    flash[:success] = 'Jobs successfully added.'
+    counter = parse_jobs.reduce(:+)
+
+    flash[:success] = "Successfully added #{counter} jobs."
     redirect_to root_path
   end
 
