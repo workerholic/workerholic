@@ -5,20 +5,20 @@ A Background Job Processing Manager
 ## Installing the gem
 Install the gem with the following command:
 
-`$ gem install workerholic`
+    $ gem install workerholic
 
 Or, add the following line to your application's Gemfile:
 
-`gem 'workerholic', '~> 0.1'`
+    gem 'workerholic', '~> 0.1'
 
 And then make sure to execute the following command:
 
-`$ bundle install`
+    $ bundle install
 
 ## Starting Redis
 In order to start Redis, execute the following:
 
-`redis-server`
+    redis-server
 
 By default, Workerholic will try to connect to Redis via `localhost:6379`.
 
@@ -69,7 +69,7 @@ my_job = MyJob.new
 my_job.perform_async(arg1, arg2)
 ```
 
-This will make sure that your job is performed in the background, asynchronously, as soon as possible.
+This will ensure that your job is performed in the background, asynchronously, as soon as possible.
 
 ### Scheduling the Job
 
@@ -84,39 +84,39 @@ The above example ensures that `my_job` will be performed in 100 seconds.
 
 # Configuration
 ## Loading Application's Files
-### For a Rails App
+### For a Rails Application
 
-When using Workerholic with a Rails application, as long as you make sure to start Workerholic from the root directory of your Rails application, it will automatically detect your Rails application and eager load your application files.
+When using Workerholic with a Rails application, as long as you make sure to start Workerholic from the root directory of your Rails application, it will automatically detect your Rails application and eager load your application's files.
 
-### Others
+### For Another Application
 
 For Workerholic to execute the jobs you enqueue properly it needs to have access to the job classes.
 
-Make sure to require all classes/dependencies needed with a single:
+Make sure to require all classes/dependencies needed with a single file:
 
-`workerholic -r my_app/all_dependencies_needed.rb`
+    workerholic -r my_app/all_dependencies_needed.rb
 
 ## Setting Number of Workers
 
-When starting workerholic you can specify the number of workers you want running and performing jobs:
+When starting Workerholic you can specify the number of workers you want running and performing jobs:
 
-`workerholic -w 25`
+    workerholic -w 25
 
 ## Setting Number of Redis Connections
 
 Internally, Workerholic uses a connection pool. By default, Workerholic will create a connection pool with a number of `workers_count + 5` Redis connections.
 
-In a production environment, you might be limited by the number of concurrent connections to Redis you are allowed to have. Make sure to check what the limit is and you can then start workerholic by specifying a number of connections:
+In a production environment, you might be limited by the number of concurrent connections to Redis you are allowed to have. Make sure to check what the limit is and you can then start Workerholic by specifying a number of connections:
 
-`workerholic -c 10`
+    workerholic -c 10
 
 ## Setting Number of Processes to Boot
 
 Workerholic allows you to start multiple processes in parallel by forking children processes from the main process. This can be achieved with the following option:
 
-`workerholic -p 3`
+    workerholic -p 3
 
-This will allow you to run 3 processes in parallel, with each process having it's own workers and connection pool to Redis.
+This will allow you to run 3 processes in parallel, with each process having its own workers and connection pool to Redis.
 
 # Integration
 ## ActiveJob
@@ -151,7 +151,7 @@ MyJob.perform_later(args)
 
 Workerholic comes with a Web UI tracking various statistics about the jobs that are being performed.
 
-### For a Rails App
+### For a Rails Application
 
 For a Rails application you will need to mount the Web UI on a specific route. In your `routes.rb` file make sure to add the following:
 
@@ -167,10 +167,10 @@ Rails.application.routes.draw do
 end
 ```
 
-### Other
+### For Another Application
 
 If you are using another kind of application, you can start the Web UI using the following command:
 
-`workerholic-web`
+    workerholic-web
 
 You can then view the the app at: `localhost:4567`
