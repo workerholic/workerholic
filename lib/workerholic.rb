@@ -43,8 +43,17 @@ module Workerholic
     @workers_count = num
   end
 
+  def self.redis_connections_count
+    @redis_connections_count || (workers_count + 5)
+  end
+
+  def self.redis_connections_count=(num)
+    raise ArgumentError unless num.is_a?(Integer) && num < 200
+    @redis_connections_count = num
+  end
+
   def self.redis_pool
-    @redis ||= ConnectionPool.new(size: workers_count + 5, timeout: 5) do
+    @redis ||= ConnectionPool.new(size: redis_connections_count, timeout: 5) do
       Redis.new(url: REDIS_URL)
     end
   end

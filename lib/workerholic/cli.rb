@@ -37,7 +37,7 @@ module Workerholic
           count = count.to_i
 
           if count < 1
-            logger.error('Invalid number of workers. Please specify a valid number of workers.')
+            logger.error('Invalid number of workers. Please specify a valid number.')
             exit
           else
             options[:workers] = count.to_i
@@ -57,10 +57,21 @@ module Workerholic
           count = count.to_i
 
           if count < 1
-            logger.error('Invalid number of processes. Please specify a valid number of processes.')
+            logger.error('Invalid number of processes. Please specify a valid number.')
             exit
           else
             options[:processes] = count.to_i
+          end
+        end
+
+        opts.on '-c', '--connections INT', 'number of connections for redis connection pool' do |count|
+          count = count.to_i
+
+          if count < 1
+            logger.error('Invalid number of redis connections. Please specify a valid number.')
+            exit
+          else
+            options[:redis_connections] = count.to_i
           end
         end
       end.parse!
