@@ -34,8 +34,8 @@ In general, background job managers are great for asynchronous processing of tim
 ### Multi-process execution
   Workerholic can be executed in multiple processes to utilize different CPU cores (MRI)
 
-# Installation
-## Installing the gem
+## Installation
+### Installing the gem
 Install the gem with the following command:
 
     $ gem install workerholic
@@ -48,7 +48,7 @@ And then make sure to execute the following command:
 
     $ bundle install
 
-## Starting Redis
+### Starting Redis
 In order to start Redis, execute the following:
 
     redis-server
@@ -57,8 +57,8 @@ By default, Workerholic will try to connect to Redis via `localhost:6379`.
 
 For a production environment, make sure to set a `REDIS_URL` environment variable to the address of your redis server.
 
-# Usage
-## Including Workerholic
+## Usage
+### Including Workerholic
 
 In order to perform your jobs asynchronously you will need to include Workerholic in your job classes:
 
@@ -76,8 +76,8 @@ It is important to follow this pattern:
 - include `Workerholic::Job` in your job class
 - define a `perform` method holding your job's logic
 
-## Job Options
-### Specifying a Queue
+### Job Options
+#### Specifying a Queue
 
 Workerholic allows you to specify a name for the queue that your job will be enqueued in:
 
@@ -93,7 +93,7 @@ class MyJob
 end
 ```
 
-### Performing a Job Asynchronously
+#### Performing a Job Asynchronously
 
 You can perform a job asynchronously:
 
@@ -104,7 +104,7 @@ my_job.perform_async(arg1, arg2)
 
 This will ensure that your job is performed in the background, asynchronously, as soon as possible.
 
-### Scheduling the Job
+#### Scheduling the Job
 
 You can schedule a job to be executed at a later time:
 
@@ -115,13 +115,13 @@ my_job.peform_delayed(100, arg1, arg2)
 
 The above example ensures that `my_job` will be performed in 100 seconds.
 
-# Configuration
-## Loading Application's Files
-### For a Rails Application
+## Configuration
+### Loading Application's Files
+#### For a Rails Application
 
 When using Workerholic with a Rails application, as long as you make sure to start Workerholic from the root directory of your Rails application, it will automatically detect your Rails application and eager load your application's files.
 
-### For Another Application
+#### For Another Application
 
 For Workerholic to execute the jobs you enqueue properly it needs to have access to the job classes.
 
@@ -129,13 +129,13 @@ Make sure to require all classes/dependencies needed with a single file:
 
     workerholic -r my_app/all_dependencies_needed.rb
 
-## Setting Number of Workers
+### Setting Number of Workers
 
 When starting Workerholic you can specify the number of workers you want running and performing jobs:
 
     workerholic -w 25
 
-## Setting Number of Redis Connections
+### Setting Number of Redis Connections
 
 Internally, Workerholic uses a connection pool. By default, Workerholic will create a connection pool with a number of `workers_count + 5` Redis connections.
 
@@ -143,7 +143,7 @@ In a production environment, you might be limited by the number of concurrent co
 
     workerholic -c 10
 
-## Setting Number of Processes to Boot
+### Setting Number of Processes to Boot
 
 Workerholic allows you to start multiple processes in parallel by forking children processes from the main process. This can be achieved with the following option:
 
@@ -151,8 +151,8 @@ Workerholic allows you to start multiple processes in parallel by forking childr
 
 This will allow you to run 3 processes in parallel, with each process having its own workers and connection pool to Redis.
 
-# Integration
-## ActiveJob
+## Integration
+### ActiveJob
 
 Workerholic integrates with ActiveJob. Add the following line to your `application.rb` file:
 
@@ -180,11 +180,11 @@ end
 MyJob.perform_later(args)
 ```
 
-## Web UI
+### Web UI
 
 Workerholic comes with a Web UI tracking various statistics about the jobs that are being performed.
 
-### For a Rails Application
+#### For a Rails Application
 
 For a Rails application you will need to mount the Web UI on a specific route. In your `routes.rb` file make sure to add the following:
 
@@ -200,7 +200,7 @@ Rails.application.routes.draw do
 end
 ```
 
-### For Another Application
+#### For Another Application
 
 If you are using another kind of application, you can start the Web UI using the following command:
 
