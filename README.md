@@ -200,4 +200,3 @@ If you are using another kind of application, you can start the Web UI using the
     workerholic-web
 
 You can then view the the app at: `localhost:4567`
->>>>>>> 667c21005b200a40e4b6b764a18d5b28c51cee5a
