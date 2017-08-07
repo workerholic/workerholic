@@ -2,6 +2,7 @@ require 'yaml'
 require 'redis'
 require 'connection_pool'
 require 'logger'
+#require 'pry-byebug'
 
 require 'workerholic/starter'
 require 'workerholic/manager'
