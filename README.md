@@ -1,5 +1,12 @@
-# workerholic
-A Background Job Processing Manager
+# Workerholic: background job processor
+
+## Summary
+
+Handling background jobs is a non-trivial task. Usually, the system like that involves multiple components working in unison. That's why we decided to make Workerholic our learning experience - dive deep into how background job processing works, what moving parts are involved and what challenges it provides.
+
+Workerholic is a multi-threaded background job processing manager. It is an experimental project and as such is not meant to replace other stable engines like Sidekiq or Resque. In fact, Workerholic is inspired in large part by these projects.
+
+In general, background job managers are great for asynchronous processing of time-consuming tasks like calling a third party APIs and performing long calculations. What we are building aims to cover all those use cases.
 
 ## Features
 
