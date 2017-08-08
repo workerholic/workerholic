@@ -2,16 +2,24 @@
 
 ## Summary
 
-Handling background jobs is a non-trivial task. Usually, such a system involves multiple components working in unison. That's why we decided to build Workerholic as a learning experience - dive deep into how background job processing works, what moving parts are involved and what challenges it provides.
-
-Workerholic is a multi-threaded background job processing manager. It is an experimental project and as such is not meant to replace other stable engines like Sidekiq or Resque. In fact, Workerholic is inspired in large part by these projects.
+Workerholic is a multi-threaded, multi-process background job processing manager. It is an experimental project and as such is not meant to replace other stable engines like Sidekiq or Resque. In fact, Workerholic is inspired in large part by these projects.
 
 In general, background job managers are great for asynchronous processing of time-consuming tasks like calling third party APIs and performing long calculations. What we are building aims to cover all those use cases.
 
 ## Features
+### Overview
+#### Here's a brief overview of Workerholic's data flow:
+- enqueue a job
+- job is serialized and added to queue in Redis
+- workers pick jobs from Redis queues, deserialize and process them
+- on completion (or failure), relevant statistics are added to Redis
+- web-ui monitors application metrics and outputs the result
 
 ### Job retry
   Workerholic will retry every unsuccessfully performed job up to 5 times before placing it into a failed jobs queue
+
+### Multiple queues
+  It is possible to specify your own queues for each job your application needs to perform. This way every job has its own namespace and can be easily distinguished between multiple jobs.
 
 ### Job scheduler
   You can schedule a job to be performed at certain time
