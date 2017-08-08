@@ -15,9 +15,11 @@ In general, background job managers are great for asynchronous processing of tim
 - on completion (or failure), relevant statistics are added to Redis
 - web-ui monitors application metrics and outputs the result
 
-### Multiple queues
 ### Job retry
   Workerholic will retry every unsuccessfully performed job up to 5 times before placing it into a failed jobs queue
+
+### Multiple queues
+  It is possible to specify your own queues for each job your application needs to perform. This way every job has its own namespace and can be easily distinguished between multiple jobs.
 
 ### Job scheduler
   You can schedule a job to be performed at certain time
