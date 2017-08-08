@@ -60,7 +60,7 @@ class MyJob
 end
 ```
 
-#### Performing a Job Asynchronously
+### Performing a Job Asynchronously
 
 You can perform a job asynchronously:
 
@@ -71,7 +71,7 @@ my_job.perform_async(arg1, arg2)
 
 This will ensure that your job is performed in the background, asynchronously, as soon as possible.
 
-#### Scheduling the Job
+### Scheduling the Job
 
 You can schedule a job to be executed at a later time:
 
@@ -117,6 +117,15 @@ Workerholic allows you to start multiple processes in parallel by forking childr
     workerholic -p 3
 
 This will allow you to run 3 processes in parallel, with each process having its own workers and connection pool to Redis.
+
+### Enabling Workers Auto-Balancing Option
+
+By default, Workerholic will evenly provision workers between job queues.
+Use the following option if you want to have workers provisioned based on the load for each queue:
+
+    workerholic -a
+
+This will ensure that each queue will be provisioned with a number of workers based on its relative load compared to the aggregated load for all job queues.
 
 ## Integration
 ### ActiveJob
