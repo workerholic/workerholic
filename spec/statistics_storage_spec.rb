@@ -17,10 +17,8 @@ describe Workerholic::StatsStorage do
     Workerholic::StatsStorage.save_job('completed_jobs', job)
 
     serialized_stats = storage.sorted_set_all_members(namespace).first
-    deserialized_stats = Workerholic::JobSerializer.deserialize_stats(serialized_stats)
 
     expect(storage.sorted_set_size(namespace)).to eq 1
-    expect(deserialized_stats).to eq job_hash
   end
 
   it 'saves process memory usage' do

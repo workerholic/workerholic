@@ -18,7 +18,7 @@ module Workerholic
         StatsStorage.save_job('completed_jobs', job)
         StatsStorage.update_historical_stats('completed_jobs', job.klass.to_s)
 
-        @logger.info("Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}.")
+        # @logger.info("Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}.")
       rescue Exception => e
         job.statistics.errors.push([e.class, e.message])
         retry_job(job, e)
