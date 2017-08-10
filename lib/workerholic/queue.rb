@@ -11,7 +11,7 @@ module Workerholic
 
     def enqueue(serialized_job)
       storage.push(name, serialized_job)
-      logger.info("Your job was placed in the #{name} queue on #{Time.now}.")
+      # logger.info("Your job was placed in the #{name} queue on #{Time.now}.")
     end
 
     def dequeue
