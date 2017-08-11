@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-#require 'workerholic/cli'
+# require 'workerholic/cli'
 require_relative '../lib/workerholic/cli'
 
 Workerholic::CLI.instance.run

@@ -1,4 +1,4 @@
-$LOAD_PATH << __dir__ + '/..'
+# $LOAD_PATH << __dir__ + '/..'
 
 require 'workerholic'
 require 'optparse'
