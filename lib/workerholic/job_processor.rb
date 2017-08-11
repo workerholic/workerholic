@@ -19,6 +19,9 @@ module Workerholic
 
       # @logger.info("Completed: your job from class #{job.klass} was completed on #{job.statistics.completed_at}.")
 
+      # forces AR to release idle connections back to the pool
+      ActiveRecord::Base.clear_active_connections! if defined?(Rails)
+
       job_result
     rescue Exception => e
       job.statistics.errors.push([e.class, e.message])
