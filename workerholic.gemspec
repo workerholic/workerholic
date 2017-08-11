@@ -11,7 +11,7 @@ Gem::Specification.new do |gem|
   gem.homepage      = 'https://github.com/workerholic/workerholic'
   gem.license       = 'MIT'
 
-  gem.files         = `git ls-files`.split("\n")
+  gem.files         = `git ls-files | grep -Ev '^(app_test|demo_app)'`.split("\n")
   gem.test_files    = `git ls-files -- spec/*`.split("\n")
   gem.executables   = ['workerholic', 'workerholic-web']
   gem.require_paths = ['lib']
