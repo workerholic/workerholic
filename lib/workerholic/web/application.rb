@@ -1,4 +1,4 @@
-# $LOAD_PATH << __dir__ + '/../..'
+$LOAD_PATH << __dir__ + '/../..'
 require 'sinatra/base'
 
 # require 'sinatra/reloader'

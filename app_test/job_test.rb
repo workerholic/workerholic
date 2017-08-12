@@ -1,5 +1,3 @@
-# $LOAD_PATH.unshift(__dir__ + '/../lib')
-require 'workerholic'
 require 'prime'
 
 class JobTestFast
