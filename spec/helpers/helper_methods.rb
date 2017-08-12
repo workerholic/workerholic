@@ -2,8 +2,12 @@ WORKERHOLIC_QUEUE_NAMESPACE = 'workerholic:queue:'
 
 TEST_QUEUE = 'test_queue'
 ANOTHER_TEST_QUEUE = 'another_test_queue'
-BALANCER_TEST_QUEUE = 'balancer_test_queue'
-ANOTHER_BALANCER_TEST_QUEUE = 'another_balancer_test_queue'
+
+FIRST_BALANCER_TEST_QUEUE = 'first_balancer_test_queue'
+SECOND_BALANCER_TEST_QUEUE = 'second_balancer_test_queue'
+THIRD_BALANCER_TEST_QUEUE = 'third_balancer_test_queue'
+FOURTH_BALANCER_TEST_QUEUE = 'fourth_balancer_test_queue'
+
 TEST_SCHEDULED_SORTED_SET = 'workerholic:testing:scheduled_jobs'
 HASH_TEST = 'workerholic:testing:hash_test'
 

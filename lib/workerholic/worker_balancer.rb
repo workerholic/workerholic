@@ -24,24 +24,12 @@ module Workerholic
       thread.kill
     end
 
-    private
+    private unless $TESTING
 
     def evenly_balance_workers
       @thread = Thread.new do
         while alive
-          self.queues = fetch_queues
-
-          total_workers_count = assign_one_worker_per_queue
-
-          remaining_workers_count = workers.size - (total_workers_count + 1)
-
-          queues.each do |queue|
-            workers_count = remaining_workers_count / queues.size
-            assign_workers_to_queue(queue, workers_count, total_workers_count)
-            total_workers_count += workers_count
-          end
-
-          distribute_unassigned_worker(total_workers_count)
+          evenly_balanced_workers_distribution
           output_balancer_stats
 
           sleep 1
@@ -49,36 +37,47 @@ module Workerholic
       end
     end
 
+    def evenly_balanced_workers_distribution
+      self.queues = fetch_queues
+
+      total_workers_count = assign_one_worker_per_queue
+
+      remaining_workers_count = workers.size - total_workers_count
+
+      queues.each do |queue|
+        workers_count = remaining_workers_count / queues.size
+        workers_count = round(workers_count)
+
+        assign_workers_to_queue(queue, workers_count, total_workers_count)
+
+        total_workers_count += workers_count
+      end
+
+      distribute_unassigned_worker(total_workers_count)
+    end
+
     def auto_balance_workers
       @thread = Thread.new do
         while alive
-          self.queues = fetch_queues
-
-          total_workers_count = assign_one_worker_per_queue
-
-          remaining_workers_count = workers.size - (total_workers_count + 1)
-          average_job_count_per_worker = total_jobs / remaining_workers_count.to_f
-
-          io_queues.each do |queue|
-            workers_count = queue.size / average_job_count_per_worker
-
-            if workers_count % 1 == 0.5
-              workers_count = workers_count.floor
-            else
-              workers_count = workers_count.round
-            end
-
-            assign_workers_to_queue(queue, workers_count, total_workers_count)
-
-            total_workers_count += workers_count
-          end
-
-          distribute_unassigned_worker(total_workers_count)
+          auto_balanced_workers_distribution
           output_balancer_stats
 
           sleep 1
         end
       end
+    end
+
+    def auto_balanced_workers_distribution
+      self.queues = fetch_queues
+
+      total_workers_count = assign_one_worker_per_queue
+
+      remaining_workers_count = workers.size - total_workers_count
+      average_jobs_count_per_worker = total_jobs / remaining_workers_count.to_f
+
+      total_workers_count = provision_queues(io_queues, average_jobs_count_per_worker, total_workers_count)
+
+      distribute_unassigned_worker(total_workers_count)
     end
 
     def fetch_queues
@@ -96,11 +95,26 @@ module Workerholic
     end
 
     def total_jobs
-      @queues.map(&:size).reduce(:+) || 0
+      io_queues.map(&:size).reduce(:+) || 0
     end
 
     def io_queues
-      queues.select { |q| q.name.match(/.*-io$/) } if queues.any? { |q| q.name.match(/.*-io$/) }
+      return queues.select { |q| q.name.match(/.*-io$/) } if queues.any? { |q| q.name.match(/.*-io$/) }
+
+      queues
+    end
+
+    def provision_queues(qs, average_jobs_count_per_worker, total_workers_count)
+      qs.each do |q|
+        workers_count = q.size / average_jobs_count_per_worker
+        workers_count = round(workers_count)
+
+        assign_workers_to_queue(q, workers_count, total_workers_count)
+
+        total_workers_count += workers_count
+      end
+
+      total_workers_count
     end
 
     def assign_workers_to_queue(queue, workers_count, total_workers_count)
@@ -109,18 +123,14 @@ module Workerholic
       end
     end
 
-    def current_workers_count_per_queue
-      workers.reduce({}) do |result, worker|
-        if worker.queue
-          result[worker.queue.name] = result[worker.queue.name] ? result[worker.queue.name] + 1 : 1
-        end
+    def round(n)
+      return n.floor if n % 1 == 0.5
 
-        result
-      end
+      n.round
     end
 
     def distribute_unassigned_worker(total_workers_count)
-      workers[workers.size - 1].queue = queues.sample if workers.size - total_workers_count == 1
+      workers[workers.size - 1].queue = io_queues.find { |q| q.size == io_queues.map(&:size).max } if workers.size - total_workers_count == 1
     end
 
     def output_balancer_stats
@@ -138,6 +148,16 @@ module Workerholic
       if queues_with_size.empty?
         @logger.info("DONE")
         raise Interrupt
+      end
+    end
+
+    def current_workers_count_per_queue
+      workers.reduce({}) do |result, worker|
+        if worker.queue
+          result[worker.queue.name] = result[worker.queue.name] ? result[worker.queue.name] + 1 : 1
+        end
+
+        result
       end
     end
   end
