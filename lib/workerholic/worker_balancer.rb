@@ -59,7 +59,7 @@ module Workerholic
           remaining_workers_count = workers.size - (total_workers_count + 1)
           average_job_count_per_worker = total_jobs / remaining_workers_count.to_f
 
-          cpu_filtered_queues.each do |queue|
+          io_queues.each do |queue|
             workers_count = queue.size / average_job_count_per_worker
 
             if workers_count % 1 == 0.5
@@ -99,8 +99,8 @@ module Workerholic
       @queues.map(&:size).reduce(:+) || 0
     end
 
-    def cpu_filtered_queues
-      queues.reject { |q| q.name.match(/.*-cpu$/) } unless queues.all? { |q| q.name.match(/.*-cpu$/) }
+    def io_queues
+      queues.select { |q| q.name.match(/.*-io$/) } if queues.any? { |q| q.name.match(/.*-io$/) }
     end
 
     def assign_workers_to_queue(queue, workers_count, total_workers_count)
