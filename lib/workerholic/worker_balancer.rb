@@ -13,6 +13,7 @@ module Workerholic
     end
 
     def start
+      require 'pry-byebug'; binding.pry
       if auto
         auto_balance_workers
       else
@@ -57,21 +58,9 @@ module Workerholic
           total_workers_count = assign_one_worker_per_queue
 
           remaining_workers_count = workers.size - (total_workers_count + 1)
-          average_job_count_per_worker = total_jobs / remaining_workers_count.to_f
+          average_jobs_count_per_worker = total_jobs / remaining_workers_count.to_f
 
-          io_queues.each do |queue|
-            workers_count = queue.size / average_job_count_per_worker
-
-            if workers_count % 1 == 0.5
-              workers_count = workers_count.floor
-            else
-              workers_count = workers_count.round
-            end
-
-            assign_workers_to_queue(queue, workers_count, total_workers_count)
-
-            total_workers_count += workers_count
-          end
+          total_workers_count = provision_queues(io_queues, average_jobs_count_per_worker, total_workers_count)
 
           distribute_unassigned_worker(total_workers_count)
           output_balancer_stats
@@ -96,11 +85,29 @@ module Workerholic
     end
 
     def total_jobs
-      @queues.map(&:size).reduce(:+) || 0
+      io_queues.map(&:size).reduce(:+) || 0
     end
 
     def io_queues
       queues.select { |q| q.name.match(/.*-io$/) } if queues.any? { |q| q.name.match(/.*-io$/) }
+    end
+
+    def provision_queues(qs, average_jobs_count_per_worker, total_workers_count)
+      qs.each do |q|
+        workers_count = q.size / average_job_count_per_worker
+        workers_count = round(workers_count)
+
+        assign_workers_to_queue(q, workers_count, total_workers_count)
+
+        total_workers_count += workers_count
+      end
+
+      total_workers_count
+    end
+
+    def round(n)
+      return n = n.floor if n % 1 == 0.5
+      n.round
     end
 
     def assign_workers_to_queue(queue, workers_count, total_workers_count)

@@ -13,7 +13,7 @@ end
 
 class JobTestSlow
   include Workerholic::Job
-  job_options queue_name: 'job_slow'
+  job_options queue_name: 'job_slow-io'
 
   def perform(str, num)
     sleep(0.5)
