@@ -168,6 +168,24 @@ Use the following option if you want to have workers provisioned based on the lo
 
 This will ensure that each queue will be provisioned with a number of workers based on its relative load compared to the aggregated load for all job queues.
 
+#### Optimize by specifying IO-blocking jobs
+
+IO blocking jobs include, any type of jobs that will require the machine to spend some time on IO, such as performing requests over the wire, opening a file, `sleep`ing, etc.
+
+You can specify that your job is IO blocking by adding `-io` at the end of the queue name you specified in your job class, like the following:
+
+```ruby
+class MyJob < ApplicationJob
+  queue_as: 'my_queue-io'
+
+  def perform(args)
+    # job logic goes here
+  end
+end
+```
+
+In this case, the auto-balancing algorithm will assume that all other queues contain CPU blocking jobs and will assign only 1 worker to each of these queues, saving the rest of the workers for queues containing IO blocking jobs.
+
 ## Integration
 ### ActiveJob
 
