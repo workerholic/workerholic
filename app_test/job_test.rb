@@ -132,7 +132,5 @@ class FibCruncher
     while b < n
       a, b = b, a + b
     end
-
-    puts b
   end
 end
