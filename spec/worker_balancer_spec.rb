@@ -120,6 +120,7 @@ describe Workerholic::WorkerBalancer do
         ThirdJobBalancerTest.new.perform_async('third string', n)
         FourthJobBalancerTest.new.perform_async('fourth string', n)
       end
+      FourthJobBalancerTest.new.perform_async('fourth string', 201)
 
       wb = Workerholic::WorkerBalancer.new(workers: workers, auto: true)
 
@@ -129,8 +130,8 @@ describe Workerholic::WorkerBalancer do
         {
           TESTED_QUEUES[0] => 4,
           TESTED_QUEUES[1] => 4,
-          TESTED_QUEUES[2] => 9,
-          TESTED_QUEUES[3] => 8
+          TESTED_QUEUES[2] => 8,
+          TESTED_QUEUES[3] => 9
         }
       )
     end
@@ -227,6 +228,7 @@ describe Workerholic::WorkerBalancer do
         ThirdJobBalancerTest.new.perform_async('third string', n)
         FourthJobBalancerTest.new.perform_async('fourth string', n)
       end
+      FourthJobBalancerTest.new.perform_async('fourth string', 201)
 
       wb = Workerholic::WorkerBalancer.new(workers: workers, auto: true)
 
@@ -236,8 +238,8 @@ describe Workerholic::WorkerBalancer do
         {
           TESTED_QUEUES[0] => 6,
           TESTED_QUEUES[1] => 6,
-          TESTED_QUEUES[2] => 7,
-          TESTED_QUEUES[3] => 6
+          TESTED_QUEUES[2] => 6,
+          TESTED_QUEUES[3] => 7
         }
       )
     end
