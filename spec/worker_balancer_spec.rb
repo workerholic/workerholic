@@ -129,8 +129,8 @@ describe Workerholic::WorkerBalancer do
         {
           TESTED_QUEUES[0] => 4,
           TESTED_QUEUES[1] => 4,
-          TESTED_QUEUES[2] => 8,
-          TESTED_QUEUES[3] => 9
+          TESTED_QUEUES[2] => 9,
+          TESTED_QUEUES[3] => 8
         }
       )
     end
@@ -236,12 +236,11 @@ describe Workerholic::WorkerBalancer do
         {
           TESTED_QUEUES[0] => 6,
           TESTED_QUEUES[1] => 6,
-          TESTED_QUEUES[2] => 6,
-          TESTED_QUEUES[3] => 7
+          TESTED_QUEUES[2] => 7,
+          TESTED_QUEUES[3] => 6
         }
       )
     end
   end
 end
-
 
