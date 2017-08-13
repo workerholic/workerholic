@@ -93,6 +93,8 @@ module Workerholic
     end
 
     def self.fork_processes
+      PIDS.pop
+
       options[:processes].times do
         PIDS << fork { Manager.new(auto_balance: options[:auto_balance]).start }
       end

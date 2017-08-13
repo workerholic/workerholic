@@ -43,7 +43,7 @@ module Workerholic
   end
 
   def self.redis_connections_count
-    @redis_connections_count || (workers_count + 5)
+    @redis_connections_count || (workers_count + 3)
   end
 
   def self.redis_connections_count=(num)
