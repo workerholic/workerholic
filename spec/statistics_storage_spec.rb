@@ -19,6 +19,7 @@ describe Workerholic::StatsStorage do
     serialized_stats = storage.sorted_set_all_members(namespace).first
 
     expect(storage.sorted_set_size(namespace)).to eq 1
+    expect(serialized_stats).to eq(JSON.dump(job.to_hash))
   end
 
   it 'saves process memory usage' do
