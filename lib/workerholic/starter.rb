@@ -88,7 +88,8 @@ module Workerholic
           exit
         end
       else
-        Workerholic.manager = Manager.new(auto_balance: options[:auto_balance]).start
+        Workerholic.manager = Manager.new(auto_balance: options[:auto_balance])
+        Workerholic.manager.start
       end
     end
 
