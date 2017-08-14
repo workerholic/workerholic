@@ -77,7 +77,6 @@ class WorkerholicWeb < Sinatra::Base
       failed_jobs: Workerholic::StatsAPI.job_statistics( {category: 'failed_jobs', count_only: true} ),
       queued_jobs: Workerholic::StatsAPI.queued_jobs,
       scheduled_jobs: Workerholic::StatsAPI.scheduled_jobs( { count_only: true }),
-      workers_count: Workerholic.workers_count,
       memory_usage: Workerholic::StatsAPI.process_stats,
       completed_jobs_per_second: Workerholic::StatsAPI.job_statistics_history('completed_jobs'),
     })
