@@ -88,7 +88,8 @@ module Workerholic
           exit
         end
       else
-        Manager.new(auto_balance: options[:auto_balance]).start
+        Workerholic.manager = Manager.new(auto_balance: options[:auto_balance])
+        Workerholic.manager.start
       end
     end
 
@@ -96,7 +97,10 @@ module Workerholic
       PIDS.pop
 
       options[:processes].times do
-        PIDS << fork { Manager.new(auto_balance: options[:auto_balance]).start }
+        PIDS << fork do
+          Workerholic.manager = Manager.new(auto_balance: options[:auto_balance])
+          Workerholic.manager.start
+        end
       end
 
       PIDS.freeze

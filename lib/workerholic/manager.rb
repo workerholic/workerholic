@@ -7,7 +7,7 @@ module Workerholic
       @workers = []
       Workerholic.workers_count.times { @workers << Worker.new }
 
-      @scheduler = JobScheduler.new
+      @scheduler = JobScheduler.new(sorted_set: opts[:sorted_set])
       @worker_balancer = WorkerBalancer.new(workers: workers, auto_balance: opts[:auto_balance])
 
       @logger = LogManager.new

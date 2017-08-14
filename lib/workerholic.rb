@@ -56,4 +56,12 @@ module Workerholic
       Redis.new(url: REDIS_URL)
     end
   end
+
+  def self.manager=(mgr)
+    @manager = mgr
+  end
+
+  def self.manager
+    @manager
+  end
 end

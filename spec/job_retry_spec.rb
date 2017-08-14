@@ -8,6 +8,9 @@ end
 
 describe Workerholic::JobRetry do
   let(:redis) { Redis.new(url: Workerholic::REDIS_URL) }
+  before do
+    Workerholic.manager = Workerholic::Manager.new(sorted_set: Workerholic::SortedSet.new(TEST_SCHEDULED_SORTED_SET))
+  end
 
   it 'increments retry count' do
     job = Workerholic::JobWrapper.new(class: JobWithError, arguments: [])

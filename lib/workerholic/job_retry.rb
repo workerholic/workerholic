@@ -12,7 +12,7 @@ module Workerholic
 
       increment_retry_count
       schedule_job_for_retry
-      sorted_set.add(JobSerializer.serialize(job), job.execute_at)
+      Workerholic.manager.scheduler.schedule(JobSerializer.serialize(job), job.execute_at)
     end
 
     private
