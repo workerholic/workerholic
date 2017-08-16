@@ -99,9 +99,13 @@ module Workerholic
     end
 
     def io_queues
-      return queues.select { |q| q.name.match(/.*-io$/) } if queues.any? { |q| q.name.match(/.*-io$/) }
+      io_qs = queues.select { |q| q.name.match(/.*-io$/) }
 
-      queues
+      if io_qs.empty?
+        queues
+      else
+        io_qs
+      end
     end
 
     def provision_queues(qs, average_jobs_count_per_worker, total_workers_count)
