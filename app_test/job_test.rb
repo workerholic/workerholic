@@ -36,7 +36,7 @@ end
 class ManyArgs
   include Workerholic::Job
 
-  def perform(n, *args)
+  def perform(n, a, b, c, d, e, f)
   end
 end
 
