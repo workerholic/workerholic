@@ -3,7 +3,7 @@
     <title>Workerholic Overview</title>
     <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.4/css/bulma.css" rel="stylesheet">
-    <link href='stylesheets/application.css' rel='stylesheet'>
+    <link href="stylesheets/application.css" rel="stylesheet">
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="javascripts/application.js"></script>
@@ -11,19 +11,22 @@
 
   <body>
     <header>
-      Workerholic
+      <nav class="nav has-shadow">
+        <div class="container">
+          <div class="nav-center">
+            <a class="nav-item" id="logo">
+              <img src="/images/workerholic_logo.png" alt="Workerholic logo">
+            </a>
+          </div>
+          <div class="nav-center">
+            <a class="nav-item is-tab is-hidden-mobile" href="overview">Overview</a>
+            <a class="nav-item is-tab is-hidden-mobile" href="details">Details</a>
+            <a class="nav-item is-tab is-hidden-mobile" href="queues">Queues</a>
+            <a class="nav-item is-tab is-hidden-mobile" href="history">History</a>
+          </div>
+        </div>
+      </nav>
     </header>
-
-    <nav>
-      <ul class='columns'>
-        <li class='column'><a href='overview'>Overview</a></li>
-        <li class='column'><a href='details'>Job Details</a></li>
-        <li class='column'><a href='queues'>Queues</a></li>
-        <li class='column'><a href='history'>History</a></li>
-        <!-- <li class='column'><a href='failed'>Failed</a></li>
-        <li class='column'><a href='scheduled'>Scheduled</a></li> -->
-      </ul>
-    </nav>
 
     <section>
       <%= yield %>

@@ -5,18 +5,47 @@ body {
   background: #f2f2f2;
 }
 
-header {
+/*header {
   font-family: 'Dosis', sans-serif;
-  font-size: 128px;
-  color: #fff;
-  text-align: center;
-  background: linear-gradient(to bottom, #3A0E40, #E739FF);
+  /*font-size: 128px;*/
+  /*color: #fff;*/
+  /*text-align: center;*/
+  /*background: linear-gradient(to bottom, #3A0E40, #E739FF);*/
+
+.nav {
+  font-family: 'Dosis', sans-serif;
 }
 
-section {
-  width: 1200px;
-  padding-bottom: 100px;
-  margin: 0 auto;
+.nav-item {
+  font-size: 20px;
+  color: #073763 !important;
+}
+
+/*.nav-item:hover,
+.nav-item:focus,
+.nav-item:active,
+.nav-item.is-active {
+  color: white !important;
+  background-color: #073763 !important;
+}*/
+
+.nav-item a:not(.button).is-tab:hover,
+a.nav-item:not(.button).is-tab:hover {
+  border-bottom: 1px solid #073763;
+}
+
+.nav-item a:not(.button).is-tab.is-active,
+a.nav-item:not(.button).is-tab.is-active {
+  border-bottom: 3px solid #073763;
+}
+
+#logo {
+  line-height: 1;
+}
+
+#logo img {
+  width: 200px;
+  max-height: 100px;
 }
 
 footer p {
@@ -25,23 +54,10 @@ footer p {
   text-align: center;
 }
 
-nav {
-  background: #fff;
-}
-
-nav a {
-  display: inline-block;
-  width: 100%;
-  padding: 10px;
-  text-align: center;
-  border-radius: 5px;
-  color: #000;
-  background: #cecece;
-}
-
-nav a:hover {
-  color: #fff;
-  background: #a2a2a2;
+section {
+  width: 1200px;
+  padding-bottom: 100px;
+  margin: 0 auto;
 }
 
 .table {
