@@ -5,13 +5,6 @@ body {
   background: #f2f2f2;
 }
 
-/*header {
-  font-family: 'Dosis', sans-serif;
-  /*font-size: 128px;*/
-  /*color: #fff;*/
-  /*text-align: center;*/
-  /*background: linear-gradient(to bottom, #3A0E40, #E739FF);*/
-
 .nav {
   font-family: 'Dosis', sans-serif;
 }
@@ -20,14 +13,6 @@ body {
   font-size: 20px;
   color: #073763 !important;
 }
-
-/*.nav-item:hover,
-.nav-item:focus,
-.nav-item:active,
-.nav-item.is-active {
-  color: white !important;
-  background-color: #073763 !important;
-}*/
 
 .nav-item a:not(.button).is-tab:hover,
 a.nav-item:not(.button).is-tab:hover {
