@@ -80,23 +80,14 @@ module Workerholic
     end
 
     def self.launch
-      if options[:processes] && options[:processes] > 1
-        begin
-          fork_processes
-          sleep
-        rescue SystemExit, Interrupt
-          exit
-        end
-      else
-        Workerholic.manager = Manager.new(auto_balance: options[:auto_balance])
-        Workerholic.manager.start
-      end
+      fork_processes if options[:processes] && options[:processes] > 1
+
+      Workerholic.manager = Manager.new(auto_balance: options[:auto_balance])
+      Workerholic.manager.start
     end
 
     def self.fork_processes
-      PIDS.pop
-
-      options[:processes].times do
+      (options[:processes] - 1).times do
         PIDS << fork do
           Workerholic.manager = Manager.new(auto_balance: options[:auto_balance])
           Workerholic.manager.start
