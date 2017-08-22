@@ -1,4 +1,4 @@
-$LOAD_PATH << __dir__ + '/../lib/'
+# $LOAD_PATH << __dir__ + '/../lib/'
 
 $TESTING = true
 
