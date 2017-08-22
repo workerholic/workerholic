@@ -1,4 +1,4 @@
-$LOAD_PATH.unshift(__dir__ + '/../lib')
+# $LOAD_PATH.unshift(__dir__ + '/../lib')
 
 require 'workerholic'
 require_relative 'job_test'
@@ -93,6 +93,5 @@ module TestRunner
   end
 end
 
-TestRunner.non_blocking(15_000)
-TestRunner.blocking(5_000)
-TestRunner.fibonacci_cruncher(15_000)
+TestRunner.many_args(20_000)
+TestRunner.blocking(10_000)
